@@ -9,8 +9,13 @@ function formatDuration(seconds: number) {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-export default async function ProgramPage({ params }: { params: { slug: string } }) {
-  const [program] = await db.select().from(programs).where(eq(programs.slug, params.slug));
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+export default async function ProgramPage({ params }: Props) {
+  const { slug } = await params;
+  const [program] = await db.select().from(programs).where(eq(programs.slug, slug));
 
   if (!program) {
     return (
