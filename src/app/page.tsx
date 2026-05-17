@@ -1,38 +1,39 @@
 import Link from "next/link";
-
-async function getData() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_URL || "http://localhost:3000"}/api/public`, { cache: "no-store" });
-  return res.json();
-}
-
-const days: Record<string, string> = {
-  sat: "السبت", sun: "الأحد", mon: "الاثنين",
-  tue: "الثلاثاء", wed: "الأربعاء", thu: "الخميس", fri: "الجمعة", daily: "يومي"
-};
+import { db } from "@/db";
+import { settings, programs, episodes, news, schedule } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 export default async function HomePage() {
-  const { settings: s, programs, news, schedule, latestEpisodes } = await getData();
+  const [allSettings, allPrograms, latestNews, allSchedule, latestEpisodes] = await Promise.all([
+    db.select().from(settings),
+    db.select().from(programs).where(eq(programs.active, true)),
+    db.select().from(news).orderBy(news.publishedAt).limit(3),
+    db.select().from(schedule),
+    db.select().from(episodes).orderBy(episodes.publishedAt).limit(5),
+  ]);
+
+  const s: Record<string, string> = {};
+  allSettings.forEach((item) => (s[item.key] = item.value));
 
   const todayMap: Record<number, string> = { 0: "sun", 1: "mon", 2: "tue", 3: "wed", 4: "thu", 5: "fri", 6: "sat" };
   const todayKey = todayMap[new Date().getDay()];
-  const todaySchedule = schedule.filter((i: { day: string }) => i.day === todayKey || i.day === "daily")
-    .sort((a: { timeStart: string }, b: { timeStart: string }) => a.timeStart.localeCompare(b.timeStart))
+  const todaySchedule = allSchedule
+    .filter((i) => i.day === todayKey || i.day === "daily")
+    .sort((a, b) => a.timeStart.localeCompare(b.timeStart))
     .slice(0, 6);
 
   return (
     <div className="min-h-screen bg-[#07070d] text-white" dir="rtl">
 
-      {/* Ticker */}
       {s.ticker_visible !== "false" && s.ticker && (
         <div className="bg-red-700 py-2 overflow-hidden">
-          <div className="flex items-center gap-4 animate-marquee whitespace-nowrap">
+          <div className="flex items-center gap-4 whitespace-nowrap animate-marquee">
             <span className="bg-white text-red-700 text-xs font-black px-2 py-0.5 rounded flex-shrink-0">عاجل</span>
             <span className="text-sm">{s.ticker}</span>
           </div>
         </div>
       )}
 
-      {/* Nav */}
       <nav className="border-b border-white/10 px-6 py-4 flex items-center justify-between sticky top-0 bg-[#07070d]/95 backdrop-blur z-40">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-[#1a4fd6]/20 border border-[#1a4fd6]/40 flex items-center justify-center">
@@ -56,7 +57,6 @@ export default async function HomePage() {
         </div>
       </nav>
 
-      {/* Hero */}
       <section className="relative py-24 px-6 text-center overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(26,79,214,0.12),transparent)]" />
         <div className="relative max-w-3xl mx-auto">
@@ -72,10 +72,9 @@ export default async function HomePage() {
             <div className="bg-[#0e0e18] border border-white/10 rounded-2xl p-6 max-w-md mx-auto mb-8">
               <div className="text-gray-500 text-xs uppercase tracking-widest mb-2">الآن على الهواء</div>
               <div className="text-white font-bold text-lg mb-4">{s.on_air_label}</div>
-              <div className="flex justify-center gap-1 mb-4">
-                {[...Array(12)].map((_, i) => (
-                  <div key={i} className="w-1 bg-[#1a4fd6] rounded-full animate-pulse"
-                    style={{ height: `${Math.random() * 24 + 8}px`, animationDelay: `${i * 0.1}s` }} />
+              <div className="flex justify-center gap-1 mb-4 h-8 items-end">
+                {[8,16,24,12,20,28,10,22,18,14,26,8].map((h, i) => (
+                  <div key={i} className="w-1 bg-[#1a4fd6] rounded-full animate-pulse" style={{ height: `${h}px`, animationDelay: `${i * 0.1}s` }} />
                 ))}
               </div>
               {s.show_listen_btn !== "false" && latestEpisodes.length > 0 && (
@@ -88,8 +87,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Programs */}
-      {s.section_programs !== "false" && programs.length > 0 && (
+      {s.section_programs !== "false" && allPrograms.length > 0 && (
         <section className="px-6 py-16 max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -99,7 +97,7 @@ export default async function HomePage() {
             <Link href="/programs" className="text-gray-400 hover:text-white text-sm transition-colors">عرض الكل ←</Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {programs.slice(0, 8).map((p: { id: number; name: string; category: string; slug: string }) => (
+            {allPrograms.slice(0, 8).map((p) => (
               <Link key={p.id} href={`/programs/${p.slug}`}
                 className="bg-[#0e0e18] border border-white/10 rounded-xl p-5 hover:border-[#1a4fd6]/40 transition-colors text-center group">
                 <div className="w-12 h-12 rounded-full bg-[#1a4fd6]/10 border border-[#1a4fd6]/20 flex items-center justify-center mx-auto mb-3 group-hover:bg-[#1a4fd6]/20 transition-colors">
@@ -113,7 +111,6 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Schedule */}
       {s.section_schedule !== "false" && todaySchedule.length > 0 && (
         <section id="schedule" className="px-6 py-16 bg-[#0a0a14]">
           <div className="max-w-4xl mx-auto">
@@ -122,7 +119,7 @@ export default async function HomePage() {
               <h2 className="text-white text-2xl font-black">جدول البرامج</h2>
             </div>
             <div className="space-y-2">
-              {todaySchedule.map((item: { id: number; timeStart: string; timeEnd: string; label: string; type: string }) => (
+              {todaySchedule.map((item) => (
                 <div key={item.id} className="flex items-center gap-4 bg-[#0e0e18] border border-white/10 rounded-xl px-5 py-4">
                   <span className="text-[#1a4fd6] font-bold text-sm w-28 flex-shrink-0" dir="ltr">{item.timeStart} — {item.timeEnd}</span>
                   <span className="text-white flex-1">{item.label}</span>
@@ -138,15 +135,14 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* News */}
-      {s.section_news !== "false" && news.length > 0 && (
+      {s.section_news !== "false" && latestNews.length > 0 && (
         <section id="news" className="px-6 py-16 max-w-6xl mx-auto">
           <div className="mb-8">
             <div className="text-[#1a4fd6] text-xs uppercase tracking-widest font-bold mb-1">آخر الأخبار</div>
             <h2 className="text-white text-2xl font-black">الأخبار</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {news.map((item: { id: number; title: string; body: string; publishedAt: string }) => (
+            {latestNews.map((item) => (
               <div key={item.id} className="bg-[#0e0e18] border border-white/10 rounded-xl p-5 hover:border-white/20 transition-colors">
                 <div className="text-gray-500 text-xs mb-2">{new Date(item.publishedAt).toLocaleDateString("ar-YE")}</div>
                 <div className="text-white font-bold mb-2 leading-snug">{item.title}</div>
@@ -157,7 +153,6 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Satellite */}
       {s.section_satellite !== "false" && (
         <section id="satellite" className="px-6 py-16 bg-[#0a0a14]">
           <div className="max-w-4xl mx-auto">
@@ -183,7 +178,6 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Contact */}
       {s.section_contact !== "false" && s.whatsapp && (
         <section id="contact" className="px-6 py-16 max-w-4xl mx-auto text-center">
           <div className="text-[#1a4fd6] text-xs uppercase tracking-widest font-bold mb-2">تفاعل معنا</div>
@@ -195,7 +189,7 @@ export default async function HomePage() {
               { label: "أرسل خبراً", desc: "شاركنا أخبار مجتمعك", msg: "خبر للإذاعة" },
             ].map((item) => (
               <a key={item.label} href={`https://wa.me/${s.whatsapp}?text=${encodeURIComponent(item.msg)}`} target="_blank"
-                className="bg-[#0e0e18] border border-white/10 rounded-xl p-6 hover:border-green-500/30 transition-colors group">
+                className="bg-[#0e0e18] border border-white/10 rounded-xl p-6 hover:border-green-500/30 transition-colors">
                 <div className="text-3xl mb-3">📱</div>
                 <div className="text-white font-bold mb-1">{item.label}</div>
                 <div className="text-gray-500 text-sm">{item.desc}</div>
@@ -205,7 +199,6 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Footer */}
       <footer className="border-t border-white/10 px-6 py-8 text-center text-gray-600 text-sm">
         © {new Date().getFullYear()} إذاعة الجمهورية اليمنية — البرنامج العام
       </footer>
