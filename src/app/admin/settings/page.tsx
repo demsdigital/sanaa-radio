@@ -7,12 +7,20 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
   const [form, setForm] = useState({
     ticker: "",
+    ticker_visible: "true",
     whatsapp: "",
     satellite_freq: "12182",
     satellite_name: "عرب سات بدر 4",
     satellite_position: "16° شرقاً",
     satellite_polarization: "أفقي (H)",
     shortwave: "11860",
+    section_programs: "true",
+    section_schedule: "true",
+    section_news: "true",
+    section_satellite: "true",
+    section_contact: "true",
+    show_listen_btn: "true",
+    on_air_label: "نشرة الأخبار الرئيسية",
   });
 
   async function load() {
@@ -23,18 +31,6 @@ export default function SettingsPage() {
   }
 
   useEffect(() => { load(); }, []);
-
-  async function handleSave(key: string, value: string) {
-    setSaving(true);
-    await fetch("/api/settings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ key, value }),
-    });
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -47,6 +43,22 @@ export default function SettingsPage() {
     setTimeout(() => setSaved(false), 2000);
   }
 
+  function Toggle({ label, field }: { label: string; field: keyof typeof form }) {
+    const isOn = form[field] === "true";
+    return (
+      <div className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
+        <span className="text-gray-300 text-sm">{label}</span>
+        <button
+          type="button"
+          onClick={() => setForm({ ...form, [field]: isOn ? "false" : "true" })}
+          className={`w-12 h-6 rounded-full transition-colors relative ${isOn ? "bg-[#1a4fd6]" : "bg-gray-700"}`}
+        >
+          <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${isOn ? "right-1" : "left-1"}`} />
+        </button>
+      </div>
+    );
+  }
+
   if (loading) return <div className="text-gray-500 text-center py-20">جاري التحميل...</div>;
 
   return (
@@ -56,14 +68,42 @@ export default function SettingsPage() {
           <h1 className="text-white text-2xl font-bold">الإعدادات</h1>
           <p className="text-gray-500 text-sm mt-1">إعدادات الموقع العامة</p>
         </div>
-        {saved && <span className="text-green-400 text-sm">✓ تم الحفظ</span>}
+        {saved && <span className="text-green-400 text-sm font-medium">✓ تم الحفظ</span>}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
-        {/* Ticker */}
+
+        {/* أقسام الموقع */}
+        <div className="bg-[#0e0e18] border border-white/10 rounded-xl p-6">
+          <h2 className="text-white font-bold mb-4">أقسام الموقع</h2>
+          <p className="text-gray-500 text-xs mb-4">تحكم في إظهار وإخفاء كل قسم في الموقع</p>
+          <Toggle label="قسم البرامج" field="section_programs" />
+          <Toggle label="قسم الجدول" field="section_schedule" />
+          <Toggle label="قسم الأخبار" field="section_news" />
+          <Toggle label="قسم عبر القمر" field="section_satellite" />
+          <Toggle label="قسم التواصل / واتساب" field="section_contact" />
+        </div>
+
+        {/* الرئيسية */}
+        <div className="bg-[#0e0e18] border border-white/10 rounded-xl p-6">
+          <h2 className="text-white font-bold mb-4">الصفحة الرئيسية</h2>
+          <Toggle label="إظهار زر الاستماع" field="show_listen_btn" />
+          <div className="mt-4">
+            <label className="block text-gray-400 text-sm mb-2">البرنامج الحالي على الهواء</label>
+            <input
+              value={form.on_air_label}
+              onChange={(e) => setForm({ ...form, on_air_label: e.target.value })}
+              className="w-full bg-[#14141f] border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-[#1a4fd6]"
+              placeholder="نشرة الأخبار الرئيسية"
+            />
+          </div>
+        </div>
+
+        {/* الشريط الإخباري */}
         <div className="bg-[#0e0e18] border border-white/10 rounded-xl p-6">
           <h2 className="text-white font-bold mb-4">الشريط الإخباري</h2>
-          <div>
+          <Toggle label="إظهار الشريط" field="ticker_visible" />
+          <div className="mt-4">
             <label className="block text-gray-400 text-sm mb-2">نص الشريط</label>
             <textarea
               value={form.ticker}
@@ -75,7 +115,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* WhatsApp */}
+        {/* التواصل */}
         <div className="bg-[#0e0e18] border border-white/10 rounded-xl p-6">
           <h2 className="text-white font-bold mb-4">التواصل</h2>
           <div>
@@ -90,7 +130,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* Satellite */}
+        {/* القمر */}
         <div className="bg-[#0e0e18] border border-white/10 rounded-xl p-6">
           <h2 className="text-white font-bold mb-4">بيانات القمر الصناعي</h2>
           <div className="grid grid-cols-2 gap-4">
