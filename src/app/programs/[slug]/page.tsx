@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { programs, episodes } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 
 function formatDuration(seconds: number) {
   if (!seconds) return "";
@@ -24,7 +24,9 @@ export default async function ProgramPage({ params }: { params: { slug: string }
     );
   }
 
-  const allEpisodes = await db.select().from(episodes).where(eq(episodes.programId, program.id));
+  const allEpisodes = await db.select().from(episodes)
+    .where(eq(episodes.programId, program.id))
+    .orderBy(desc(episodes.publishedAt));
 
   return (
     <div className="min-h-screen bg-[#07070d] text-white" dir="rtl">
