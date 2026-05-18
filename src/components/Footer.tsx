@@ -49,4 +49,50 @@ export default async function Footer() {
                 { href: "/", label: "الرئيسية" },
                 { href: "/programs", label: "البرامج والحلقات" },
                 { href: "/articles", label: "الكتابات والمقالات" },
-                
+                { href: "/about", label: "عن الإذاعة" },
+                { href: "/#schedule", label: "جدول البث" },
+                { href: "/#news", label: "الأخبار" },
+                { href: "/#satellite", label: "الاستماع عبر القمر" },
+              ].map((link) => (
+                <Link key={link.href} href={link.href}
+                  className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm group">
+                  <span className="w-1 h-1 rounded-full bg-blue-500 flex-shrink-0" />
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div>
+            <div className="text-white font-bold mb-4 text-sm uppercase tracking-widest">بيانات البث</div>
+            <div className="space-y-2.5">
+              {[
+                { label: "القمر الصناعي", value: s.satellite_name || "عرب سات بدر 4" },
+                { label: "التردد الفضائي", value: `${s.satellite_freq || "12182"} MHz` },
+                { label: "الموضع المداري", value: s.satellite_position || "16° شرقاً" },
+                { label: "الاستقطاب", value: s.satellite_polarization || "أفقي (H)" },
+                { label: "الموجة القصيرة", value: `${s.shortwave || "11860"} كيلو هيرتز` },
+              ].map((item) => (
+                <div key={item.label} className="flex justify-between text-sm border-b border-slate-800 pb-2">
+                  <span className="text-slate-500">{item.label}</span>
+                  <span className="text-slate-300 font-medium" dir="ltr">{item.value}</span>
+                </div>
+              ))}
+              {s.whatsapp && (
+                <a href={`https://wa.me/${s.whatsapp}`} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-2 mt-2 bg-green-500/20 hover:bg-green-500/30 border border-green-500/30 text-green-400 text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                  📱 تواصل عبر واتساب
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="border-t border-slate-800">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-600">
+          <span>© {new Date().getFullYear()} إذاعة الجمهورية اليمنية — جميع الحقوق محفوظة</span>
+          <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" /> Yemen Radio — Broadcasting Since 1947</span>
+        </div>
+      </div>
+    </footer>
+  );
+}

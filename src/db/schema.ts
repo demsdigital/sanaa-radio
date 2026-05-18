@@ -62,3 +62,17 @@ export const settings = pgTable("settings", {
   key: text("key").primaryKey(),
   value: text("value").notNull(),
 });
+
+export const articles = pgTable("articles", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  slug: text("slug").notNull().unique(),
+  body: text("body").notNull(),
+  excerpt: text("excerpt"),
+  imageUrl: text("image_url"),
+  authorName: text("author_name"),
+  category: text("category").notNull().default("عام"),
+  published: boolean("published").notNull().default(true),
+  publishedAt: timestamp("published_at").notNull().defaultNow(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
