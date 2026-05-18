@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ScrollReveal from "@/components/ScrollReveal";
 
 export default function AboutPage() {
   return (
@@ -111,19 +112,22 @@ export default function AboutPage() {
                 { year: "1962", title: "إذاعة الثورة والجمهورية", desc: "مع قيام ثورة السادس والعشرين من سبتمبر، تحولت الإذاعة إلى منبر وطني رئيسي يدافع عن الجمهورية وينقل بيانات الثورة." },
                 { year: "1990", title: "مرحلة الوحدة اليمنية", desc: "أصبحت الإذاعة جزءاً من المؤسسة العامة اليمنية للإذاعة والتلفزيون، وواصلت دورها إذاعة وطنية جامعة." },
                 { year: "اليوم", title: "صوت الشرعية اليمنية", desc: "تواصل الإذاعة رسالتها الوطنية وتعمل على تطوير حضورها الرقمي لمواكبة التحولات الإعلامية الحديثة." },
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-6 md:pr-16 relative">
-                  <div className="hidden md:flex absolute right-0 w-12 h-12 rounded-full bg-blue-600 text-white items-center justify-center font-black text-xs flex-shrink-0 shadow-lg z-10"
-                    style={{ transform: "translateX(50%)" }}>
-                    {item.year === "اليوم" ? "📍" : item.year.slice(2)}
-                  </div>
-                  <div className="bg-white rounded-2xl p-6 border border-slate-200 hover:border-blue-200 hover:shadow-md transition-all w-full">
-                    <div className="text-blue-600 text-xs font-bold mb-1">{item.year}</div>
-                    <div className="text-slate-900 font-black text-lg mb-2">{item.title}</div>
-                    <div className="text-slate-600 leading-relaxed text-sm">{item.desc}</div>
-                  </div>
-                </div>
-              ))}
+              
+                ].map((item, i) => (
+  <ScrollReveal key={i} delay={i * 150} direction="left">
+    <div className="flex items-start gap-6 md:pr-16 relative">
+      <div className="hidden md:flex absolute right-0 w-12 h-12 rounded-full bg-blue-600 text-white items-center justify-center font-black text-xs flex-shrink-0 shadow-lg z-10"
+        style={{ transform: "translateX(50%)" }}>
+        {item.year === "اليوم" ? "📍" : item.year.slice(2)}
+      </div>
+      <div className="bg-white rounded-2xl p-6 border border-slate-200 hover:border-blue-200 hover:shadow-md transition-all w-full">
+        <div className="text-blue-600 text-xs font-bold mb-1">{item.year}</div>
+        <div className="text-slate-900 font-black text-lg mb-2">{item.title}</div>
+        <div className="text-slate-600 leading-relaxed text-sm">{item.desc}</div>
+      </div>
+    </div>
+  </ScrollReveal>
+))}
             </div>
           </div>
         </div>
