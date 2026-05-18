@@ -76,3 +76,14 @@ export const articles = pgTable("articles", {
   publishedAt: timestamp("published_at").notNull().defaultNow(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const team = pgTable("team", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  jobTitle: text("job_title").notNull(),
+  department: text("department").notNull().default("عام"),
+  imageUrl: text("image_url"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  active: boolean("active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
