@@ -122,12 +122,21 @@ export default async function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {allPrograms.slice(0, 8).map((p) => (
               <Link key={p.id} href={`/programs/${p.slug}`}
-                className="bg-white border border-slate-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-md transition-all text-center group">
-                <div className="w-14 h-14 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-100 transition-colors">
-                  <span className="text-2xl">📻</span>
+                className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-blue-300 hover:shadow-md transition-all group">
+                {p.imageUrl ? (
+                  <div className="w-full h-32 overflow-hidden bg-slate-100">
+                    <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  </div>
+                ) : (
+                  <div className="w-full h-24 bg-blue-50 flex items-center justify-center">
+                    <span className="text-3xl">📻</span>
+                  </div>
+                )}
+                <div className="p-4">
+                  <div className="text-slate-900 font-bold text-sm mb-1 line-clamp-1">{p.name}</div>
+                  <div className="text-blue-600 text-xs font-medium mb-1">{p.category}</div>
+                  {p.description && <div className="text-slate-500 text-xs line-clamp-2 leading-relaxed">{p.description}</div>}
                 </div>
-                <div className="text-slate-900 font-bold text-sm mb-1">{p.name}</div>
-                <div className="text-blue-600 text-xs font-medium">{p.category}</div>
               </Link>
             ))}
           </div>
