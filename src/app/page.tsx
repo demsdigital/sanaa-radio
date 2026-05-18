@@ -337,7 +337,7 @@ export default async function HomePage() {
       )}
 
       {/* Footer */}
-    </div>
+
       {s.show_player === "true" && s.stream_url && (
         <AudioPlayer
           streamUrl={s.stream_url}
