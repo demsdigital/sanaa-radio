@@ -3,143 +3,276 @@ export const dynamic = "force-dynamic";
 import { db } from "@/db";
 import { news } from "@/db/schema";
 import { eq } from "drizzle-orm";
+
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
 
-// دالة ذكية لاستخراج معرف فيديو اليوتيوب من أي رابط (طويل أو قصير)
-function getYouTubeId(url: string | null) {
+function getYouTubeId(url?: string | null) {
   if (!url) return null;
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+
+  const regExp =
+    /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+
   const match = url.match(regExp);
-  return (match && match[2].length === 11) ? match[2] : null;
+
+  return match?.[2]?.length === 11 ? match[2] : null;
 }
 
-export default async function NewsDetailPage({ params }: Props) {
+/* SEO ديناميكي */
+export async function generateMetadata({ params }: Props) {
   const { id } = await params;
+
   const newsId = parseInt(id);
 
-  if (isNaN(newsId)) notFound();
+  if (isNaN(newsId)) {
+    return {};
+  }
 
-  const [item] = await db.select().from(news).where(eq(news.id, newsId));
+  const [item] = await db
+    .select()
+    .from(news)
+    .where(eq(news.id, newsId));
 
-  if (!item) notFound();
+  if (!item) {
+    return {};
+  }
+
+  return {
+    title: item.title,
+    description: item.body?.slice(0, 160),
+
+    openGraph: {
+      title: item.title,
+      description: item.body?.slice(0, 160),
+      images: item.imageUrl ? [item.imageUrl] : [],
+      type: "article",
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: item.title,
+      description: item.body?.slice(0, 160),
+      images: item.imageUrl ? [item.imageUrl] : [],
+    },
+  };
+}
+
+export default async function NewsDetailPage({
+  params,
+}: Props) {
+  const { id } = await params;
+
+  const newsId = parseInt(id);
+
+  if (isNaN(newsId)) {
+    notFound();
+  }
+
+  const [item] = await db
+    .select()
+    .from(news)
+    .where(eq(news.id, newsId));
+
+  if (!item) {
+    notFound();
+  }
 
   const youtubeId = getYouTubeId(item.youtubeUrl);
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-4 md:px-8" dir="rtl">
-      <article className="max-w-4xl mx-auto bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-md">
-        
-        {/* شريط علوي أنيق للعودة */}
-        <div className="p-6 pb-0 flex items-center justify-between border-b border-slate-50 pb-4">
-          <Link href="/#news" className="text-sm font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1.5 transition-colors">
-            ➔ العودة إلى قسم الأخبار
-          </Link>
-          <span className="text-slate-400 text-xs font-medium">
-            ⏳ {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString("ar-YE") : ""}
-          </span>
-        </div>
-
-        <div className="p-6 md:p-10 space-y-8">
-          
-          {/* عنوان الخبر الرئيسي العريض */}
-          <h1 className="text-slate-950 text-3xl md:text-4xl font-black leading-tight tracking-tight">
-            {item.title}
-          </h1>
-
-          {/* الصورة الرئيسية منسقة بحاوية سينمائية ذكية */}
-          {item.imageUrl && (
-            <div className="w-full h-[300px] md:h-[450px] relative rounded-2xl overflow-hidden shadow-inner border border-slate-100 bg-slate-900">
-              <img 
-                src={item.imageUrl} 
-                alt={item.title} 
-                className="w-full h-full object-contain relative z-10" 
-              />
-              {/* تأثير خلفية ضبابية لتعبئة الفراغات إذا كانت الصورة طولية أو بمقاس مختلف */}
-              <div 
-                className="absolute inset-0 bg-cover bg-center blur-2xl opacity-30 scale-105"
-                style={{ backgroundImage: `url(${item.imageUrl})` }}
+    <main
+      dir="rtl"
+      className="min-h-screen bg-white"
+    >
+      {/* HERO */}
+      <section className="relative overflow-hidden border-b border-slate-200">
+        {item.imageUrl && (
+          <>
+            {/* خلفية ضبابية سينمائية */}
+            <div className="absolute inset-0">
+              <Image
+                src={item.imageUrl}
+                alt={item.title}
+                fill
+                priority
+                className="object-cover blur-3xl scale-110 opacity-20"
               />
             </div>
-          )}
 
-          {/* نص الخبر بتنسيق مريح جداً للقراءة والمسافات */}
-          <div className="text-slate-800 text-base md:text-lg leading-relaxed whitespace-pre-wrap max-w-none pr-1 border-r-2 border-slate-100">
-            {item.body}
+            <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-white/70 to-white" />
+          </>
+        )}
+
+        <div className="relative max-w-5xl mx-auto px-4 md:px-8 py-10 md:py-16">
+          {/* العودة */}
+          <Link
+            href="/#news"
+            className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors"
+          >
+            ← العودة للأخبار
+          </Link>
+
+          {/* التاريخ */}
+          <div className="mt-6 text-sm text-slate-500">
+            {item.publishedAt
+              ? new Date(item.publishedAt).toLocaleDateString(
+                  "ar-YE",
+                  {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }
+                )
+              : ""}
           </div>
 
-          {/* التضمين الذكي للميديا (الفيديو والتغريدة) */}
-          {(youtubeId || item.tweetUrl || item.sourceLabel) && (
-            <div className="space-y-6 pt-8 border-t border-slate-100">
-              <h2 className="text-slate-900 font-black text-lg flex items-center gap-2">
-                <span>🎬</span> التغطية الإعلامية والمصادر
+          {/* العنوان */}
+          <h1 className="mt-4 text-4xl md:text-6xl font-black leading-tight tracking-tight text-slate-950 max-w-4xl">
+            {item.title}
+          </h1>
+        </div>
+      </section>
+
+      {/* BODY */}
+      <section className="max-w-5xl mx-auto px-4 md:px-8 py-10">
+        {/* الصورة الرئيسية */}
+        {item.imageUrl && (
+          <div className="relative aspect-[16/9] overflow-hidden rounded-3xl border border-slate-200 shadow-2xl mb-12">
+            <Image
+              src={item.imageUrl}
+              alt={item.title}
+              fill
+              priority
+              className="object-cover"
+            />
+          </div>
+        )}
+
+        {/* النص */}
+        <article
+          className="
+            prose prose-slate
+            prose-lg
+            md:prose-xl
+            max-w-none
+            prose-headings:font-black
+            prose-p:leading-9
+            prose-p:text-slate-800
+            prose-a:text-blue-600
+          "
+        >
+          {item.body
+            ?.split("\n")
+            .filter(Boolean)
+            .map((paragraph, index) => (
+              <p key={index}>{paragraph}</p>
+            ))}
+        </article>
+
+        {/* MEDIA */}
+        {(youtubeId || item.tweetUrl) && (
+          <section className="mt-20 space-y-8">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-8 rounded-full bg-red-500" />
+
+              <h2 className="text-2xl font-black text-slate-950">
+                التغطية الإعلامية
               </h2>
+            </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                {/* 1. تضمين فيديو يوتيوب داخل الصفحة مباشرة */}
-                {youtubeId && (
-                  <div className="space-y-2">
-                    <span className="text-xs font-bold text-red-600 block">▶ التقرير المرئي (يوتيوب)</span>
-                    <div className="w-full aspect-video rounded-xl overflow-hidden shadow border border-slate-200">
-                      <iframe
-                        src={`https://www.youtube.com/embed/${youtubeId}`}
-                        title="YouTube video player"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="w-full h-full"
-                      />
-                    </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* يوتيوب */}
+              {youtubeId && (
+                <div className="space-y-3">
+                  <div className="text-sm font-bold text-red-600">
+                    فيديو التقرير
                   </div>
-                )}
 
-                {/* 2. تضمين تغريدة منصة X بشكل تفاعلي ذكي */}
-                {item.tweetUrl && (
-                  <div className="space-y-2">
-                    <span className="text-xs font-bold text-blue-500 block">𝕏 التغطية عبر مجتمعنا</span>
-                    <div className="w-full max-h-[350px] overflow-y-auto border border-slate-200 rounded-xl p-2 bg-slate-50 shadow-sm scrollbar-thin">
-                      <iframe
-                        src={`https://twitframe.com/show?url=${encodeURIComponent(item.tweetUrl)}`}
-                        className="w-full h-[320px] bg-white rounded-lg"
-                        frameBorder="0"
-                        scrolling="no"
-                      />
-                    </div>
+                  <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-lg aspect-video">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${youtubeId}`}
+                      title="YouTube player"
+                      allowFullScreen
+                      className="w-full h-full"
+                    />
                   </div>
-                )}
-              </div>
-
-              {/* 3. شريط مصدر الخبر التوثيقي الأصلي بالأسفل */}
-              {item.sourceLabel && (
-                <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 flex items-center justify-between mt-4">
-                  <div className="text-xs text-slate-700">
-                    ℹ️ <strong>توثيق:</strong> هذا الخبر منقول وموثق عن المصدر الرسمي الأصلي.
-                  </div>
-                  {item.sourceUrl ? (
-                    <a 
-                      href={item.sourceUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="bg-white border border-blue-200 text-blue-600 text-xs font-bold px-4 py-2 rounded-lg shadow-sm hover:bg-blue-50 transition-colors"
-                    >
-                      زيارة موقع {item.sourceLabel} ↗
-                    </a>
-                  ) : (
-                    <span className="bg-slate-200/60 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg">{item.sourceLabel}</span>
-                  )}
                 </div>
               )}
 
-            </div>
-          )}
+              {/* X */}
+              {item.tweetUrl && (
+                <div className="space-y-3">
+                  <div className="text-sm font-bold text-slate-900">
+                    التفاعل عبر منصة X
+                  </div>
 
-        </div>
-      </article>
-    </div>
+                  <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-lg bg-white">
+                    <iframe
+                      src={`https://twitframe.com/show?url=${encodeURIComponent(
+                        item.tweetUrl
+                      )}`}
+                      className="w-full h-[500px]"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* SOURCE */}
+        {item.sourceLabel && (
+          <section className="mt-16">
+            <div className="rounded-3xl border border-blue-100 bg-blue-50/70 p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+              <div>
+                <div className="text-sm font-black text-blue-700">
+                  المصدر الرسمي
+                </div>
+
+                <p className="text-sm text-slate-700 mt-1">
+                  تم توثيق الخبر ونقله عن المصدر الأصلي.
+                </p>
+              </div>
+
+              {item.sourceUrl ? (
+                <a
+                  href={item.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="
+                    inline-flex
+                    items-center
+                    gap-2
+                    bg-white
+                    hover:bg-blue-100
+                    transition-colors
+                    border
+                    border-blue-200
+                    px-5
+                    py-3
+                    rounded-2xl
+                    text-sm
+                    font-black
+                    text-blue-700
+                  "
+                >
+                  زيارة {item.sourceLabel}
+                  ↗
+                </a>
+              ) : (
+                <div className="text-sm font-bold text-slate-700">
+                  {item.sourceLabel}
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+      </section>
+    </main>
   );
 }
