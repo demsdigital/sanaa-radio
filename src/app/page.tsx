@@ -34,7 +34,7 @@ export default async function HomePage() {
     .slice(0, 8);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 pb-20" dir="rtl">`}}/><div className="absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
+    <div className="min-h-screen bg-white text-slate-900 pb-20" dir="rtl">
             {mt==="video"&&mu&&(<><video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover"><source src={mu}/></video><div className="absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
             {mt==="none"&&(<div className="absolute inset-0 opacity-10 pointer-events-none"><div className="absolute top-10 right-10 w-64 h-64 rounded-full border-2 border-white"/><div className="absolute top-20 right-20 w-48 h-48 rounded-full border border-white"/><div className="absolute bottom-10 left-10 w-80 h-80 rounded-full border border-white"/></div>)}
             <div className="max-w-5xl mx-auto relative z-10">
