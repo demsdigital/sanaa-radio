@@ -1,6 +1,33 @@
 "use client";
 import { useState, useEffect } from "react";
 
+type SectionProps = { id: string; icon: string; title: string; desc?: string; children: React.ReactNode; open: string; setOpen: (id: string) => void };
+
+function Section({ id, icon, title, desc, children, open, setOpen }: SectionProps) {
+  const isOpen = open === id;
+  return (
+    <div className={`bg-white rounded-xl border transition-all ${isOpen ? "border-blue-300 shadow-sm" : "border-slate-200"}`}>
+      <button type="button" onClick={() => setOpen(isOpen ? "" : id)}
+        className="w-full flex items-center justify-between px-6 py-4 text-right">
+        <div className="flex items-center gap-3">
+          <span className="text-xl">{icon}</span>
+          <div>
+            <div className="text-slate-900 font-bold text-sm">{title}</div>
+            {desc && <div className="text-slate-400 text-xs mt-0.5">{desc}</div>}
+          </div>
+        </div>
+        <span className={`text-slate-400 text-xs transition-transform duration-200 inline-block ${isOpen ? "rotate-180" : ""}`}>▼</span>
+      </button>
+      {isOpen && (
+        <div className="px-6 pb-6 border-t border-slate-100 pt-4">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving]   = useState(false);
@@ -75,30 +102,6 @@ export default function SettingsPage() {
     );
   }
 
-  function Section({ id, icon, title, desc, children }: { id: string; icon: string; title: string; desc?: string; children: React.ReactNode }) {
-    const isOpen = open === id;
-    return (
-      <div className={`bg-white rounded-xl border transition-all ${isOpen ? "border-blue-300 shadow-sm" : "border-slate-200"}`}>
-        <button type="button" onClick={() => setOpen(isOpen ? "" : id)}
-          className="w-full flex items-center justify-between px-6 py-4 text-right">
-          <div className="flex items-center gap-3">
-            <span className="text-xl">{icon}</span>
-            <div>
-              <div className="text-slate-900 font-bold text-sm">{title}</div>
-              {desc && <div className="text-slate-400 text-xs mt-0.5">{desc}</div>}
-            </div>
-          </div>
-          <span className={`text-slate-400 text-xs transition-transform duration-200 inline-block ${isOpen ? "rotate-180" : ""}`}>▼</span>
-        </button>
-        {isOpen && (
-          <div className="px-6 pb-6 border-t border-slate-100 pt-4">
-            {children}
-          </div>
-        )}
-      </div>
-    );
-  }
-
   if (loading) return <div className="text-slate-400 text-center py-20">جاري التحميل...</div>;
 
   return (
@@ -113,7 +116,7 @@ export default function SettingsPage() {
 
       <form onSubmit={handleSubmit} className="space-y-3 max-w-2xl">
 
-        <Section id="player" icon="🎙️" title="المشغّل الصوتي المباشر" desc="شريط ثابت أسفل الموقع">
+        <Section open={open} setOpen={setOpen} id="player" icon="🎙️" title="المشغّل الصوتي المباشر" desc="شريط ثابت أسفل الموقع">
           <div className="space-y-4 mt-1">
             <Toggle label="إظهار المشغّل" field="show_player" />
             <div>
@@ -142,7 +145,7 @@ export default function SettingsPage() {
           </div>
         </Section>
 
-        <Section id="hero" icon="🎨" title="هيرو الصفحة الرئيسية" desc="نصوص وخلفية الجزء العلوي">
+        <Section open={open} setOpen={setOpen} id="hero" icon="🎨" title="هيرو الصفحة الرئيسية" desc="نصوص وخلفية الجزء العلوي">
           <div className="space-y-3 mt-1">
             {([
               { label: "العنوان الرئيسي", field: "hero_title"    as const, ph: "إذاعة الجمهورية اليمنية" },
@@ -195,7 +198,7 @@ export default function SettingsPage() {
           </div>
         </Section>
 
-        <Section id="programs_hero" icon="📻" title="هيرو صفحة البرامج" desc="تخصيص الجزء العلوي من صفحة البرامج">
+        <Section open={open} setOpen={setOpen} id="programs_hero" icon="📻" title="هيرو صفحة البرامج" desc="تخصيص الجزء العلوي من صفحة البرامج">
           <div className="space-y-3 mt-1">
             <div><label className="block text-slate-700 text-sm font-medium mb-1.5">العنوان</label><input value={form.programs_hero_title} onChange={e=>f("programs_hero_title",e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400"/></div>
             <div><label className="block text-slate-700 text-sm font-medium mb-1.5">العنوان الفرعي</label><input value={form.programs_hero_subtitle} onChange={e=>f("programs_hero_subtitle",e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400"/></div>
@@ -235,7 +238,7 @@ export default function SettingsPage() {
           </div>
         </Section>
 
-        <Section id="social" icon="📱" title="حسابات السوشال ميديا" desc="تظهر في الهيدر والفوتر">
+        <Section open={open} setOpen={setOpen} id="social" icon="📱" title="حسابات السوشال ميديا" desc="تظهر في الهيدر والفوتر">
           <div className="space-y-3 mt-1">
             {([
               { field: "social_facebook"  as const, label: "🔵 فيسبوك",   ph: "https://facebook.com/..." },
@@ -254,7 +257,7 @@ export default function SettingsPage() {
           </div>
         </Section>
 
-        <Section id="sections" icon="📐" title="أقسام الموقع" desc="إظهار وإخفاء أقسام الصفحة الرئيسية">
+        <Section open={open} setOpen={setOpen} id="sections" icon="📐" title="أقسام الموقع" desc="إظهار وإخفاء أقسام الصفحة الرئيسية">
           <div className="mt-1">
             <Toggle label="قسم البرامج" field="section_programs" />
             <Toggle label="قسم الجدول" field="section_schedule" />
@@ -265,7 +268,7 @@ export default function SettingsPage() {
           </div>
         </Section>
 
-        <Section id="ticker" icon="🔴" title="الشريط الإخباري العاجل" desc="الشريط المتحرك أعلى الصفحة">
+        <Section open={open} setOpen={setOpen} id="ticker" icon="🔴" title="الشريط الإخباري العاجل" desc="الشريط المتحرك أعلى الصفحة">
           <div className="mt-1">
             <Toggle label="إظهار الشريط" field="ticker_visible" />
             <div className="mt-4">
@@ -277,7 +280,7 @@ export default function SettingsPage() {
           </div>
         </Section>
 
-        <Section id="contact" icon="💬" title="التواصل" desc="رقم واتساب التواصل مع الإذاعة">
+        <Section open={open} setOpen={setOpen} id="contact" icon="💬" title="التواصل" desc="رقم واتساب التواصل مع الإذاعة">
           <div className="mt-1">
             <label className="block text-slate-700 text-sm font-medium mb-1.5">رقم واتساب</label>
             <input value={form.whatsapp} onChange={e=>f("whatsapp",e.target.value)} placeholder="9671234567" dir="ltr"
@@ -285,7 +288,7 @@ export default function SettingsPage() {
           </div>
         </Section>
 
-        <Section id="satellite" icon="📡" title="بيانات القمر الصناعي" desc="التردد والموضع والاستقطاب">
+        <Section open={open} setOpen={setOpen} id="satellite" icon="📡" title="بيانات القمر الصناعي" desc="التردد والموضع والاستقطاب">
           <div className="grid grid-cols-2 gap-4 mt-1">
             {([
               { label: "تردد (MHz)",        field: "satellite_freq"         as const, dir: "ltr" as const },
@@ -303,7 +306,7 @@ export default function SettingsPage() {
           </div>
         </Section>
 
-        <Section id="director" icon="👤" title="رئيس القطاع" desc="محتوى صفحة رئيس قطاع إذاعة صنعاء">
+        <Section open={open} setOpen={setOpen} id="director" icon="👤" title="رئيس القطاع" desc="محتوى صفحة رئيس قطاع إذاعة صنعاء">
           <div className="space-y-3 mt-1">
             <div><label className="block text-slate-700 text-sm font-medium mb-1.5">الاسم الكامل</label><input value={form.director_name} onChange={e=>f("director_name",e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400"/></div>
             <div><label className="block text-slate-700 text-sm font-medium mb-1.5">المسمى الوظيفي</label><input value={form.director_title} onChange={e=>f("director_title",e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400"/></div>
