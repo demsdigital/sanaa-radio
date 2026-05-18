@@ -17,7 +17,7 @@ export default async function Navbar() {
   ].filter((soc) => s[soc.key]);
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-slate-200"
+    <nav className="sticky top-9 z-40 border-b border-slate-200"
       style={{ background: "rgba(255,255,255,0.95)", backdropFilter: "blur(16px)" }}>
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-3 flex-shrink-0">
