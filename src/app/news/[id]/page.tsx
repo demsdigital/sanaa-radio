@@ -47,158 +47,195 @@ export default async function NewsDetailPage({ params }: Props) {
   if (!item) notFound();
 
   const related = await db
-    .select()
-    .from(news)
+    .select().from(news)
     .where(ne(news.id, newsId))
     .orderBy(desc(news.publishedAt))
     .limit(3);
 
   const youtubeId = getYouTubeId(item.youtubeUrl);
   const showTweet = hasTweet(item.tweetUrl);
+  const shareUrl = `${process.env.NEXT_PUBLIC_URL}/news/${newsId}`;
+
   const publishedDate = item.publishedAt
     ? new Date(item.publishedAt).toLocaleDateString("ar-YE", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
+        year: "numeric", month: "long", day: "numeric",
       })
     : "";
 
-  const shareUrl = `${process.env.NEXT_PUBLIC_URL}/news/${newsId}`;
-
   return (
-    <main dir="rtl" className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-white" dir="rtl">
       {showTweet && (
         <Script src="https://platform.twitter.com/widgets.js" strategy="afterInteractive" />
       )}
 
-      {/* Nav */}
-      <nav className="sticky top-0 z-40 border-b bg-white shadow-sm">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-9 h-9 object-contain" />
-            <div>
+      {/* ===== شريط التنقل ===== */}
+      <nav className="sticky top-0 z-50 bg-white border-b border-slate-200">
+        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5">
+            <img src="/logo.png" alt="إذاعة الجمهورية اليمنية" className="w-8 h-8 object-contain" />
+            <div className="hidden sm:block">
               <div className="text-slate-900 text-sm font-black leading-tight">إذاعة الجمهورية اليمنية</div>
-              <div className="text-blue-600 text-xs font-semibold">البرنامج العام</div>
+              <div className="text-blue-600 text-xs">البرنامج العام</div>
             </div>
-          </div>
-          <Link href="/#news" className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors">
-            ← الأخبار
           </Link>
+          <div className="flex items-center gap-1 text-sm">
+            <Link href="/" className="text-slate-500 hover:text-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors">الرئيسية</Link>
+            <span className="text-slate-300">/</span>
+            <span className="text-slate-400 px-3 py-1.5">الأخبار</span>
+          </div>
         </div>
       </nav>
 
-      <article className="mx-auto max-w-3xl px-4 py-8">
+      {/* ===== صورة الغلاف — عريضة بلا هوامش ===== */}
+      {item.imageUrl && (
+        <div className="w-full bg-slate-900" style={{ maxHeight: "480px", overflow: "hidden" }}>
+          <img
+            src={item.imageUrl}
+            alt={item.title}
+            className="w-full object-cover object-center"
+            style={{ maxHeight: "480px", display: "block" }}
+          />
+        </div>
+      )}
 
-        <div className="mb-5">
-          <span className="rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700 ring-1 ring-blue-100">
-            📰 أخبار الإذاعة
+      {/* ===== المحتوى الرئيسي ===== */}
+      <div className="max-w-3xl mx-auto px-4 py-10">
+
+        {/* تصنيف */}
+        <div className="mb-4">
+          <span className="inline-flex items-center gap-1.5 bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-full">
+            📰 أخبار
           </span>
         </div>
 
-        <h1 className="text-3xl font-black leading-tight text-slate-950 md:text-4xl">
+        {/* عنوان */}
+        <h1 className="text-slate-900 text-2xl md:text-3xl lg:text-4xl font-black leading-tight mb-6">
           {item.title}
         </h1>
 
-        <div className="mt-5 flex flex-wrap gap-3 border-y border-slate-200 py-3 text-sm text-slate-500">
-          <span>فريق التحرير</span>
-          {publishedDate && <><span>•</span><span>{publishedDate}</span></>}
+        {/* بيانات الخبر */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pb-6 mb-8 border-b-2 border-slate-100 text-sm text-slate-500">
+          <span className="flex items-center gap-1.5">
+            <span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-700">ي</span>
+            فريق التحرير
+          </span>
+          {publishedDate && (
+            <span className="flex items-center gap-1">
+              <span>📅</span>
+              {publishedDate}
+            </span>
+          )}
           {item.sourceLabel && (
-            <>
-              <span>•</span>
+            <span className="flex items-center gap-1">
               {item.sourceUrl ? (
                 <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline font-medium">
+                  className="text-blue-600 hover:underline font-semibold">
                   المصدر: {item.sourceLabel}
                 </a>
               ) : (
-                <span className="font-medium">المصدر: {item.sourceLabel}</span>
+                <span className="font-semibold text-slate-600">المصدر: {item.sourceLabel}</span>
               )}
-            </>
+            </span>
           )}
         </div>
 
-        {item.imageUrl && (
-          <figure className="mt-6 rounded-2xl overflow-hidden border shadow-sm">
-            <img src={item.imageUrl} alt={item.title} className="w-full max-h-[360px] object-cover" />
-          </figure>
+        {/* نص الخبر */}
+        <div
+          className="text-slate-700 text-lg leading-[2] mb-10"
+          style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+          {item.body.split("\n").filter(Boolean).map((para, i) => (
+            <p key={i} className="mb-5">{para}</p>
+          ))}
+        </div>
+
+        {/* فيديو يوتيوب */}
+        {youtubeId && (
+          <div className="mb-10">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-1 h-5 bg-red-500 rounded-full" />
+              <span className="text-slate-900 font-bold text-base">فيديو مرتبط</span>
+            </div>
+            <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-black aspect-video">
+              <iframe
+                src={`https://www.youtube.com/embed/${youtubeId}`}
+                title="فيديو مرتبط"
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
         )}
 
-        <section className="mt-6 rounded-2xl border bg-white p-6 shadow-sm md:p-8 space-y-8">
-          <div className="whitespace-pre-wrap text-lg leading-9 text-slate-700">
-            {item.body}
+        {/* تغريدة */}
+        {showTweet && item.tweetUrl && (
+          <div className="mb-10 rounded-2xl border border-slate-200 bg-slate-50 p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-1 h-5 bg-slate-900 rounded-full" />
+              <span className="text-slate-900 font-bold text-base">𝕏 منشور مرتبط</span>
+            </div>
+            <blockquote className="twitter-tweet" data-lang="ar" data-theme="light">
+              <a href={item.tweetUrl} target="_blank" rel="noopener noreferrer">
+                عرض المنشور على منصة X
+              </a>
+            </blockquote>
           </div>
+        )}
 
-          {youtubeId && (
-            <div>
-              <div className="text-base font-black text-slate-900 mb-3">▶ فيديو مرتبط</div>
-              <div className="overflow-hidden rounded-2xl border bg-black">
-                <div className="aspect-video">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${youtubeId}`}
-                    title="YouTube video"
-                    className="h-full w-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {showTweet && item.tweetUrl && (
-            <div className="rounded-2xl border bg-slate-50 p-5">
-              <h2 className="mb-3 text-base font-black">𝕏 منشور مرتبط</h2>
-              <blockquote className="twitter-tweet" data-lang="ar">
-                <a href={item.tweetUrl} target="_blank" rel="noopener noreferrer">
-                  عرض المنشور على منصة X
-                </a>
-              </blockquote>
-            </div>
-          )}
-        </section>
-
-        {/* client component للمشاركة */}
+        {/* المشاركة */}
         <ShareButtons title={item.title} url={shareUrl} />
+      </div>
 
-      </article>
-
+      {/* ===== أخبار ذات صلة ===== */}
       {related.length > 0 && (
-        <section className="border-t bg-white mt-4 py-12 px-4">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-slate-900 text-xl font-black mb-6">أخبار أخرى</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-slate-50 border-t border-slate-200 py-12 px-4">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-1 h-6 bg-blue-600 rounded-full" />
+              <h2 className="text-slate-900 text-xl font-black">أخبار ذات صلة</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {related.map((n) => (
                 <Link key={n.id} href={`/news/${n.id}`}
-                  className="bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-blue-200 hover:shadow-md transition-all group block">
-                  {n.imageUrl && (
-                    <img src={n.imageUrl} alt={n.title}
-                      className="w-full h-32 object-cover rounded-lg mb-3 border border-slate-100" />
+                  className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-blue-200 hover:shadow-lg transition-all group">
+                  {n.imageUrl ? (
+                    <div className="w-full h-44 overflow-hidden bg-slate-100">
+                      <img src={n.imageUrl} alt={n.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    </div>
+                  ) : (
+                    <div className="w-full h-20 bg-gradient-to-br from-blue-50 to-slate-100 flex items-center justify-center text-3xl">
+                      📰
+                    </div>
                   )}
-                  <div className="text-slate-400 text-xs mb-2">
-                    {new Date(n.publishedAt).toLocaleDateString("ar-YE")}
-                  </div>
-                  <div className="text-slate-900 font-bold text-sm leading-snug group-hover:text-blue-600 transition-colors line-clamp-3">
-                    {n.title}
+                  <div className="p-4">
+                    <div className="text-slate-400 text-xs mb-2">
+                      {new Date(n.publishedAt).toLocaleDateString("ar-YE")}
+                    </div>
+                    <div className="text-slate-900 font-bold text-sm leading-relaxed group-hover:text-blue-600 transition-colors line-clamp-3">
+                      {n.title}
+                    </div>
                   </div>
                 </Link>
               ))}
             </div>
           </div>
-        </section>
+        </div>
       )}
 
-      <footer className="bg-slate-900 text-white px-8 py-10">
-        <div className="max-w-3xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      {/* ===== فوتر ===== */}
+      <footer className="bg-slate-900 text-white px-6 py-10">
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <img src="/logo.png" alt="شعار" className="w-10 h-10 object-contain opacity-80" />
             <div>
-              <div className="text-white font-black text-sm">إذاعة الجمهورية اليمنية</div>
-              <div className="text-slate-400 text-xs">البرنامج العام • Yemen Radio</div>
+              <div className="text-white font-black">إذاعة الجمهورية اليمنية</div>
+              <div className="text-slate-400 text-sm">البرنامج العام • Yemen Radio</div>
             </div>
           </div>
-          <div className="text-slate-600 text-xs">© {new Date().getFullYear()} جميع الحقوق محفوظة</div>
+          <div className="text-slate-500 text-xs">© {new Date().getFullYear()} جميع الحقوق محفوظة</div>
         </div>
       </footer>
-    </main>
+    </div>
   );
 }
