@@ -47,10 +47,6 @@ export default async function ProgramsPage() {
           </div>
         )}
       </div>
-
-      <footer className="bg-slate-900 text-white px-6 py-8 text-center">
-        <div className="text-slate-400 text-xs">© {new Date().getFullYear()} إذاعة الجمهورية اليمنية — البرنامج العام</div>
-      </footer>
     </div>
   );
 }
