@@ -19,7 +19,8 @@ export default function AboutPage() {
       </nav>
 
       {/* HERO */}
-      <section className="relative flex items-center justify-center overflow-hidden pt-24 pb-32 px-6" style={{ background: "linear-gradient(135deg, #0a1628 0%, #1a3a7c 50%, #2563eb 100%)", minHeight: "70vh" }}>
+      <section className="relative flex items-center justify-center overflow-hidden pt-24 pb-32 px-6"
+        style={{ background: "linear-gradient(135deg, #0a1628 0%, #1a3a7c 50%, #2563eb 100%)", minHeight: "70vh" }}>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute rounded-full border border-white/5" style={{ width: 500, height: 500, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
           <div className="absolute rounded-full border border-white/5" style={{ width: 750, height: 750, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
@@ -43,7 +44,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Stats — overlapping */}
+      {/* Stats */}
       <section className="relative z-20 -mt-16 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -112,22 +113,21 @@ export default function AboutPage() {
                 { year: "1962", title: "إذاعة الثورة والجمهورية", desc: "مع قيام ثورة السادس والعشرين من سبتمبر، تحولت الإذاعة إلى منبر وطني رئيسي يدافع عن الجمهورية وينقل بيانات الثورة." },
                 { year: "1990", title: "مرحلة الوحدة اليمنية", desc: "أصبحت الإذاعة جزءاً من المؤسسة العامة اليمنية للإذاعة والتلفزيون، وواصلت دورها إذاعة وطنية جامعة." },
                 { year: "اليوم", title: "صوت الشرعية اليمنية", desc: "تواصل الإذاعة رسالتها الوطنية وتعمل على تطوير حضورها الرقمي لمواكبة التحولات الإعلامية الحديثة." },
-              
-                ].map((item, i) => (
-  <ScrollReveal key={i} delay={i * 150} direction="left">
-    <div className="flex items-start gap-6 md:pr-16 relative">
-      <div className="hidden md:flex absolute right-0 w-12 h-12 rounded-full bg-blue-600 text-white items-center justify-center font-black text-xs flex-shrink-0 shadow-lg z-10"
-        style={{ transform: "translateX(50%)" }}>
-        {item.year === "اليوم" ? "📍" : item.year.slice(2)}
-      </div>
-      <div className="bg-white rounded-2xl p-6 border border-slate-200 hover:border-blue-200 hover:shadow-md transition-all w-full">
-        <div className="text-blue-600 text-xs font-bold mb-1">{item.year}</div>
-        <div className="text-slate-900 font-black text-lg mb-2">{item.title}</div>
-        <div className="text-slate-600 leading-relaxed text-sm">{item.desc}</div>
-      </div>
-    </div>
-  </ScrollReveal>
-))}
+              ].map((item, i) => (
+                <ScrollReveal key={i} delay={i * 150} direction="left">
+                  <div className="flex items-start gap-6 md:pr-16 relative">
+                    <div className="hidden md:flex absolute right-0 w-12 h-12 rounded-full bg-blue-600 text-white items-center justify-center font-black text-xs flex-shrink-0 shadow-lg z-10"
+                      style={{ transform: "translateX(50%)" }}>
+                      {item.year === "اليوم" ? "📍" : item.year.slice(2)}
+                    </div>
+                    <div className="bg-white rounded-2xl p-6 border border-slate-200 hover:border-blue-200 hover:shadow-md transition-all w-full">
+                      <div className="text-blue-600 text-xs font-bold mb-1">{item.year}</div>
+                      <div className="text-slate-900 font-black text-lg mb-2">{item.title}</div>
+                      <div className="text-slate-600 leading-relaxed text-sm">{item.desc}</div>
+                    </div>
+                  </div>
+                </ScrollReveal>
+              ))}
             </div>
           </div>
         </div>
@@ -148,22 +148,23 @@ export default function AboutPage() {
               { icon: "🕌", title: "الدينية", desc: "مواد وبرامج دينية تعزز قيم الوسطية والاعتدال والتسامح" },
               { icon: "🎵", title: "التراثية والفنية", desc: "الغناء اليمني الأصيل والتراث الشعبي والذاكرة الثقافية" },
               { icon: "🇾🇪", title: "المناسبات الوطنية", desc: "تغطيات خاصة بالمناسبات الثورية والدينية والفعاليات الرسمية" },
-            ].map((item) => (
-              <div key={item.title} className="flex items-start gap-4 p-6 rounded-2xl border-2 border-slate-100 hover:border-blue-400 hover:shadow-xl transition-all duration-300 bg-white group cursor-pointer hover:-translate-y-1">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center flex-shrink-0 transition-colors">
-                  <span className="text-2xl">{item.icon}</span>
+            ].map((item, i) => (
+              <ScrollReveal key={i} delay={i * 80} direction="up">
+                <div className="flex items-start gap-4 p-6 rounded-2xl border-2 border-slate-100 hover:border-blue-400 hover:shadow-xl transition-all duration-300 bg-white group cursor-pointer hover:-translate-y-1">
+                  <div className="w-12 h-12 rounded-xl bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center flex-shrink-0 transition-colors">
+                    <span className="text-2xl">{item.icon}</span>
+                  </div>
+                  <div>
+                    <div className="text-slate-900 font-bold mb-1">{item.title}</div>
+                    <div className="text-slate-500 text-sm leading-relaxed">{item.desc}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-slate-900 font-bold mb-1">{item.title}</div>
-                  <div className="text-slate-500 text-sm leading-relaxed">{item.desc}</div>
-                </div>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
-cat > /tmp/mission_patch.txt << 'PATCH'
       {/* Mission */}
       <section className="relative py-24 px-6 overflow-hidden"
         style={{ background: "linear-gradient(135deg, #0a1628 0%, #1e3a8a 60%, #1d4ed8 100%)" }}>
@@ -225,8 +226,7 @@ cat > /tmp/mission_patch.txt << 'PATCH'
           </div>
         </div>
       </section>
-PATCH
-echo "Patch ready"
+
       {/* CTA */}
       <section className="px-6 py-20 text-center">
         <div className="max-w-2xl mx-auto">
