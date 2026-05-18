@@ -1,13 +1,14 @@
 import { db } from "@/db";
 import { settings } from "@/db/schema";
 import Link from "next/link";
+import MobileMenu from "./MobileMenu";
 
 export default async function Navbar() {
   const rows = await db.select().from(settings);
   const s: Record<string, string> = {};
   rows.forEach((r) => (s[r.key] = r.value));
 
-  const socials = [
+  const socialDefs = [
     { key: "social_facebook",  label: "فيسبوك",   bg: "#1877F2", svg: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> },
     { key: "social_twitter",   label: "تويتر",    bg: "#000000", svg: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> },
     { key: "social_youtube",   label: "يوتيوب",   bg: "#FF0000", svg: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg> },
@@ -16,10 +17,26 @@ export default async function Navbar() {
     { key: "social_tiktok",    label: "تيك توك",  bg: "#000000", svg: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg> },
   ].filter((soc) => s[soc.key]);
 
+  const socials = socialDefs.map(soc => ({ key: soc.key, label: soc.label, bg: soc.bg, url: s[soc.key] }));
+
+  const navLinks = [
+    { href: "/programs",   label: "البرامج",          condition: s.section_programs !== "false" },
+    { href: "/schedule",   label: "الخارطة البرامجية", condition: s.section_schedule !== "false" },
+    { href: "/news",       label: "الأخبار",           condition: s.section_news !== "false" },
+    { href: "/#satellite", label: "عبر القمر",         condition: s.section_satellite !== "false" },
+    { href: "/articles",   label: "الكتابات",          condition: true },
+    { href: "/team",       label: "الفريق",            condition: true },
+    { href: "/about",      label: "عن الإذاعة",        condition: true },
+    { href: "/director",   label: "رئيس القطاع",       condition: true },
+    { href: "/#contact",   label: "تواصل",             condition: s.section_contact !== "false" && !!s.whatsapp },
+  ];
+
   return (
-    <nav className="sticky top-9 z-40 border-b border-slate-200"
+    <nav className="sticky top-9 z-40 border-b border-slate-200 relative"
       style={{ background: "rgba(255,255,255,0.95)", backdropFilter: "blur(16px)" }}>
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+
+        {/* الشعار */}
         <Link href="/" className="flex items-center gap-3 flex-shrink-0">
           <div className="w-10 h-10 rounded-full bg-white shadow-md border border-slate-100 flex items-center justify-center overflow-hidden">
             <img src="/logo.png" alt="إذاعة الجمهورية اليمنية" className="w-9 h-9 object-contain" />
@@ -29,28 +46,36 @@ export default async function Navbar() {
             <div className="text-blue-600 text-xs font-semibold">البرنامج العام</div>
           </div>
         </Link>
+
+        {/* روابط Desktop */}
         <div className="hidden md:flex items-center gap-1 text-sm">
-          {s.section_programs !== "false" && <Link href="/programs" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">البرامج</Link>}
-          {s.section_schedule !== "false" && <Link href="/schedule" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">الخارطة البرامجية</Link>}
-          {s.section_news !== "false" && <Link href="/news" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">الأخبار</Link>}
-          {s.section_satellite !== "false" && <Link href="/#satellite" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">عبر القمر</Link>}
-          <Link href="/articles" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">الكتابات</Link>
-          <Link href="/about" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">عن الإذاعة</Link>
-          <Link href="/team" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">الفريق</Link>
-          <Link href="/director" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">رئيس القطاع</Link>
-          {s.section_contact !== "false" && s.whatsapp && <Link href="/#contact" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">تواصل</Link>}
+          {navLinks.filter(l => l.condition !== false).map(link => (
+            <Link key={link.href} href={link.href}
+              className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">
+              {link.label}
+            </Link>
+          ))}
         </div>
-        {socials.length > 0 && (
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-            {socials.map((soc) => (
-              <a key={soc.key} href={s[soc.key]} target="_blank" rel="noopener noreferrer" title={soc.label}
-                className="w-8 h-8 rounded-full flex items-center justify-center transition-all hover:scale-110 hover:shadow-md"
-                style={{ background: soc.bg }}>
-                {soc.svg}
-              </a>
-            ))}
-          </div>
-        )}
+
+        {/* يمين: سوشال + هامبرغر */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {/* سوشال — مخفي على موبايل */}
+          {socialDefs.length > 0 && (
+            <div className="hidden sm:flex items-center gap-1.5">
+              {socialDefs.map((soc) => (
+                <a key={soc.key} href={s[soc.key]} target="_blank" rel="noopener noreferrer" title={soc.label}
+                  className="w-8 h-8 rounded-full flex items-center justify-center transition-all hover:scale-110 hover:shadow-md"
+                  style={{ background: soc.bg }}>
+                  {soc.svg}
+                </a>
+              ))}
+            </div>
+          )}
+
+          {/* منيو موبايل */}
+          <MobileMenu links={navLinks} socials={socials} />
+        </div>
+
       </div>
     </nav>
   );
