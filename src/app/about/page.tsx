@@ -13,19 +13,6 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white overflow-x-hidden" dir="rtl">
 
-      {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-8 py-4 flex items-center justify-between"
-        style={{ background: "rgba(255,255,255,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
-        <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-12 h-12 object-contain" />
-          <div>
-            <div className="text-slate-900 text-base font-black">إذاعة الجمهورية اليمنية</div>
-            <div className="text-blue-600 text-sm font-semibold">البرنامج العام</div>
-          </div>
-        </div>
-        <Link href="/" className="text-base text-slate-500 hover:text-blue-600 transition-colors font-medium">← الرئيسية</Link>
-      </nav>
-
       {/* HERO */}
       <section className="relative flex items-center justify-center overflow-hidden pt-24 pb-32 px-6"
         style={{ background: "linear-gradient(135deg, #0a1628 0%, #1a3a7c 50%, #2563eb 100%)", minHeight: "70vh" }}>
