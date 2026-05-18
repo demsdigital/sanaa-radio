@@ -15,7 +15,7 @@ export default function AboutPage() {
       {/* Hero */}
       <div className="bg-gradient-to-br from-blue-700 to-blue-800 text-white py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-32 h-32 object-contain mx-auto mb-6 drop-shadow-xl" />
+          <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-32 h-32 object-contain mx-auto mb-6 bg-white rounded-full p-3 shadow-2xl" />
           <h1 className="text-4xl font-black mb-3">إذاعة الجمهورية اليمنية</h1>
           <p className="text-blue-200 text-xl font-semibold mb-2">البرنامج العام • Yemen Radio</p>
           <p className="text-blue-100 text-lg mt-4 font-medium">صوت اليمن الجمهوري… وذاكرة الوطن الحية</p>
