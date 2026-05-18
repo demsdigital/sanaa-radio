@@ -22,8 +22,8 @@ export default async function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
-                <img src="/logo.png" alt="شعار" className="w-10 h-10 object-contain" />
+              <div className="w-14 h-14 rounded-full bg-white shadow-lg flex items-center justify-center flex-shrink-0">
+                <img src="/logo.png" alt="شعار" className="w-11 h-11 object-contain" />
               </div>
               <div>
                 <div className="text-white font-black text-base">إذاعة الجمهورية اليمنية</div>
