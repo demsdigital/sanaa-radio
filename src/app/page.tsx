@@ -65,48 +65,57 @@ export default async function HomePage() {
       </nav>
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800 text-white py-20 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 right-10 w-64 h-64 rounded-full border-2 border-white" />
-          <div className="absolute top-20 right-20 w-48 h-48 rounded-full border border-white" />
-          <div className="absolute bottom-10 left-10 w-80 h-80 rounded-full border border-white" />
-        </div>
-        <div className="max-w-5xl mx-auto relative">
-          <div className="flex flex-col md:flex-row items-center gap-12">
-            <div className="flex-shrink-0">
-              <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-48 h-48 object-contain drop-shadow-2xl" />
-            </div>
-            <div className="flex-1 text-center md:text-right">
-              <div className="inline-flex items-center gap-2 bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-full mb-6">
-                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                على الهواء الآن
-              </div>
-              <h1 className="text-4xl md:text-5xl font-black mb-2 leading-tight">إذاعة الجمهورية اليمنية</h1>
-              <p className="text-blue-100 text-xl font-semibold mb-1">البرنامج العام</p>
-              <p className="text-blue-200 text-sm mb-8">Yemen Radio • الصوت الحقيقي منذ عقود</p>
-
-              {s.on_air_label && (
-                <div className="bg-white/15 backdrop-blur border border-white/25 rounded-2xl p-5 max-w-sm">
-                  <div className="text-blue-100 text-xs uppercase tracking-widest mb-1 font-medium">البرنامج الحالي</div>
-                  <div className="text-white font-bold text-lg mb-3">{s.on_air_label}</div>
-                  <div className="flex gap-1 mb-4 h-7 items-end">
-                    {[8,16,24,12,20,28,10,22,18,14,26,8].map((h, i) => (
-                      <div key={i} className="w-1 bg-white rounded-full animate-pulse opacity-80"
-                        style={{ height: `${h}px`, animationDelay: `${i * 0.1}s` }} />
-                    ))}
+      {(()=>{
+        const bg:Record<string,string>={
+          blue:"linear-gradient(135deg,#0a1628 0%,#1a3a7c 50%,#2563eb 100%)",
+          dark:"linear-gradient(135deg,#0f172a 0%,#1e293b 60%,#334155 100%)",
+          green:"linear-gradient(135deg,#064e3b 0%,#065f46 50%,#047857 100%)",
+          red:"linear-gradient(135deg,#7f1d1d 0%,#991b1b 50%,#b91c1c 100%)",
+        };
+        const mt=s.hero_media_type||"none";
+        const mu=s.hero_media_url||"";
+        const op=s.hero_overlay_opacity?Number(s.hero_overlay_opacity)/100:0.55;
+        return(
+          <section className="relative text-white py-20 px-6 overflow-hidden" style={{minHeight:"520px",background:bg[s.hero_bg||"blue"]||bg.blue}}>
+            {(mt==="image"||mt==="gif")&&mu&&(<><div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage:`url(${mu})`}}/><div className="absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
+            {mt==="video"&&mu&&(<><video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover"><source src={mu}/></video><div className="absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
+            {mt==="none"&&(<div className="absolute inset-0 opacity-10 pointer-events-none"><div className="absolute top-10 right-10 w-64 h-64 rounded-full border-2 border-white"/><div className="absolute top-20 right-20 w-48 h-48 rounded-full border border-white"/><div className="absolute bottom-10 left-10 w-80 h-80 rounded-full border border-white"/></div>)}
+            <div className="max-w-5xl mx-auto relative z-10">
+              <div className="flex flex-col md:flex-row items-center gap-12">
+                <div className="flex-shrink-0">
+                  <div className="relative">
+                    <div className="absolute inset-0 rounded-full bg-white/20 blur-2xl scale-110"/>
+                    <div className="relative w-44 h-44 rounded-full bg-white shadow-2xl flex items-center justify-center border-4 border-white/40">
+                      <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-36 h-36 object-contain"/>
+                    </div>
                   </div>
-                  {s.show_listen_btn !== "false" && latestEpisodes.length > 0 && (
-                    <Link href="/programs" className="flex items-center justify-center gap-2 w-full bg-white text-blue-700 py-2.5 rounded-xl font-bold hover:bg-blue-50 transition-colors text-sm">
-                      🎧 استمع للأرشيف
-                    </Link>
+                </div>
+                <div className="flex-1 text-center md:text-right">
+                  <div className="inline-flex items-center gap-2 bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-full mb-6 shadow-lg">
+                    <span className="w-2 h-2 rounded-full bg-white animate-pulse"/>
+                    {s.hero_badge||"على الهواء الآن"}
+                  </div>
+                  <h1 className="text-4xl md:text-5xl font-black mb-2 leading-tight drop-shadow-lg">{s.hero_title||"إذاعة الجمهورية اليمنية"}</h1>
+                  <p className="text-blue-100 text-xl font-semibold mb-1 drop-shadow">{s.hero_subtitle||"البرنامج العام"}</p>
+                  <p className="text-blue-200 text-sm mb-8 drop-shadow">Yemen Radio • {s.hero_tagline||"الصوت الحقيقي منذ عقود"}</p>
+                  {s.on_air_label&&(
+                    <div className="bg-white/15 backdrop-blur border border-white/25 rounded-2xl p-5 max-w-sm shadow-xl">
+                      <div className="text-blue-100 text-xs uppercase tracking-widest mb-1 font-medium">البرنامج الحالي</div>
+                      <div className="text-white font-bold text-lg mb-3">{s.on_air_label}</div>
+                      <div className="flex gap-1 mb-4 h-7 items-end">
+                        {[8,16,24,12,20,28,10,22,18,14,26,8].map((h,i)=>(<div key={i} className="w-1 bg-white rounded-full animate-pulse opacity-80" style={{height:`${h}px`,animationDelay:`${i*0.1}s`}}/>))}
+                      </div>
+                      {s.show_listen_btn!=="false"&&latestEpisodes.length>0&&(
+                        <Link href="/programs" className="flex items-center justify-center gap-2 w-full bg-white text-blue-700 py-2.5 rounded-xl font-bold hover:bg-blue-50 transition-colors text-sm">🎧 استمع للأرشيف</Link>
+                      )}
+                    </div>
                   )}
                 </div>
-              )}
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
-
+          </section>
+        );
+      })()}
       {/* Programs */}
       {s.section_programs !== "false" && allPrograms.length > 0 && (
         <section className="px-6 py-16 max-w-6xl mx-auto">
