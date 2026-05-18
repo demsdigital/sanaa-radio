@@ -9,7 +9,7 @@ export default async function Ticker() {
   if (s.ticker_visible === "false" || !s.ticker) return null;
 
   return (
-    <div className="bg-red-600 sticky top-0 z-50 py-1.5 overflow-hidden">
+    <div className="bg-red-600 fixed top-0 left-0 right-0 z-50 py-1.5 overflow-hidden">
       <div className="flex items-center">
         <span className="bg-white text-red-600 text-xs font-black px-3 py-0.5 rounded mr-3 flex-shrink-0 z-10">
           عاجل

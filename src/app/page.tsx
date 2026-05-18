@@ -34,33 +34,7 @@ export default async function HomePage() {
     .slice(0, 8);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 pb-20" dir="rtl">
-
-      {/* Ticker */}
-      {s.ticker_visible !== "false" && s.ticker && (
-        <div className="bg-red-600 py-2 overflow-hidden sticky top-0 z-40">
-          <div className="flex items-center gap-4 whitespace-nowrap animate-marquee">
-            <span className="bg-white text-red-600 text-xs font-black px-3 py-0.5 rounded flex-shrink-0">عاجل</span>
-            <span className="text-white text-sm font-medium">{s.ticker}</span>
-          </div>
-        </div>
-      )}
-
-
-      {/* Hero */}
-      {(()=>{
-        const bg:Record<string,string>={
-          blue:"linear-gradient(135deg,#0a1628 0%,#1a3a7c 50%,#2563eb 100%)",
-          dark:"linear-gradient(135deg,#0f172a 0%,#1e293b 60%,#334155 100%)",
-          green:"linear-gradient(135deg,#064e3b 0%,#065f46 50%,#047857 100%)",
-          red:"linear-gradient(135deg,#7f1d1d 0%,#991b1b 50%,#b91c1c 100%)",
-        };
-        const mt=s.hero_media_type||"none";
-        const mu=s.hero_media_url||"";
-        const op=s.hero_overlay_opacity?Number(s.hero_overlay_opacity)/100:0.55;
-        return(
-          <section className="relative text-white py-20 px-6 overflow-hidden" style={{minHeight:"520px",background:bg[s.hero_bg||"blue"]||bg.blue}}>
-            {(mt==="image"||mt==="gif")&&mu&&(<><div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage:`url(${mu})`}}/><div className="absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
+    <div className="min-h-screen bg-white text-slate-900 pb-20" dir="rtl">`}}/><div className="absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
             {mt==="video"&&mu&&(<><video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover"><source src={mu}/></video><div className="absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
             {mt==="none"&&(<div className="absolute inset-0 opacity-10 pointer-events-none"><div className="absolute top-10 right-10 w-64 h-64 rounded-full border-2 border-white"/><div className="absolute top-20 right-20 w-48 h-48 rounded-full border border-white"/><div className="absolute bottom-10 left-10 w-80 h-80 rounded-full border border-white"/></div>)}
             <div className="max-w-5xl mx-auto relative z-10">
