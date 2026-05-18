@@ -138,7 +138,7 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <div className="text-blue-600 text-xs uppercase tracking-widest font-bold mb-3">المحتوى</div>
-            <h2 className="text-slate-900 text-3xl font-black">خارطة برامجية متنوعة</h2>
+            <h2 className="text-slate-900 text-4xl font-black">خارطة برامجية متنوعة</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
@@ -149,7 +149,7 @@ export default function AboutPage() {
               { icon: "🎵", title: "التراثية والفنية", desc: "الغناء اليمني الأصيل والتراث الشعبي والذاكرة الثقافية" },
               { icon: "🇾🇪", title: "المناسبات الوطنية", desc: "تغطيات خاصة بالمناسبات الثورية والدينية والفعاليات الرسمية" },
             ].map((item) => (
-              <div key={item.title} className="flex items-start gap-4 p-5 rounded-2xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all bg-white group">
+              <div key={item.title} className="flex items-start gap-4 p-6 rounded-2xl border-2 border-slate-100 hover:border-blue-400 hover:shadow-xl transition-all duration-300 bg-white group cursor-pointer hover:-translate-y-1">
                 <div className="w-12 h-12 rounded-xl bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center flex-shrink-0 transition-colors">
                   <span className="text-2xl">{item.icon}</span>
                 </div>
