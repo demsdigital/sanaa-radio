@@ -27,7 +27,7 @@ export default function AboutPage() {
           <div className="flex-shrink-0">
             <div className="relative">
               <div className="absolute inset-0 rounded-full blur-2xl bg-blue-400/30 scale-125" />
-              <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="relative w-36 h-36 object-contain drop-shadow-2xl bg-white/15 rounded-full p-3 border border-white/30" />
+              <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="relative w-36 h-36 object-contain rounded-full p-3 bg-white shadow-2xl" />
             </div>
           </div>
           <div className="flex-1 text-right">
