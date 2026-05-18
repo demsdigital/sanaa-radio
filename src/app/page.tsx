@@ -129,22 +129,42 @@ export default async function HomePage() {
       {s.section_schedule !== "false" && todaySchedule.length > 0 && (
         <section id="schedule" className="px-6 py-16 bg-slate-50">
           <div className="max-w-4xl mx-auto">
-            <div className="mb-8">
-              <div className="text-blue-600 text-xs uppercase tracking-widest font-bold mb-1">اليوم</div>
-              <h2 className="text-slate-900 text-2xl font-black">جدول البرامج</h2>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <div className="text-blue-600 text-xs uppercase tracking-widest font-bold mb-1">اليوم</div>
+                <h2 className="text-slate-900 text-2xl font-black">خارطة برامج اليوم</h2>
+              </div>
+              <a href="/schedule" className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">الخارطة الكاملة ←</a>
             </div>
             <div className="space-y-2">
-              {todaySchedule.map((item) => (
-                <div key={item.id} className="flex items-center gap-4 bg-white border border-slate-200 rounded-xl px-5 py-4 hover:border-blue-200 hover:shadow-sm transition-all">
-                  <span className="text-blue-600 font-bold text-sm w-28 flex-shrink-0" dir="ltr">{item.timeStart} — {item.timeEnd}</span>
-                  <span className="text-slate-800 flex-1 font-medium">{item.label}</span>
-                  {item.type === "live" && (
-                    <span className="text-red-500 text-xs flex items-center gap-1 font-medium">
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />مباشر
-                    </span>
-                  )}
-                </div>
-              ))}
+              {todaySchedule.map((item, idx) => {
+                const colorMap: Record<string,{bg:string;text:string;border:string;dot:string}> = {
+                  blue:{bg:"bg-blue-50",text:"text-blue-900",border:"border-blue-200",dot:"bg-blue-500"},
+                  red:{bg:"bg-red-50",text:"text-red-900",border:"border-red-200",dot:"bg-red-500"},
+                  green:{bg:"bg-green-50",text:"text-green-900",border:"border-green-200",dot:"bg-green-500"},
+                  yellow:{bg:"bg-yellow-50",text:"text-yellow-900",border:"border-yellow-200",dot:"bg-yellow-500"},
+                  purple:{bg:"bg-purple-50",text:"text-purple-900",border:"border-purple-200",dot:"bg-purple-500"},
+                  orange:{bg:"bg-orange-50",text:"text-orange-900",border:"border-orange-200",dot:"bg-orange-500"},
+                  slate:{bg:"bg-slate-50",text:"text-slate-800",border:"border-slate-200",dot:"bg-slate-400"},
+                };
+                const col = colorMap[(item as any).color||"slate"]||colorMap.slate;
+                return (
+                  <div key={item.id} className={`flex items-center gap-4 p-4 rounded-xl border ${col.bg} ${col.border} hover:shadow-sm transition-all`}>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${col.dot} text-white`}>{idx+1}</div>
+                    <div className="flex-shrink-0" style={{minWidth:"100px"}}>
+                      <div className="text-blue-700 font-black text-sm" dir="ltr">{item.timeStart}</div>
+                      <div className="text-slate-400 text-xs" dir="ltr">— {item.timeEnd}</div>
+                    </div>
+                    <div className={`w-px h-8 flex-shrink-0 ${col.dot} opacity-30`}/>
+                    <span className={`flex-1 font-bold ${col.text}`}>{item.label}</span>
+                    {item.type === "live" && (
+                      <span className="flex items-center gap-1.5 text-xs font-bold text-red-600 bg-red-50 border border-red-200 px-3 py-1 rounded-full flex-shrink-0">
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"/>مباشر
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
