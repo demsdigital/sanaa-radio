@@ -64,7 +64,7 @@ export default async function NewsDetailPage({ params }: Props) {
       )}
 
       <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
           <Link
             href="/#news"
             className="text-sm font-semibold text-blue-700 hover:text-blue-900"
@@ -78,7 +78,7 @@ export default async function NewsDetailPage({ params }: Props) {
         </div>
       </section>
 
-      <article className="mx-auto max-w-5xl px-4 py-8 md:py-12">
+      <article className="mx-auto max-w-4xl px-4 py-8 md:py-12">
         <header className="max-w-3xl">
           <span className="mb-4 inline-flex rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700 ring-1 ring-blue-100">
             أخبار الإذاعة
@@ -96,7 +96,7 @@ export default async function NewsDetailPage({ params }: Props) {
         </header>
 
         {item.imageUrl && (
-          <figure className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+          <figure className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div className="bg-slate-100">
               <img
                 src={item.imageUrl}
@@ -108,13 +108,13 @@ export default async function NewsDetailPage({ params }: Props) {
         )}
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_280px]">
-          <div className="min-w-0 rounded-3xl border border-slate-200 bg-white px-6 py-8 shadow-sm md:px-10 md:py-10">
+          <div className="min-w-0 rounded-2xl border border-slate-200 bg-white px-6 py-8 shadow-sm md:px-10 md:py-10">
             <div className="whitespace-pre-wrap text-lg leading-9 text-slate-700">
               {item.body}
             </div>
 
             {youtubeId && (
-              <section className="mt-10 overflow-hidden rounded-3xl border border-slate-200 bg-black shadow-sm">
+              <section className="mt-10 overflow-hidden rounded-2xl border border-slate-200 bg-black shadow-sm">
                 <div className="aspect-video">
                   <iframe
                     src={`https://www.youtube.com/embed/${youtubeId}`}
@@ -128,7 +128,7 @@ export default async function NewsDetailPage({ params }: Props) {
             )}
 
             {tweetId && item.tweetUrl && (
-              <section className="mt-10 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <section className="mt-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                 <h2 className="mb-4 text-xl font-black text-slate-950">
                   منشور مرتبط
                 </h2>
@@ -146,7 +146,7 @@ export default async function NewsDetailPage({ params }: Props) {
             )}
 
             {(item.sourceLabel || item.sourceUrl) && (
-              <section className="mt-10 rounded-3xl border border-slate-200 bg-slate-50 p-6">
+              <section className="mt-10 rounded-2xl border border-slate-200 bg-slate-50 p-6">
                 <div className="text-sm text-slate-500">المصدر</div>
 
                 <div className="mt-2 font-bold text-slate-900">
@@ -168,7 +168,7 @@ export default async function NewsDetailPage({ params }: Props) {
           </div>
 
           <aside className="hidden lg:block">
-            <div className="sticky top-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="sticky top-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="mb-4 flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50">
                   <img
