@@ -1,24 +1,12 @@
 @import "tailwindcss";
 
-:root {
-  --blue: #1a4fd6;
-  --blue-light: #e8eefb;
-  --red: #dc2626;
-  --text: #0f172a;
-  --text-muted: #64748b;
-  --border: #e2e8f0;
-  --bg: #ffffff;
-  --bg-secondary: #f8fafc;
-  --bg-card: #ffffff;
-}
-
 * {
   box-sizing: border-box;
 }
 
 body {
-  background: var(--bg);
-  color: var(--text);
+  background: #ffffff;
+  color: #0f172a;
   font-family: 'Tajawal', 'Segoe UI', sans-serif;
 }
 

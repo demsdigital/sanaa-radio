@@ -20,11 +20,11 @@ export default async function ProgramsPage() {
         <p className="text-blue-200 text-sm mt-2">{allPrograms.length} برنامج</p>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-12">
+      <div className="max-w-6xl mx-auto px-6 py-12" dir="rtl">
         {allPrograms.length === 0 ? (
           <div className="text-slate-400 text-center py-20">لا توجد برامج بعد</div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 rtl">
             {allPrograms.map((p) => (
               <Link key={p.id} href={`/programs/${p.slug}`}
                 className="bg-white border border-slate-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-md transition-all group">
