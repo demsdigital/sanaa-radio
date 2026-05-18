@@ -59,7 +59,7 @@ export default function ProgramsPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-slate-900 text-2xl font-bold">البرامج</h1>
-          <p className="text-slate-500 text-sm mt-1">{programs.length} برنامج</p>
+          <p className="text-slate-700 text-sm mt-1">{programs.length} برنامج</p>
         </div>
         <button onClick={openAdd} className="bg-blue-600 text-slate-900 px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors">
           + إضافة برنامج
@@ -67,18 +67,18 @@ export default function ProgramsPage() {
       </div>
 
       {loading ? (
-        <div className="text-slate-400 text-center py-20">جاري التحميل...</div>
+        <div className="text-slate-600 text-center py-20">جاري التحميل...</div>
       ) : programs.length === 0 ? (
-        <div className="text-slate-400 text-center py-20">لا توجد برامج بعد</div>
+        <div className="text-slate-600 text-center py-20">لا توجد برامج بعد</div>
       ) : (
         <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50">
-                <th className="text-right text-slate-500 text-xs font-medium px-6 py-4">البرنامج</th>
-                <th className="text-right text-slate-500 text-xs font-medium px-6 py-4">التصنيف</th>
-                <th className="text-right text-slate-500 text-xs font-medium px-6 py-4">الحالة</th>
-                <th className="text-right text-slate-500 text-xs font-medium px-6 py-4">إجراءات</th>
+                <th className="text-right text-slate-700 text-xs font-medium px-6 py-4">البرنامج</th>
+                <th className="text-right text-slate-700 text-xs font-medium px-6 py-4">التصنيف</th>
+                <th className="text-right text-slate-700 text-xs font-medium px-6 py-4">الحالة</th>
+                <th className="text-right text-slate-700 text-xs font-medium px-6 py-4">إجراءات</th>
               </tr>
             </thead>
             <tbody>
@@ -86,7 +86,7 @@ export default function ProgramsPage() {
                 <tr key={p.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="text-slate-900 font-medium">{p.name}</div>
-                    <div className="text-slate-400 text-xs mt-1">{p.slug}</div>
+                    <div className="text-slate-600 text-xs mt-1">{p.slug}</div>
                   </td>
                   <td className="px-6 py-4">
                     <span className="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded font-medium">{p.category}</span>
@@ -98,7 +98,7 @@ export default function ProgramsPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
-                      <button onClick={() => openEdit(p)} className="text-slate-500 hover:text-slate-900 text-xs px-3 py-1 border border-slate-200 rounded hover:border-slate-400 transition-colors">تعديل</button>
+                      <button onClick={() => openEdit(p)} className="text-slate-700 hover:text-slate-900 text-xs px-3 py-1 border border-slate-200 rounded hover:border-slate-400 transition-colors">تعديل</button>
                       <button onClick={() => handleDelete(p.id)} className="text-red-500 hover:text-red-600 text-xs px-3 py-1 border border-red-100 rounded hover:border-red-300 transition-colors">حذف</button>
                     </div>
                   </td>

@@ -59,14 +59,14 @@ export default function SettingsPage() {
     );
   }
 
-  if (loading) return <div className="text-slate-400 text-center py-20">جاري التحميل...</div>;
+  if (loading) return <div className="text-slate-600 text-center py-20">جاري التحميل...</div>;
 
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-slate-900 text-2xl font-bold">الإعدادات</h1>
-          <p className="text-slate-400 text-sm mt-1">إعدادات الموقع العامة</p>
+          <p className="text-slate-600 text-sm mt-1">إعدادات الموقع العامة</p>
         </div>
         {saved && <span className="text-green-400 text-sm font-medium">✓ تم الحفظ</span>}
       </div>
@@ -76,7 +76,7 @@ export default function SettingsPage() {
         {/* أقسام الموقع */}
         <div className="bg-white border border-slate-200 rounded-xl p-6">
           <h2 className="text-slate-900 font-bold mb-4">أقسام الموقع</h2>
-          <p className="text-slate-400 text-xs mb-4">تحكم في إظهار وإخفاء كل قسم في الموقع</p>
+          <p className="text-slate-600 text-xs mb-4">تحكم في إظهار وإخفاء كل قسم في الموقع</p>
           <Toggle label="قسم البرامج" field="section_programs" />
           <Toggle label="قسم الجدول" field="section_schedule" />
           <Toggle label="قسم الأخبار" field="section_news" />
@@ -89,7 +89,7 @@ export default function SettingsPage() {
           <h2 className="text-slate-900 font-bold mb-4">الصفحة الرئيسية</h2>
           <Toggle label="إظهار زر الاستماع" field="show_listen_btn" />
           <div className="mt-4">
-            <label className="block text-slate-500 text-sm mb-2">البرنامج الحالي على الهواء</label>
+            <label className="block text-slate-700 text-sm mb-2">البرنامج الحالي على الهواء</label>
             <input
               value={form.on_air_label}
               onChange={(e) => setForm({ ...form, on_air_label: e.target.value })}
@@ -104,7 +104,7 @@ export default function SettingsPage() {
           <h2 className="text-slate-900 font-bold mb-4">الشريط الإخباري</h2>
           <Toggle label="إظهار الشريط" field="ticker_visible" />
           <div className="mt-4">
-            <label className="block text-slate-500 text-sm mb-2">نص الشريط</label>
+            <label className="block text-slate-700 text-sm mb-2">نص الشريط</label>
             <textarea
               value={form.ticker}
               onChange={(e) => setForm({ ...form, ticker: e.target.value })}
@@ -119,7 +119,7 @@ export default function SettingsPage() {
         <div className="bg-white border border-slate-200 rounded-xl p-6">
           <h2 className="text-slate-900 font-bold mb-4">التواصل</h2>
           <div>
-            <label className="block text-slate-500 text-sm mb-2">رقم واتساب</label>
+            <label className="block text-slate-700 text-sm mb-2">رقم واتساب</label>
             <input
               value={form.whatsapp}
               onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
@@ -135,23 +135,23 @@ export default function SettingsPage() {
           <h2 className="text-slate-900 font-bold mb-4">بيانات القمر الصناعي</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-slate-500 text-sm mb-2">تردد الفضائية (MHz)</label>
+              <label className="block text-slate-700 text-sm mb-2">تردد الفضائية (MHz)</label>
               <input value={form.satellite_freq} onChange={(e) => setForm({ ...form, satellite_freq: e.target.value })} dir="ltr" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
             </div>
             <div>
-              <label className="block text-slate-500 text-sm mb-2">اسم القمر</label>
+              <label className="block text-slate-700 text-sm mb-2">اسم القمر</label>
               <input value={form.satellite_name} onChange={(e) => setForm({ ...form, satellite_name: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
             </div>
             <div>
-              <label className="block text-slate-500 text-sm mb-2">الموضع المداري</label>
+              <label className="block text-slate-700 text-sm mb-2">الموضع المداري</label>
               <input value={form.satellite_position} onChange={(e) => setForm({ ...form, satellite_position: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
             </div>
             <div>
-              <label className="block text-slate-500 text-sm mb-2">الاستقطاب</label>
+              <label className="block text-slate-700 text-sm mb-2">الاستقطاب</label>
               <input value={form.satellite_polarization} onChange={(e) => setForm({ ...form, satellite_polarization: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
             </div>
             <div>
-              <label className="block text-slate-500 text-sm mb-2">الموجة القصيرة (كيلو هيرتز)</label>
+              <label className="block text-slate-700 text-sm mb-2">الموجة القصيرة (كيلو هيرتز)</label>
               <input value={form.shortwave} onChange={(e) => setForm({ ...form, shortwave: e.target.value })} dir="ltr" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
             </div>
           </div>
