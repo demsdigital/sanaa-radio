@@ -343,6 +343,7 @@ export default async function HomePage() {
           streamUrl={s.stream_url}
           stationName="إذاعة الجمهورية اليمنية"
           onAirLabel={s.on_air_label || "البرنامج العام"}
+          opacity={s.player_opacity || "82"}
         />
       )}
     </div>

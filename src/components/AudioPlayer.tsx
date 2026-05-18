@@ -5,9 +5,10 @@ type Props = {
   streamUrl: string;
   stationName: string;
   onAirLabel: string;
+  opacity?: string;
 };
 
-export default function AudioPlayer({ streamUrl, stationName, onAirLabel }: Props) {
+export default function AudioPlayer({ streamUrl, stationName, onAirLabel, opacity = "82" }: Props) {
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
   const [volume, setVolume] = useState(80);
@@ -53,7 +54,7 @@ export default function AudioPlayer({ streamUrl, stationName, onAirLabel }: Prop
         dir="rtl"
         className="fixed bottom-2 left-4 right-4 z-50 transition-all duration-300 rounded-2xl"
         style={{
-          background: "rgba(10,22,40,0.82)",
+          background: `rgba(10,22,40,${Number(opacity)/100})`,
           backdropFilter: "blur(20px)",
           border: "1px solid rgba(255,255,255,0.12)",
           boxShadow: "0 -4px 24px rgba(0,0,0,0.3)",

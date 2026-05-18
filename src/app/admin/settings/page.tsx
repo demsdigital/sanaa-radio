@@ -12,7 +12,7 @@ export default function SettingsPage() {
     section_programs: "true", section_schedule: "true", section_news: "true",
     section_satellite: "true", section_contact: "true", show_listen_btn: "true",
     on_air_label: "نشرة الأخبار الرئيسية",
-    show_player: "false", stream_url: "",
+    show_player: "false", stream_url: "", player_opacity: "82",
     hero_title: "إذاعة الجمهورية اليمنية", hero_subtitle: "البرنامج العام",
     hero_tagline: "الصوت الحقيقي منذ عقود", hero_badge: "على الهواء الآن",
     hero_bg: "blue", hero_media_type: "none", hero_media_url: "", hero_overlay_opacity: "55",
@@ -100,6 +100,20 @@ export default function SettingsPage() {
               <input value={form.on_air_label} onChange={e => f("on_air_label", e.target.value)}
                 placeholder="نشرة الأخبار الرئيسية"
                 className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
+            </div>
+            <div>
+              <div className="flex justify-between mb-1.5">
+                <label className="text-slate-700 text-sm font-medium">شفافية المشغّل</label>
+                <span className="text-blue-600 text-sm font-bold">{form.player_opacity}%</span>
+              </div>
+              <input type="range" min="40" max="100" step="5"
+                value={form.player_opacity}
+                onChange={e => f("player_opacity", e.target.value)}
+                className="w-full accent-blue-600" />
+              <div className="flex justify-between text-slate-400 text-xs mt-1">
+                <span>شفاف</span>
+                <span>معتم ←</span>
+              </div>
             </div>
           </div>
           {form.show_player === "true" && !form.stream_url && (
