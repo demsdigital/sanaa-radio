@@ -163,9 +163,12 @@ export default async function HomePage() {
       {/* News Section */}
       {s.section_news !== "false" && latestNews.length > 0 && (
         <section id="news" className="px-6 py-16 max-w-6xl mx-auto">
-          <div className="mb-8">
-            <div className="text-blue-600 text-xs uppercase tracking-widest font-bold mb-1">آخر الأخبار</div>
-            <h2 className="text-slate-900 text-2xl font-black">الأخبار</h2>
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <div className="text-blue-600 text-xs uppercase tracking-widest font-bold mb-1">آخر الأخبار</div>
+              <h2 className="text-slate-900 text-2xl font-black">الأخبار</h2>
+            </div>
+            <Link href="/news" className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">عرض الكل ←</Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {latestNews.map((item) => (
