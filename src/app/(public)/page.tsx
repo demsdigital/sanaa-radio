@@ -49,9 +49,21 @@ export default async function HomePage() {
         const op=s.hero_overlay_opacity?Number(s.hero_overlay_opacity)/100:0.55;
         return(
           <section className="relative text-white py-10 md:py-20 px-4 md:px-6 overflow-hidden" style={{background:bg[s.hero_bg||"blue"]||bg.blue}}>
-            {(mt==="image"||mt==="gif")&&mu&&(<><img src={mu} alt="" className="absolute inset-0 w-full h-full object-cover object-center"/><div className="absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
-            {mt==="video"&&mu&&(<><video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover"><source src={mu}/></video><div className="absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
-            {mt==="none"&&(<div className="absolute inset-0 opacity-10 pointer-events-none"><div className="absolute top-10 right-10 w-64 h-64 rounded-full border-2 border-white"/><div className="absolute top-20 right-20 w-48 h-48 rounded-full border border-white"/><div className="absolute bottom-10 left-10 w-80 h-80 rounded-full border border-white"/></div>)}
+            {(()=>{
+              const mmt=s.hero_mobile_media_type||"same";
+              const mmu=s.hero_mobile_media_url||"";
+              const mop=s.hero_mobile_overlay_opacity?Number(s.hero_mobile_overlay_opacity)/100:op;
+              return(<>
+                {/* موبايل */}
+                {mmt==="none"&&(<div className="md:hidden absolute inset-0 opacity-10 pointer-events-none"/>)}
+                {mmt==="same"&&(mt==="image"||mt==="gif")&&mu&&(<><img src={mu} alt="" className="absolute inset-0 w-full h-full object-cover object-center"/><div className="absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
+                {mmt!=="same"&&mmt!=="none"&&mmu&&(<><img src={mmu} alt="" className="md:hidden absolute inset-0 w-full h-full object-cover object-center"/><div className="md:hidden absolute inset-0" style={{background:`rgba(0,0,0,${mop})`}}/></>)}
+                {/* ديسكتوب */}
+                {mmt!=="same"&&(mt==="image"||mt==="gif")&&mu&&(<><img src={mu} alt="" className="hidden md:block absolute inset-0 w-full h-full object-cover object-center"/><div className="hidden md:block absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
+                {mt==="video"&&mu&&(<><video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover"><source src={mu}/></video><div className="absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
+                {(mmt==="same"||mmt==="none")&&mt==="none"&&(<div className="absolute inset-0 opacity-10 pointer-events-none"><div className="absolute top-10 right-10 w-64 h-64 rounded-full border-2 border-white"/><div className="absolute top-20 right-20 w-48 h-48 rounded-full border border-white"/><div className="absolute bottom-10 left-10 w-80 h-80 rounded-full border border-white"/></div>)}
+              </>);
+            })()}
             <div className="max-w-5xl mx-auto relative z-10">
               <div className="flex flex-col md:flex-row items-center gap-6 md:gap-12">
                 <div className="flex-1 text-center md:text-right w-full min-w-0">

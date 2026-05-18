@@ -44,6 +44,7 @@ export default function SettingsPage() {
     hero_title: "إذاعة الجمهورية اليمنية", hero_subtitle: "البرنامج العام",
     hero_tagline: "الصوت الحقيقي منذ عقود", hero_badge: "على الهواء الآن",
     hero_bg: "blue", hero_media_type: "none", hero_media_url: "", hero_overlay_opacity: "55", hero_card_opacity: "12",
+    hero_mobile_media_type: "same", hero_mobile_media_url: "", hero_mobile_overlay_opacity: "55",
     programs_hero_bg: "blue", programs_hero_media_type: "none", programs_hero_media_url: "", programs_hero_overlay_opacity: "55",
     programs_hero_title: "البرامج", programs_hero_subtitle: "إذاعة الجمهورية اليمنية — البرنامج العام",
     social_facebook: "", social_twitter: "", social_youtube: "",
