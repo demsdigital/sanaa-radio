@@ -217,43 +217,94 @@ export default async function HomePage() {
 
       {/* Satellite */}
       {s.section_satellite !== "false" && (
-        <section id="satellite" className="px-6 py-16 bg-blue-700 text-white">
-          <div className="max-w-5xl mx-auto">
-            <div className="flex flex-col md:flex-row items-start gap-12">
-              <div className="flex-1">
-                <div className="text-blue-200 text-xs uppercase tracking-widest font-bold mb-2">بث مباشر</div>
-                <h2 className="text-white text-2xl font-black mb-6">استمع عبر القمر الصناعي</h2>
+        <section id="satellite" className="relative overflow-hidden py-20 px-6"
+          style={{background:"linear-gradient(135deg,#0a1628 0%,#0f2a5e 50%,#1a3a7c 100%)"}}>
+          {/* خلفية زخرفية */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-blue-500/10 blur-3xl"/>
+            <div className="absolute -bottom-20 -left-20 w-96 h-96 rounded-full bg-blue-400/10 blur-3xl"/>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-white/5"/>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-white/5"/>
+          </div>
+
+          <div className="max-w-6xl mx-auto relative z-10" dir="rtl">
+
+            {/* العنوان */}
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs font-bold px-4 py-2 rounded-full mb-4">
+                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"/>
+                بث مباشر
+              </div>
+              <h2 className="text-white text-3xl md:text-4xl font-black mb-3">استمع عبر القمر الصناعي</h2>
+              <p className="text-blue-300 text-sm">إذاعة الجمهورية اليمنية — البرنامج العام</p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+
+              {/* بيانات البث */}
+              <div>
+                <div className="text-blue-300 text-xs uppercase tracking-widest font-bold mb-4">📡 بيانات الاستقبال</div>
                 <div className="grid grid-cols-2 gap-3">
                   {[
-                    { label: "تردد الفضائية", value: `${s.satellite_freq} MHz` },
-                    { label: "القمر الصناعي", value: s.satellite_name },
-                    { label: "الموضع المداري", value: s.satellite_position },
-                    { label: "الاستقطاب", value: s.satellite_polarization },
-                    { label: "الموجة القصيرة", value: `${s.shortwave} كيلو هيرتز` },
+                    { label: "القمر الصناعي", value: s.satellite_name, icon: "🛰️" },
+                    { label: "التردد", value: `${s.satellite_freq} MHz`, icon: "📶" },
+                    { label: "الموضع المداري", value: s.satellite_position, icon: "🌍" },
+                    { label: "الاستقطاب", value: s.satellite_polarization, icon: "↔️" },
+                    { label: "الموجة القصيرة", value: `${s.shortwave} kHz`, icon: "📻" },
                   ].map((item) => (
-                    <div key={item.label} className="bg-white/10 border border-white/20 rounded-xl p-4">
-                      <div className="text-blue-200 text-xs mb-1 font-medium">{item.label}</div>
-                      <div className="text-white font-bold">{item.value}</div>
+                    <div key={item.label}
+                      className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-2xl p-4 transition-all duration-300 cursor-default">
+                      <div className="text-xl mb-2">{item.icon}</div>
+                      <div className="text-blue-300 text-xs mb-1 font-medium">{item.label}</div>
+                      <div className="text-white font-black text-sm" dir="ltr">{item.value}</div>
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="flex-1">
-                <div className="text-blue-200 text-xs uppercase tracking-widest font-bold mb-4">خطوات الضبط</div>
+
+              {/* خطوات الضبط */}
+              <div>
+                <div className="text-blue-300 text-xs uppercase tracking-widest font-bold mb-4">🔧 خطوات الضبط</div>
                 <div className="space-y-3">
                   {[
-                    "وجّه طبقك الفضائي نحو القمر عرب سات بدر 4 على موضع 16° شرقاً",
-                    "أدخل التردد 12182 MHz مع الاستقطاب أفقي (H)",
-                    "ابحث عن القنوات وستجد إذاعة الجمهورية اليمنية",
-                    "للموجة القصيرة اضبط على 11860 كيلو هيرتز",
-                  ].map((step, i) => (
-                    <div key={i} className="flex items-start gap-3">
-                      <span className="w-7 h-7 rounded-full bg-white/20 border border-white/30 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
-                      <span className="text-blue-100 text-sm leading-relaxed">{step}</span>
+                    { step:"وجّه طبقك الفضائي نحو القمر عرب سات بدر 4 على موضع 16° شرقاً", icon:"📡" },
+                    { step:`أدخل التردد ${s.satellite_freq} MHz مع الاستقطاب ${s.satellite_polarization}`, icon:"⚙️" },
+                    { step:"ابحث عن القنوات وستجد إذاعة الجمهورية اليمنية", icon:"🔍" },
+                    { step:`للموجة القصيرة اضبط على ${s.shortwave} كيلو هيرتز`, icon:"📻" },
+                  ].map((item, i) => (
+                    <div key={i}
+                      className="flex items-start gap-4 bg-white/5 hover:bg-white/8 border border-white/10 rounded-2xl p-4 transition-all duration-300">
+                      <div className="flex-shrink-0 flex flex-col items-center gap-1">
+                        <div className="w-8 h-8 rounded-full bg-blue-500/30 border border-blue-400/40 flex items-center justify-center text-white text-xs font-black">
+                          {i + 1}
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-lg mb-1">{item.icon}</div>
+                        <div className="text-blue-100 text-sm leading-relaxed">{item.step}</div>
+                      </div>
                     </div>
                   ))}
                 </div>
+
+                {/* بطاقة الموجة القصيرة */}
+                <div className="mt-4 bg-gradient-to-r from-blue-500/20 to-blue-600/20 border border-blue-400/30 rounded-2xl p-5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-blue-500/30 flex items-center justify-center text-xl flex-shrink-0">📻</div>
+                    <div>
+                      <div className="text-blue-200 text-xs font-medium mb-0.5">الموجة القصيرة</div>
+                      <div className="text-white font-black text-lg" dir="ltr">{s.shortwave} kHz</div>
+                    </div>
+                    <div className="mr-auto flex gap-0.5 items-end h-6">
+                      {[3,5,7,4,6,8,3,5,7,4].map((h,i)=>(
+                        <div key={i} className="w-1 bg-blue-400 rounded-full animate-pulse opacity-70"
+                          style={{height:`${h*3}px`,animationDelay:`${i*0.1}s`}}/>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
+
             </div>
           </div>
         </section>
