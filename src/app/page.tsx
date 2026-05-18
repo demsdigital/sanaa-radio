@@ -83,14 +83,7 @@ export default async function HomePage() {
             {mt==="none"&&(<div className="absolute inset-0 opacity-10 pointer-events-none"><div className="absolute top-10 right-10 w-64 h-64 rounded-full border-2 border-white"/><div className="absolute top-20 right-20 w-48 h-48 rounded-full border border-white"/><div className="absolute bottom-10 left-10 w-80 h-80 rounded-full border border-white"/></div>)}
             <div className="max-w-5xl mx-auto relative z-10">
               <div className="flex flex-col md:flex-row items-center gap-12">
-                <div className="flex-shrink-0">
-                  <div className="relative">
-                    <div className="absolute inset-0 rounded-full bg-white/20 blur-2xl scale-110"/>
-                    <div className="relative w-44 h-44 rounded-full bg-white shadow-2xl flex items-center justify-center border-4 border-white/40">
-                      <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-36 h-36 object-contain"/>
-                    </div>
-                  </div>
-                </div>
+
                 <div className="flex-1 text-center md:text-right">
                   <div className="inline-flex items-center gap-2 bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-full mb-6 shadow-lg">
                     <span className="w-2 h-2 rounded-full bg-white animate-pulse"/>
