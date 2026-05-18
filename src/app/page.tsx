@@ -36,15 +36,10 @@ export default async function HomePage() {
       )}
 
       {/* Nav */}
+      
       <nav className="border-b border-slate-200 px-6 py-0 flex items-center justify-between sticky top-0 bg-white z-40 shadow-sm">
         <div className="flex items-center gap-3 py-3">
-          <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
-            <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
-              <circle cx="20" cy="20" r="4" fill="white"/>
-              <path d="M12 20c0-4.42 3.58-8 8-8s8 3.58 8 8" stroke="white" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
-              <path d="M6 20c0-7.73 6.27-14 14-14s14 6.27 14 14" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" opacity=".7"/>
-            </svg>
-          </div>
+          <img src="/logo.png" alt="شعار إذاعة الجمهورية" className="w-10 h-10 object-contain" />
           <div>
             <div className="text-slate-900 text-sm font-bold leading-tight">إذاعة الجمهورية اليمنية</div>
             <div className="text-blue-600 text-xs font-medium">البرنامج العام</div>
