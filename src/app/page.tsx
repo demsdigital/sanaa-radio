@@ -75,14 +75,15 @@ export default async function HomePage() {
                   <p className="text-blue-100 text-xl font-semibold mb-1 drop-shadow">{s.hero_subtitle||"البرنامج العام"}</p>
                   <p className="text-blue-200 text-sm mb-8 drop-shadow">Yemen Radio • {s.hero_tagline||"الصوت الحقيقي منذ عقود"}</p>
                   {s.on_air_label&&(
-                    <div className="bg-white/15 backdrop-blur border border-white/25 rounded-2xl p-5 max-w-sm shadow-xl">
+                    <div className="backdrop-blur border border-white/20 rounded-xl p-4 max-w-sm shadow-lg"
+                      style={{background:`rgba(255,255,255,${Number(s.hero_card_opacity||"12")/100})`}}>
                       <div className="text-blue-100 text-xs uppercase tracking-widest mb-1 font-medium">البرنامج الحالي</div>
-                      <div className="text-white font-bold text-lg mb-3">{s.on_air_label}</div>
-                      <div className="flex gap-1 mb-4 h-7 items-end">
-                        {[8,16,24,12,20,28,10,22,18,14,26,8].map((h,i)=>(<div key={i} className="w-1 bg-white rounded-full animate-pulse opacity-80" style={{height:`${h}px`,animationDelay:`${i*0.1}s`}}/>))}
+                      <div className="text-white font-bold text-base mb-2">{s.on_air_label}</div>
+                      <div className="flex gap-1 mb-3 h-5 items-end">
+                        {[6,12,18,9,15,21,8,16,13,10,19,6].map((h,i)=>(<div key={i} className="w-1 bg-white rounded-full animate-pulse opacity-70" style={{height:`${h}px`,animationDelay:`${i*0.1}s`}}/>))}
                       </div>
                       {s.show_listen_btn!=="false"&&latestEpisodes.length>0&&(
-                        <Link href="/programs" className="flex items-center justify-center gap-2 w-full bg-white text-blue-700 py-2.5 rounded-xl font-bold hover:bg-blue-50 transition-colors text-sm">🎧 استمع للأرشيف</Link>
+                        <Link href="/programs" className="flex items-center justify-center gap-2 w-full bg-white text-blue-700 py-2 rounded-lg font-bold hover:bg-blue-50 transition-colors text-xs">🎧 استمع للأرشيف</Link>
                       )}
                     </div>
                   )}

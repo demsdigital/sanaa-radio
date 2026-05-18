@@ -15,7 +15,7 @@ export default function SettingsPage() {
     show_player: "false", stream_url: "", player_opacity: "82",
     hero_title: "إذاعة الجمهورية اليمنية", hero_subtitle: "البرنامج العام",
     hero_tagline: "الصوت الحقيقي منذ عقود", hero_badge: "على الهواء الآن",
-    hero_bg: "blue", hero_media_type: "none", hero_media_url: "", hero_overlay_opacity: "55",
+    hero_bg: "blue", hero_media_type: "none", hero_media_url: "", hero_overlay_opacity: "55", hero_card_opacity: "12",
     social_facebook: "", social_twitter: "", social_youtube: "",
     social_telegram: "", social_instagram: "", social_tiktok: "",
   });
