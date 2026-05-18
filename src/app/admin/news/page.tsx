@@ -79,4 +79,4 @@ export default async function NewsDetailPage({ params }: Props) {
       </div>
     </div>
   );
-}
+  }
