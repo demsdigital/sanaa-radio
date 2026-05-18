@@ -36,52 +36,65 @@ export default async function HomePage() {
       )}
 
       {/* Nav */}
-      
-      <nav className="border-b border-slate-200 px-6 py-0 flex items-center justify-between sticky top-0 bg-white z-40 shadow-sm">
-        <div className="flex items-center gap-3 py-3">
-          <img src="/logo.png" alt="شعار إذاعة الجمهورية" className="w-10 h-10 object-contain" />
+      <nav className="border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 bg-white z-40 shadow-sm">
+        <div className="flex items-center gap-3 py-2">
+          <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-14 h-14 object-contain" />
           <div>
-            <div className="text-slate-900 text-sm font-bold leading-tight">إذاعة الجمهورية اليمنية</div>
-            <div className="text-blue-600 text-xs font-medium">البرنامج العام</div>
+            <div className="text-slate-900 text-base font-black leading-tight">إذاعة الجمهورية اليمنية</div>
+            <div className="text-blue-600 text-xs font-semibold">البرنامج العام • Yemen Radio</div>
           </div>
         </div>
         <div className="flex items-center gap-1">
-          {s.section_programs !== "false" && <Link href="/programs" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 transition-all font-medium">البرامج</Link>}
-          {s.section_schedule !== "false" && <a href="#schedule" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 transition-all font-medium">الجدول</a>}
-          {s.section_news !== "false" && <a href="#news" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 transition-all font-medium">الأخبار</a>}
-          {s.section_satellite !== "false" && <a href="#satellite" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 transition-all font-medium">عبر القمر</a>}
-          {s.section_contact !== "false" && s.whatsapp && <a href="#contact" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 transition-all font-medium">تواصل</a>}
+          {s.section_programs !== "false" && <Link href="/programs" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">البرامج</Link>}
+          {s.section_schedule !== "false" && <a href="#schedule" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">الجدول</a>}
+          {s.section_news !== "false" && <a href="#news" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">الأخبار</a>}
+          {s.section_satellite !== "false" && <a href="#satellite" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">عبر القمر</a>}
+          {s.section_contact !== "false" && s.whatsapp && <a href="#contact" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">تواصل</a>}
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="bg-gradient-to-b from-blue-600 to-blue-700 text-white py-20 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-full mb-6">
-            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-            على الهواء الآن
-          </div>
-          <h1 className="text-4xl md:text-5xl font-black mb-3">إذاعة الجمهورية اليمنية</h1>
-          <p className="text-blue-100 text-lg mb-2 font-medium">البرنامج العام • Yemen Radio</p>
-          <p className="text-blue-200 text-sm mb-10">الصوت الحقيقي منذ عقود</p>
-
-          {s.on_air_label && (
-            <div className="bg-white/10 backdrop-blur border border-white/20 rounded-2xl p-6 max-w-md mx-auto">
-              <div className="text-blue-100 text-xs uppercase tracking-widest mb-2 font-medium">البرنامج الحالي</div>
-              <div className="text-white font-bold text-xl mb-4">{s.on_air_label}</div>
-              <div className="flex justify-center gap-1 mb-5 h-8 items-end">
-                {[8,16,24,12,20,28,10,22,18,14,26,8].map((h, i) => (
-                  <div key={i} className="w-1 bg-white rounded-full animate-pulse opacity-80"
-                    style={{ height: `${h}px`, animationDelay: `${i * 0.1}s` }} />
-                ))}
+      <section className="bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800 text-white py-20 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 right-10 w-64 h-64 rounded-full border-2 border-white" />
+          <div className="absolute top-20 right-20 w-48 h-48 rounded-full border border-white" />
+          <div className="absolute bottom-10 left-10 w-80 h-80 rounded-full border border-white" />
+        </div>
+        <div className="max-w-5xl mx-auto relative">
+          <div className="flex flex-col md:flex-row items-center gap-12">
+            {/* Logo large */}
+            <div className="flex-shrink-0">
+              <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-48 h-48 object-contain drop-shadow-2xl" />
+            </div>
+            {/* Content */}
+            <div className="flex-1 text-center md:text-right">
+              <div className="inline-flex items-center gap-2 bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-full mb-6">
+                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                على الهواء الآن
               </div>
-              {s.show_listen_btn !== "false" && latestEpisodes.length > 0 && (
-                <Link href="/programs" className="flex items-center justify-center gap-2 w-full bg-white text-blue-600 py-3 rounded-xl font-bold hover:bg-blue-50 transition-colors">
-                  🎧 استمع للأرشيف
-                </Link>
+              <h1 className="text-4xl md:text-5xl font-black mb-2 leading-tight">إذاعة الجمهورية اليمنية</h1>
+              <p className="text-blue-100 text-xl font-semibold mb-1">البرنامج العام</p>
+              <p className="text-blue-200 text-sm mb-8">Yemen Radio • الصوت الحقيقي منذ عقود</p>
+
+              {s.on_air_label && (
+                <div className="bg-white/15 backdrop-blur border border-white/25 rounded-2xl p-5 max-w-sm">
+                  <div className="text-blue-100 text-xs uppercase tracking-widest mb-1 font-medium">البرنامج الحالي</div>
+                  <div className="text-white font-bold text-lg mb-3">{s.on_air_label}</div>
+                  <div className="flex gap-1 mb-4 h-7 items-end">
+                    {[8,16,24,12,20,28,10,22,18,14,26,8].map((h, i) => (
+                      <div key={i} className="w-1 bg-white rounded-full animate-pulse opacity-80"
+                        style={{ height: `${h}px`, animationDelay: `${i * 0.1}s` }} />
+                    ))}
+                  </div>
+                  {s.show_listen_btn !== "false" && latestEpisodes.length > 0 && (
+                    <Link href="/programs" className="flex items-center justify-center gap-2 w-full bg-white text-blue-700 py-2.5 rounded-xl font-bold hover:bg-blue-50 transition-colors text-sm">
+                      🎧 استمع للأرشيف
+                    </Link>
+                  )}
+                </div>
               )}
             </div>
-          )}
+          </div>
         </div>
       </section>
 
@@ -99,8 +112,8 @@ export default async function HomePage() {
             {allPrograms.slice(0, 8).map((p) => (
               <Link key={p.id} href={`/programs/${p.slug}`}
                 className="bg-white border border-slate-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-md transition-all text-center group">
-                <div className="w-12 h-12 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-100 transition-colors">
-                  <span className="text-xl">📻</span>
+                <div className="w-14 h-14 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-100 transition-colors">
+                  <span className="text-2xl">📻</span>
                 </div>
                 <div className="text-slate-900 font-bold text-sm mb-1">{p.name}</div>
                 <div className="text-blue-600 text-xs font-medium">{p.category}</div>
@@ -156,25 +169,43 @@ export default async function HomePage() {
 
       {/* Satellite */}
       {s.section_satellite !== "false" && (
-        <section id="satellite" className="px-6 py-16 bg-blue-600 text-white">
-          <div className="max-w-4xl mx-auto">
-            <div className="mb-8">
-              <div className="text-blue-200 text-xs uppercase tracking-widest font-bold mb-1">بث مباشر</div>
-              <h2 className="text-white text-2xl font-black">استمع عبر القمر</h2>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {[
-                { label: "تردد الفضائية", value: `${s.satellite_freq} MHz` },
-                { label: "القمر الصناعي", value: s.satellite_name },
-                { label: "الموضع المداري", value: s.satellite_position },
-                { label: "الاستقطاب", value: s.satellite_polarization },
-                { label: "الموجة القصيرة", value: `${s.shortwave} كيلو هيرتز` },
-              ].map((item) => (
-                <div key={item.label} className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-colors">
-                  <div className="text-blue-200 text-xs mb-1 font-medium">{item.label}</div>
-                  <div className="text-white font-bold">{item.value}</div>
+        <section id="satellite" className="px-6 py-16 bg-blue-700 text-white">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex flex-col md:flex-row items-start gap-12">
+              <div className="flex-1">
+                <div className="text-blue-200 text-xs uppercase tracking-widest font-bold mb-2">بث مباشر</div>
+                <h2 className="text-white text-2xl font-black mb-6">استمع عبر القمر الصناعي</h2>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { label: "تردد الفضائية", value: `${s.satellite_freq} MHz` },
+                    { label: "القمر الصناعي", value: s.satellite_name },
+                    { label: "الموضع المداري", value: s.satellite_position },
+                    { label: "الاستقطاب", value: s.satellite_polarization },
+                    { label: "الموجة القصيرة", value: `${s.shortwave} كيلو هيرتز` },
+                  ].map((item) => (
+                    <div key={item.label} className="bg-white/10 border border-white/20 rounded-xl p-4">
+                      <div className="text-blue-200 text-xs mb-1 font-medium">{item.label}</div>
+                      <div className="text-white font-bold">{item.value}</div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+              <div className="flex-1">
+                <div className="text-blue-200 text-xs uppercase tracking-widest font-bold mb-4">خطوات الضبط</div>
+                <div className="space-y-3">
+                  {[
+                    "وجّه طبقك الفضائي نحو القمر عرب سات بدر 4 على موضع 16° شرقاً",
+                    "أدخل التردد 12182 MHz مع الاستقطاب أفقي (H)",
+                    "ابحث عن القنوات وستجد إذاعة الجمهورية اليمنية",
+                    "للموجة القصيرة اضبط على 11860 كيلو هيرتز",
+                  ].map((step, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <span className="w-7 h-7 rounded-full bg-white/20 border border-white/30 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
+                      <span className="text-blue-100 text-sm leading-relaxed">{step}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -187,18 +218,18 @@ export default async function HomePage() {
           <h2 className="text-slate-900 text-2xl font-black mb-8">تواصل مع الإذاعة</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { label: "رسالة صوتية", desc: "شاركنا رأيك على الهواء", icon: "🎤" },
-              { label: "طلب إهداء", desc: "أهدِ من تحب أغنية", icon: "🎵" },
-              { label: "أرسل خبراً", desc: "شاركنا أخبار مجتمعك", icon: "📰" },
+              { label: "رسالة صوتية", desc: "شاركنا رأيك على الهواء", icon: "🎤", msg: "رسالة صوتية" },
+              { label: "طلب إهداء", desc: "أهدِ من تحب أغنية", icon: "🎵", msg: "طلب إهداء" },
+              { label: "أرسل خبراً", desc: "شاركنا أخبار مجتمعك", icon: "📰", msg: "خبر للإذاعة" },
             ].map((item) => (
               <a key={item.label}
-                href={`https://wa.me/${s.whatsapp}?text=${encodeURIComponent(item.label)}`}
+                href={`https://wa.me/${s.whatsapp}?text=${encodeURIComponent(item.msg)}`}
                 target="_blank"
                 className="bg-white border border-slate-200 rounded-xl p-6 hover:border-green-300 hover:shadow-md transition-all group">
-                <div className="text-3xl mb-3">{item.icon}</div>
+                <div className="text-4xl mb-3">{item.icon}</div>
                 <div className="text-slate-900 font-bold mb-1">{item.label}</div>
                 <div className="text-slate-500 text-sm mb-3">{item.desc}</div>
-                <div className="text-green-600 text-xs font-bold group-hover:text-green-700">عبر واتساب ←</div>
+                <div className="text-green-600 text-xs font-bold">عبر واتساب ←</div>
               </a>
             ))}
           </div>
@@ -206,21 +237,24 @@ export default async function HomePage() {
       )}
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white px-6 py-10">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
-              <svg width="16" height="16" viewBox="0 0 40 40" fill="none">
-                <circle cx="20" cy="20" r="4" fill="white"/>
-                <path d="M12 20c0-4.42 3.58-8 8-8s8 3.58 8 8" stroke="white" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
-              </svg>
-            </div>
+      <footer className="bg-slate-900 text-white px-8 py-10">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-16 h-16 object-contain" />
             <div>
-              <div className="text-white text-sm font-bold">إذاعة الجمهورية اليمنية</div>
-              <div className="text-slate-400 text-xs">البرنامج العام</div>
+              <div className="text-white font-black text-lg">إذاعة الجمهورية اليمنية</div>
+              <div className="text-slate-400 text-sm">البرنامج العام • Yemen Radio</div>
+              <div className="text-slate-500 text-xs mt-1">الصوت الحقيقي منذ عقود</div>
             </div>
           </div>
-          <div className="text-slate-500 text-xs">© {new Date().getFullYear()} جميع الحقوق محفوظة</div>
+          <div className="flex flex-col items-center md:items-end gap-2">
+            <div className="flex gap-4 text-sm text-slate-400">
+              {s.section_programs !== "false" && <Link href="/programs" className="hover:text-white transition-colors">البرامج</Link>}
+              {s.section_news !== "false" && <a href="#news" className="hover:text-white transition-colors">الأخبار</a>}
+              {s.section_satellite !== "false" && <a href="#satellite" className="hover:text-white transition-colors">عبر القمر</a>}
+            </div>
+            <div className="text-slate-600 text-xs">© {new Date().getFullYear()} جميع الحقوق محفوظة</div>
+          </div>
         </div>
       </footer>
     </div>
