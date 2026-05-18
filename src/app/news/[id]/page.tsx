@@ -86,18 +86,6 @@ export default async function NewsDetailPage({ params }: Props) {
         </div>
       </nav>
 
-      {/* ===== صورة الغلاف — عريضة بلا هوامش ===== */}
-      {item.imageUrl && (
-        <div className="w-full bg-slate-900" style={{ maxHeight: "480px", overflow: "hidden" }}>
-          <img
-            src={item.imageUrl}
-            alt={item.title}
-            className="w-full object-cover object-center"
-            style={{ maxHeight: "480px", display: "block" }}
-          />
-        </div>
-      )}
-
       {/* ===== المحتوى الرئيسي ===== */}
       <div className="max-w-3xl mx-auto px-4 py-10">
 
@@ -108,15 +96,15 @@ export default async function NewsDetailPage({ params }: Props) {
           </span>
         </div>
 
-        {/* عنوان */}
-        <h1 className="text-slate-900 text-2xl md:text-3xl lg:text-4xl font-black leading-tight mb-6">
+        {/* عنوان — أول شيء يراه الزائر */}
+        <h1 className="text-slate-900 text-2xl md:text-3xl lg:text-4xl font-black leading-tight mb-5">
           {item.title}
         </h1>
 
         {/* بيانات الخبر */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pb-6 mb-8 border-b-2 border-slate-100 text-sm text-slate-500">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pb-6 mb-6 border-b border-slate-200 text-sm text-slate-500">
           <span className="flex items-center gap-1.5">
-            <span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-700">ي</span>
+            <span className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-700">ي</span>
             فريق التحرير
           </span>
           {publishedDate && (
@@ -138,6 +126,18 @@ export default async function NewsDetailPage({ params }: Props) {
             </span>
           )}
         </div>
+
+        {/* صورة الخبر — تحت العنوان بارتفاع معقول */}
+        {item.imageUrl && (
+          <div className="mb-8 rounded-xl overflow-hidden border border-slate-100">
+            <img
+              src={item.imageUrl}
+              alt={item.title}
+              className="w-full object-cover"
+              style={{ height: "320px" }}
+            />
+          </div>
+        )}
 
         {/* نص الخبر */}
         <div
