@@ -6,9 +6,7 @@ import { getTokenFromRequest, verifyToken } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
   const token = getTokenFromRequest(request);
-  if (!token) return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
-
-  const payload = verifyToken(token);
+  const payload = token ? verifyToken(token) : null;
   if (!payload) return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
 
   const [user] = await db.select({
@@ -20,6 +18,5 @@ export async function GET(request: NextRequest) {
   }).from(users).where(eq(users.id, payload.id));
 
   if (!user) return NextResponse.json({ error: "غير موجود" }, { status: 404 });
-
   return NextResponse.json(user);
 }
