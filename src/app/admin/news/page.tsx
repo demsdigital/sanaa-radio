@@ -1,304 +1,82 @@
-"use client";
-import { useState, useEffect } from "react";
+export const dynamic = "force-dynamic";
 
-type News = {
-  id: number;
-  title: string;
-  body: string;
-  imageUrl: string;
-  tweetUrl: string;
-  youtubeUrl: string;
-  sourceLabel: string;
-  sourceUrl: string;
-  publishedAt: string;
+import { db } from "@/db";
+import { news } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+
+type Props = {
+  params: Promise<{ id: string }>;
 };
 
-const emptyForm = {
-  title: "",
-  body: "",
-  imageUrl: "",
-  tweetUrl: "",
-  youtubeUrl: "",
-  sourceLabel: "",
-  sourceUrl: "",
-};
+export default async function NewsDetailPage({ params }: Props) {
+  const { id } = await params;
+  const newsId = parseInt(id);
 
-export default function NewsPage() {
-  const [items, setItems] = useState<News[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [editing, setEditing] = useState<News | null>(null);
-  const [form, setForm] = useState(emptyForm);
-  const [uploading, setUploading] = useState(false);
+  if (isNaN(newsId)) notFound();
 
-  async function load() {
-    const res = await fetch("/api/news");
-    setItems(await res.json());
-    setLoading(false);
-  }
+  // جلب تفاصيل الخبر من الداتابيز مباشرة
+  const [item] = await db.select().from(news).where(eq(news.id, newsId));
 
-  useEffect(() => { load(); }, []);
-
-  function openAdd() {
-    setEditing(null);
-    setForm(emptyForm);
-    setShowForm(true);
-  }
-
-  function openEdit(item: News) {
-    setEditing(item);
-    setForm({
-      title: item.title,
-      body: item.body,
-      imageUrl: item.imageUrl || "",
-      tweetUrl: item.tweetUrl || "",
-      youtubeUrl: item.youtubeUrl || "",
-      sourceLabel: item.sourceLabel || "",
-      sourceUrl: item.sourceUrl || "",
-    });
-    setShowForm(true);
-  }
-
-  // دالة التعامل مع رفع الصورة إلى Cloudflare R2 عبر الـ API
-  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      // نرسل الملف إلى راوت الرفع الخاص بـ R2 بالمشروع
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        // نضع الرابط الراجع من السيرفر داخل الـ Form
-        setForm((prev) => ({ ...prev, imageUrl: data.url }));
-      } else {
-        alert("فشل رفع الصورة، يرجى المحاولة مرة أخرى.");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("حدث خطأ أثناء الرفع.");
-    } finally {
-      setUploading(false);
-    }
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const method = editing ? "PUT" : "POST";
-    const payload = editing ? { ...form, id: editing.id } : form;
-    await fetch("/api/news", {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    setShowForm(false);
-    load();
-  }
-
-  async function handleDelete(id: number) {
-    if (!confirm("هل أنت متأكد من الحذف؟")) return;
-    await fetch("/api/news", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id }),
-    });
-    load();
-  }
-
-  const f = (key: keyof typeof emptyForm, value: string) =>
-    setForm((prev) => ({ ...prev, [key]: value }));
+  if (!item) notFound();
 
   return (
-    <div className="p-6 bg-slate-50 min-h-screen" dir="rtl">
-      <div className="flex items-center justify-between mb-8 max-w-4xl mx-auto">
-        <div>
-          <h1 className="text-slate-900 text-2xl font-bold">الأخبار</h1>
-          <p className="text-slate-500 text-sm mt-1">{items.length} خبر</p>
+    <div className="min-h-screen bg-slate-50 py-12 px-4" dir="rtl">
+      <div className="max-w-3xl mx-auto bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+        
+        {/* زر العودة */}
+        <div className="p-6 pb-0">
+          <Link href="/#news" className="text-sm text-blue-600 hover:underline inline-flex items-center gap-1">
+            ➔ العودة للرئيسية
+          </Link>
         </div>
-        <button onClick={openAdd}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors">
-          + إضافة خبر
-        </button>
-      </div>
 
-      {loading ? (
-        <div className="text-slate-400 text-center py-20">جاري التحميل...</div>
-      ) : items.length === 0 ? (
-        <div className="text-slate-400 text-center py-20">لا توجد أخبار بعد</div>
-      ) : (
-        <div className="space-y-3 max-w-4xl mx-auto">
-          {items.map((item) => (
-            <div key={item.id}
-              className="bg-white border border-slate-200 rounded-xl p-5 flex items-start justify-between gap-4">
-              <div className="flex-1 min-w-0">
-                <div className="text-slate-900 font-semibold mb-1 truncate">{item.title}</div>
-                <div className="text-slate-500 text-sm line-clamp-2 mb-2">{item.body}</div>
-                <div className="flex items-center gap-3 flex-wrap">
-                  <span className="text-slate-400 text-xs">
-                    {new Date(item.publishedAt).toLocaleDateString("ar-YE")}
-                  </span>
-                  {item.sourceLabel && (
-                    <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">
-                      {item.sourceLabel}
-                    </span>
-                  )}
-                  {item.youtubeUrl && (
-                    <span className="text-xs bg-red-50 text-red-500 px-2 py-0.5 rounded-full font-medium">▶ يوتيوب</span>
-                  )}
-                  {item.tweetUrl && (
-                    <span className="text-xs bg-blue-50 text-blue-500 px-2 py-0.5 rounded-full font-medium">𝕏 تغريدة</span>
-                  )}
-                  {item.imageUrl && (
-                    <span className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full font-medium">🖼 صورة</span>
-                  )}
+        <div className="p-6 md:p-8">
+          <span className="text-slate-400 text-xs block mb-2">
+            تاريخ النشر: {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString("ar-YE") : ""}
+          </span>
+          <h1 className="text-slate-900 text-2xl md:text-3xl font-black mb-6 leading-tight">{item.title}</h1>
+
+          {item.imageUrl && (
+            <img src={item.imageUrl} alt={item.title} className="w-full h-auto max-h-[450px] object-cover rounded-xl mb-6 border shadow-sm" />
+          )}
+
+          <p className="text-slate-700 text-base leading-relaxed whitespace-pre-wrap mb-8 border-b pb-6">
+            {item.body}
+          </p>
+
+          {/* روابط المصادر والشبكات الإضافية للخبر */}
+          {(item.sourceLabel || item.youtubeUrl || item.tweetUrl) && (
+            <div className="space-y-3 bg-slate-50 p-5 rounded-xl border">
+              <h3 className="text-slate-900 font-bold text-sm">روابط ومصادر متعلقة بالخبر:</h3>
+              
+              {item.sourceLabel && (
+                <div className="text-xs text-slate-600">
+                  🔹 <strong>المصدر المرجعي:</strong>{" "}
+                  {item.sourceUrl ? (
+                    <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-semibold">{item.sourceLabel}</a>
+                  ) : item.sourceLabel}
                 </div>
-              </div>
-              <div className="flex gap-2 flex-shrink-0">
-                <button onClick={() => openEdit(item)}
-                  className="text-slate-600 text-xs px-3 py-1.5 border border-slate-200 rounded-lg hover:border-blue-300 hover:text-blue-600 transition-colors">
-                  تعديل
-                </button>
-                <button onClick={() => handleDelete(item.id)}
-                  className="text-red-500 text-xs px-3 py-1.5 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">
-                  حذف
-                </button>
-              </div>
+              )}
+
+              {item.youtubeUrl && (
+                <div className="text-xs">
+                  🔴 <strong>تغطية مرئية:</strong>{" "}
+                  <a href={item.youtubeUrl} target="_blank" rel="noopener noreferrer" className="text-red-600 hover:underline font-semibold">مشاهدة التقرير عبر يوتيوب</a>
+                </div>
+              )}
+
+              {item.tweetUrl && (
+                <div className="text-xs">
+                  💬 <strong>المتابعة عبر منصة 𝕏:</strong>{" "}
+                  <a href={item.tweetUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline font-semibold">قراءة التغريدة الأصلية</a>
+                </div>
+              )}
             </div>
-          ))}
+          )}
         </div>
-      )}
-
-      {showForm && (
-        <div className="fixed inset-0 bg-black/60 flex items-start justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white border border-slate-200 rounded-xl w-full max-w-2xl p-6 my-8">
-            <h2 className="text-slate-900 font-bold text-lg mb-6">
-              {editing ? "تعديل الخبر" : "إضافة خبر جديد"}
-            </h2>
-            <form onSubmit={handleSubmit} className="space-y-5">
-
-              {/* العنوان */}
-              <div>
-                <label className="block text-slate-700 text-sm font-medium mb-1.5">عنوان الخبر *</label>
-                <input
-                  value={form.title}
-                  onChange={(e) => f("title", e.target.value)}
-                  required
-                  placeholder="أدخل عنوان الخبر"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
-                />
-              </div>
-
-              {/* نص الخبر */}
-              <div>
-                <label className="block text-slate-700 text-sm font-medium mb-1.5">نص الخبر *</label>
-                <textarea
-                  value={form.body}
-                  onChange={(e) => f("body", e.target.value)}
-                  required
-                  rows={5}
-                  placeholder="اكتب تفاصيل الخبر هنا..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors resize-none"
-                />
-              </div>
-
-              {/* المصدر */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-slate-700 text-sm font-medium mb-1.5">اسم المصدر</label>
-                  <input
-                    value={form.sourceLabel}
-                    onChange={(e) => f("sourceLabel", e.target.value)}
-                    placeholder="مثال: رويترز"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
-                  />
-                </div>
-                <div>
-                  <label className="block text-slate-700 text-sm font-medium mb-1.5">رابط المصدر الأصلي</label>
-                  <input
-                    value={form.sourceUrl}
-                    onChange={(e) => f("sourceUrl", e.target.value)}
-                    placeholder="https://..."
-                    type="url"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
-                    dir="ltr"
-                  />
-                </div>
-              </div>
-
-              {/* روابط الميديا والشبكات */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-slate-700 text-sm font-medium mb-1.5">▶ رابط يوتيوب</label>
-                  <input
-                    value={form.youtubeUrl}
-                    onChange={(e) => f("youtubeUrl", e.target.value)}
-                    placeholder="https://youtube.com/..."
-                    type="url"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
-                    dir="ltr"
-                  />
-                </div>
-                <div>
-                  <label className="block text-slate-700 text-sm font-medium mb-1.5">𝕏 رابط تغريدة X</label>
-                  <input
-                    value={form.tweetUrl}
-                    onChange={(e) => f("tweetUrl", e.target.value)}
-                    placeholder="https://x.com/..."
-                    type="url"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
-                    dir="ltr"
-                  />
-                </div>
-              </div>
-
-              {/* حقل رفع الصورة الفعلي المتوافق مع R2 */}
-              <div>
-                <label className="block text-slate-700 text-sm font-medium mb-1.5">🖼 صورة الخبر</label>
-                <div className="flex items-center gap-4">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
-                  />
-                  {uploading && <span className="text-xs text-blue-600 font-medium animate-pulse">جاري الرفع لـ R2...</span>}
-                </div>
-                {form.imageUrl && (
-                  <div className="mt-3 relative inline-block">
-                    <img src={form.imageUrl} alt="معاينة" className="h-24 rounded-lg object-cover border border-slate-200" />
-                    <button 
-                      type="button" 
-                      onClick={() => setForm(prev => ({ ...prev, imageUrl: "" }))}
-                      className="absolute -top-1.5 -left-1.5 bg-red-500 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center font-bold shadow hover:bg-red-600">
-                      ×
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* أزرار الإجراءات */}
-              <div className="flex gap-3 pt-4 border-t border-slate-100">
-                <button type="submit" disabled={uploading}
-                  className="flex-1 bg-blue-600 text-white py-3 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors disabled:bg-slate-300 disabled:cursor-not-allowed">
-                  {editing ? "حفظ التعديلات" : "نشر الخبر"}
-                </button>
-                <button type="button" onClick={() => setShowForm(false)}
-                  className="flex-1 border border-slate-200 text-slate-600 py-3 rounded-lg text-sm hover:bg-slate-50 transition-colors">
-                  إلغاء
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

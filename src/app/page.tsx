@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { db } from "@/db";
 import { settings, programs, episodes, news, schedule } from "@/db/schema";
@@ -15,7 +17,7 @@ export default async function HomePage() {
   const [allSettings, allPrograms, latestNews, allSchedule, latestEpisodes] = await Promise.all([
     db.select().from(settings),
     db.select().from(programs).where(eq(programs.active, true)),
-    db.select().from(news).orderBy(desc(news.publishedAt)).limit(3),
+    db.select().from(news).orderBy(desc(news.publishedAt)).limit(6), // تم تعديل الحد إلى 6 أخبار لمظهر أفضل
     db.select().from(schedule),
     db.select().from(episodes).orderBy(desc(episodes.publishedAt)).limit(5),
   ]);
@@ -71,11 +73,9 @@ export default async function HomePage() {
         </div>
         <div className="max-w-5xl mx-auto relative">
           <div className="flex flex-col md:flex-row items-center gap-12">
-            {/* Logo large */}
             <div className="flex-shrink-0">
               <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-48 h-48 object-contain drop-shadow-2xl" />
             </div>
-            {/* Content */}
             <div className="flex-1 text-center md:text-right">
               <div className="inline-flex items-center gap-2 bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-full mb-6">
                 <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
@@ -157,21 +157,43 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* News */}
+      {/* News Section */}
       {s.section_news !== "false" && latestNews.length > 0 && (
         <section id="news" className="px-6 py-16 max-w-6xl mx-auto">
           <div className="mb-8">
             <div className="text-blue-600 text-xs uppercase tracking-widest font-bold mb-1">آخر الأخبار</div>
             <h2 className="text-slate-900 text-2xl font-black">الأخبار</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {latestNews.map((item) => (
-              <Link key={item.id} href={`/news/${item.id}`} className="bg-white border border-slate-200 rounded-xl p-5 hover:border-blue-200 hover:shadow-md transition-all group block">
-                <div className="text-slate-400 text-xs mb-2">{new Date(item.publishedAt).toLocaleDateString("ar-YE")}</div>
-                <div className="text-slate-900 font-bold mb-2 leading-snug group-hover:text-blue-600 transition-colors">{item.title}</div>
-                <div className="text-slate-500 text-sm line-clamp-3">{item.body}</div>
-                <div className="text-blue-600 text-xs font-bold mt-3">اقرأ المزيد ←</div>
-              </Link>
+              <div key={item.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:border-blue-300 hover:shadow-md transition-all flex flex-col justify-between group">
+                <div>
+                  {item.imageUrl && (
+                    <div className="h-44 w-full overflow-hidden border-b">
+                      <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-350" />
+                    </div>
+                  )}
+                  <div className="p-5">
+                    <div className="text-slate-400 text-xs mb-2">{item.publishedAt ? new Date(item.publishedAt).toLocaleDateString("ar-YE") : ""}</div>
+                    <Link href={`/news/${item.id}`} className="text-slate-900 font-bold text-base mb-2 block leading-snug hover:text-blue-600 transition-colors line-clamp-2">
+                      {item.title}
+                    </Link>
+                    <div className="text-slate-500 text-xs line-clamp-3 mb-4 leading-relaxed">{item.body}</div>
+                    
+                    {/* شارات نوع المحتوى المضاف حديثاً */}
+                    <div className="flex gap-1.5 flex-wrap">
+                      {item.sourceLabel && <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">📰 {item.sourceLabel}</span>}
+                      {item.youtubeUrl && <span className="text-[10px] bg-red-50 text-red-600 px-2 py-0.5 rounded font-medium">▶ يوتيوب</span>}
+                      {item.tweetUrl && <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-medium">𝕏 تغريدة</span>}
+                    </div>
+                  </div>
+                </div>
+                <div className="p-5 pt-0 mt-2">
+                  <Link href={`/news/${item.id}`} className="text-blue-600 text-xs font-bold inline-flex items-center gap-1 hover:underline">
+                    اقرأ المزيد ←
+                  </Link>
+                </div>
+              </div>
             ))}
           </div>
         </section>
