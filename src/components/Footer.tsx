@@ -48,6 +48,7 @@ export default async function Footer() {
               {[
                 { href: "/", label: "الرئيسية" },
                 { href: "/programs", label: "البرامج والحلقات" },
+                { href: "/articles", label: "الكتابات والمقالات" },
                 { href: "/about", label: "عن الإذاعة" },
                 { href: "/#schedule", label: "جدول البث" },
                 { href: "/#news", label: "الأخبار" },
