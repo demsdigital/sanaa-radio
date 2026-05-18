@@ -45,24 +45,6 @@ export default async function HomePage() {
         </div>
       )}
 
-      {/* Nav */}
-      <nav className="border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 bg-white z-40 shadow-sm">
-        <div className="flex items-center gap-3 py-2">
-          <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-14 h-14 object-contain" />
-          <div>
-            <div className="text-slate-900 text-base font-black leading-tight">إذاعة الجمهورية اليمنية</div>
-            <div className="text-blue-600 text-xs font-semibold">البرنامج العام • Yemen Radio</div>
-          </div>
-        </div>
-        <div className="flex items-center gap-1">
-          {s.section_programs !== "false" && <Link href="/programs" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">البرامج</Link>}
-          {s.section_schedule !== "false" && <a href="#schedule" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">الجدول</a>}
-          {s.section_news !== "false" && <a href="#news" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">الأخبار</a>}
-          {s.section_satellite !== "false" && <a href="#satellite" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">عبر القمر</a>}
-          <Link href="/about" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">عن الإذاعة</Link>
-          {s.section_contact !== "false" && s.whatsapp && <a href="#contact" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">تواصل</a>}
-        </div>
-      </nav>
 
       {/* Hero */}
       {(()=>{
