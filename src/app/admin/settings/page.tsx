@@ -197,6 +197,41 @@ export default function SettingsPage() {
               </div>)}
             </div>
           </div>
+            <div className="pt-3 border-t border-slate-100">
+              <label className="block text-slate-700 text-sm font-medium mb-2">📱 صورة الهيرو على الموبايل</label>
+              <div className="flex gap-2 mb-3 flex-wrap">
+                {[{val:"same",label:"نفس الديسكتوب",icon:"🖥️"},{val:"none",label:"بدون صورة",icon:"🎨"},{val:"image",label:"صورة مختلفة",icon:"🖼️"}].map(t=>(
+                  <button key={t.val} type="button" onClick={()=>f("hero_mobile_media_type",t.val)}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border-2 text-sm font-medium transition-all ${form.hero_mobile_media_type===t.val?"border-blue-500 bg-blue-50 text-blue-700":"border-slate-200 text-slate-600"}`}>
+                    {t.icon} {t.label}
+                  </button>
+                ))}
+              </div>
+              {form.hero_mobile_media_type==="image"&&(
+                <div className="space-y-3">
+                  <div className="flex gap-2">
+                    <input type="url" value={form.hero_mobile_media_url} onChange={e=>f("hero_mobile_media_url",e.target.value)}
+                      placeholder="https://..." dir="ltr"
+                      className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 font-mono"/>
+                    <button type="button" onClick={()=>uploadFile("image/*","hero_mobile_media_url")}
+                      className="px-4 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700">رفع ↑</button>
+                  </div>
+                  {form.hero_mobile_media_url&&(
+                    <div className="h-28 rounded-xl overflow-hidden border border-slate-200">
+                      <img src={form.hero_mobile_media_url} alt="معاينة" className="w-full h-full object-cover"/>
+                    </div>
+                  )}
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-slate-700 text-sm font-medium">درجة التعتيم</span>
+                      <span className="text-blue-600 text-sm font-bold">{form.hero_mobile_overlay_opacity}%</span>
+                    </div>
+                    <input type="range" min="0" max="90" step="5" value={form.hero_mobile_overlay_opacity}
+                      onChange={e=>f("hero_mobile_overlay_opacity",e.target.value)} className="w-full accent-blue-600"/>
+                  </div>
+                </div>
+              )}
+            </div>
         </Section>
 
         <Section open={open} setOpen={setOpen} id="programs_hero" icon="📻" title="هيرو صفحة البرامج" desc="تخصيص الجزء العلوي من صفحة البرامج">
