@@ -32,6 +32,9 @@ export default async function HomePage() {
     .filter((i) => i.day === todayKey || i.day === "daily")
     .sort((a, b) => a.timeStart.localeCompare(b.timeStart))
     .slice(0, 8);
+
+  return (
+    <div>
       {/* Hero */}
       {(()=>{
         const bg:Record<string,string>={
