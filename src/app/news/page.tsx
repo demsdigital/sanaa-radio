@@ -2,7 +2,6 @@ import { db } from "@/db";
 import { news } from "@/db/schema";
 import { desc } from "drizzle-orm";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import type { Metadata } from "next";
 
@@ -16,7 +15,6 @@ export default async function NewsArchivePage() {
 
   return (
     <div className="min-h-screen bg-slate-50" dir="rtl">
-      <Navbar />
 
       {/* هيرو بسيط */}
       <div
