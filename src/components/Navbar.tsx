@@ -35,22 +35,4 @@ export default async function Navbar() {
           {s.section_news !== "false" && <Link href="/news" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">الأخبار</Link>}
           {s.section_satellite !== "false" && <Link href="/#satellite" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">عبر القمر</Link>}
           <Link href="/articles" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">الكتابات</Link>
-          <Link href="/about" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">عن الإذاعة</Link>
-          <Link href="/director" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">رئيس القطاع</Link>
-          {s.section_contact !== "false" && s.whatsapp && <Link href="/#contact" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">تواصل</Link>}
-        </div>
-        {socials.length > 0 && (
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-            {socials.map((soc) => (
-              <a key={soc.key} href={s[soc.key]} target="_blank" rel="noopener noreferrer" title={soc.label}
-                className="w-8 h-8 rounded-full flex items-center justify-center transition-all hover:scale-110 hover:shadow-md"
-                style={{ background: soc.bg }}>
-                {soc.svg}
-              </a>
-            ))}
-          </div>
-        )}
-      </div>
-    </nav>
-  );
-}
+          
