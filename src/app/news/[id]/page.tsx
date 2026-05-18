@@ -95,12 +95,22 @@ export default async function NewsDetailPage({ params }: Props) {
 
             {/* الصورة كاملة بلا قص */}
             {item.imageUrl && (
-              <div className="w-full bg-slate-100">
-                <img
-                  src={item.imageUrl}
-                  alt={item.title}
-                  className="w-full h-auto block"
-                />
+              <div className="relative w-full" style={{ background: "#f1f5f9", borderBottom: "3px solid #2563eb" }}>
+                <div style={{ paddingBottom: "56.25%", position: "relative" }}>
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      objectPosition: "center",
+                      padding: "16px",
+                    }}
+                  />
+                </div>
               </div>
             )}
 
