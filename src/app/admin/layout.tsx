@@ -1,25 +1,51 @@
 "use client";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
-const navItems = [
-  { href: "/admin/dashboard", label: "الرئيسية", icon: "🏠" },
-  { href: "/admin/programs", label: "البرامج", icon: "📻" },
-  { href: "/admin/episodes", label: "الحلقات", icon: "🎙️" },
-  { href: "/admin/schedule", label: "الجدول", icon: "📅" },
-  { href: "/admin/news", label: "الأخبار", icon: "📰" },
-  { href: "/admin/users", label: "المستخدمون", icon: "👥" },
-  { href: "/admin/settings", label: "الإعدادات", icon: "⚙️" },
+type Me = {
+  id: number;
+  name: string;
+  role: string;
+  permissions: string[];
+};
+
+const allNavItems = [
+  { href: "/admin/dashboard", label: "الرئيسية",          icon: "🏠", perm: null },
+  { href: "/admin/programs",  label: "البرامج",            icon: "📻", perm: "programs" },
+  { href: "/admin/episodes",  label: "الحلقات",            icon: "🎙️", perm: "episodes" },
+  { href: "/admin/schedule",  label: "الجدول",             icon: "📅", perm: "schedule" },
+  { href: "/admin/news",      label: "الأخبار",            icon: "📰", perm: "news" },
+  { href: "/admin/users",     label: "المستخدمون",         icon: "👥", perm: "admin" },
+  { href: "/admin/settings",  label: "الإعدادات",          icon: "⚙️", perm: "admin" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
+  const router   = useRouter();
+  const [me, setMe] = useState<Me | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/me").then(r => r.ok ? r.json() : null).then(data => {
+      if (!data || data.error) { router.push("/login"); return; }
+      setMe(data);
+    });
+  }, []);
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/login");
   }
+
+  function hasAccess(perm: string | null): boolean {
+    if (!me) return false;
+    if (perm === null) return true;           // الرئيسية للكل
+    if (me.role === "admin") return true;     // المدير يرى كل شيء
+    if (perm === "admin") return false;       // المستخدمون/الإعدادات للمدير فقط
+    return (me.permissions || []).includes(perm);
+  }
+
+  const navItems = allNavItems.filter(item => hasAccess(item.perm));
 
   return (
     <div className="min-h-screen bg-slate-50 flex" dir="rtl">
@@ -43,13 +69,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 p-3 space-y-1">
+        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
           {navItems.map((item) => (
             <Link key={item.href} href={item.href}
               className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-colors ${
                 pathname === item.href
-                  ? "bg-blue-600 text-slate-900 font-bold"
-                  : "text-slate-800 hover:bg-slate-100 hover:text-slate-900"
+                  ? "bg-blue-600 text-white font-bold"
+                  : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
               }`}>
               <span>{item.icon}</span>
               <span>{item.label}</span>
@@ -57,8 +83,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           ))}
         </nav>
 
-        {/* Logout */}
+        {/* User info + Logout */}
         <div className="p-3 border-t border-slate-200">
+          {me && (
+            <div className="px-4 py-2 mb-1">
+              <div className="text-slate-800 text-sm font-medium truncate">{me.name}</div>
+              <div className="text-slate-400 text-xs">{me.role === "admin" ? "👑 مدير" : "👤 فريق"}</div>
+            </div>
+          )}
           <button onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-red-500 hover:bg-red-50 transition-colors">
             <span>🚪</span>
