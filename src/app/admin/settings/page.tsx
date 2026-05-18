@@ -18,6 +18,10 @@ export default function SettingsPage() {
     hero_bg: "blue", hero_media_type: "none", hero_media_url: "", hero_overlay_opacity: "55", hero_card_opacity: "12",
     social_facebook: "", social_twitter: "", social_youtube: "",
     social_telegram: "", social_instagram: "", social_tiktok: "",
+    director_name: "الأستاذ صالح علي أمين القادري",
+    director_title: "رئيس قطاع إذاعة صنعاء – البرنامج العام",
+    director_photo: "",
+    director_bio1: "", director_bio2: "", director_bio3: "", director_bio4: "",
   });
 
   async function load() {
@@ -284,6 +288,18 @@ export default function SettingsPage() {
                   className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* رئيس القطاع */}
+        <div className="bg-white border border-slate-200 rounded-xl p-6">
+          <div className="flex items-center gap-2 mb-1"><span>👤</span><h2 className="text-slate-900 font-bold">رئيس القطاع</h2></div>
+          <p className="text-slate-400 text-xs mb-4">محتوى صفحة رئيس قطاع إذاعة صنعاء</p>
+          <div className="space-y-3">
+            <div><label className="block text-slate-700 text-sm font-medium mb-1.5">الاسم الكامل</label><input value={form.director_name} onChange={e => f("director_name", e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400" /></div>
+            <div><label className="block text-slate-700 text-sm font-medium mb-1.5">المسمى الوظيفي</label><input value={form.director_title} onChange={e => f("director_title", e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400" /></div>
+            <div><label className="block text-slate-700 text-sm font-medium mb-1.5">رابط الصورة الشخصية</label><div className="flex gap-2"><input type="url" value={form.director_photo} onChange={e => f("director_photo", e.target.value)} dir="ltr" placeholder="https://..." className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400" /><button type="button" onClick={() => uploadFile("image/*", "director_photo")} className="px-4 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700">رفع ↑</button></div></div>
+            {["director_bio1","director_bio2","director_bio3","director_bio4"].map((k,i) => (<div key={k}><label className="block text-slate-700 text-sm font-medium mb-1.5">الفقرة {i+1}</label><textarea value={form[k as keyof typeof form]} onChange={e => f(k as keyof typeof form, e.target.value)} rows={3} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400 resize-none" /></div>))}
           </div>
         </div>
 
