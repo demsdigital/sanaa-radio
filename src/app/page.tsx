@@ -6,6 +6,7 @@ import { settings, programs, episodes, news, schedule } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 
 import type { Metadata } from "next";
+import AudioPlayer from "@/components/AudioPlayer";
 
 export const metadata: Metadata = {
   title: "إذاعة الجمهورية اليمنية — البرنامج العام",
@@ -33,7 +34,7 @@ export default async function HomePage() {
     .slice(0, 8);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900" dir="rtl">
+    <div className="min-h-screen bg-white text-slate-900 pb-20" dir="rtl">
 
       {/* Ticker */}
       {s.ticker_visible !== "false" && s.ticker && (
@@ -336,6 +337,14 @@ export default async function HomePage() {
       )}
 
       {/* Footer */}
+    </div>
+      {s.show_player === "true" && s.stream_url && (
+        <AudioPlayer
+          streamUrl={s.stream_url}
+          stationName="إذاعة الجمهورية اليمنية"
+          onAirLabel={s.on_air_label || "البرنامج العام"}
+        />
+      )}
     </div>
   );
 }
