@@ -21,6 +21,9 @@ export default function SettingsPage() {
     section_contact: "true",
     show_listen_btn: "true",
     on_air_label: "نشرة الأخبار الرئيسية",
+    // المشغّل الصوتي
+    show_player: "false",
+    stream_url: "",
   });
 
   async function load() {
@@ -36,130 +39,179 @@ export default function SettingsPage() {
     e.preventDefault();
     setSaving(true);
     await Promise.all(Object.entries(form).map(([key, value]) =>
-      fetch("/api/settings", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key, value }) })
+      fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key, value }),
+      })
     ));
     setSaving(false);
     setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setTimeout(() => setSaved(false), 2500);
   }
 
-  function Toggle({ label, field }: { label: string; field: keyof typeof form }) {
+  const f = (key: keyof typeof form, value: string) =>
+    setForm(prev => ({ ...prev, [key]: value }));
+
+  function Toggle({ label, field, desc }: { label: string; field: keyof typeof form; desc?: string }) {
     const isOn = form[field] === "true";
     return (
       <div className="flex items-center justify-between py-3 border-b border-slate-100 last:border-0">
-        <span className="text-slate-800 text-sm">{label}</span>
+        <div>
+          <span className="text-slate-800 text-sm font-medium">{label}</span>
+          {desc && <div className="text-slate-400 text-xs mt-0.5">{desc}</div>}
+        </div>
         <button
           type="button"
-          onClick={() => setForm({ ...form, [field]: isOn ? "false" : "true" })}
-          className={`w-12 h-6 rounded-full transition-colors relative ${isOn ? "bg-blue-600" : "bg-gray-700"}`}
-        >
-          <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${isOn ? "right-1" : "left-1"}`} />
+          onClick={() => f(field, isOn ? "false" : "true")}
+          className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${isOn ? "bg-blue-600" : "bg-slate-200"}`}>
+          <span className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${isOn ? "right-1" : "left-1"}`} />
         </button>
       </div>
     );
   }
 
-  if (loading) return <div className="text-slate-800 text-center py-20">جاري التحميل...</div>;
+  function Input({ label, field, placeholder, dir = "rtl", type = "text" }: {
+    label: string; field: keyof typeof form; placeholder?: string; dir?: "rtl" | "ltr"; type?: string;
+  }) {
+    return (
+      <div>
+        <label className="block text-slate-700 text-sm font-medium mb-1.5">{label}</label>
+        <input
+          type={type}
+          value={form[field]}
+          onChange={(e) => f(field, e.target.value)}
+          placeholder={placeholder}
+          dir={dir}
+          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+        />
+      </div>
+    );
+  }
+
+  if (loading) return (
+    <div className="text-slate-400 text-center py-20">جاري التحميل...</div>
+  );
 
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-slate-900 text-2xl font-bold">الإعدادات</h1>
-          <p className="text-slate-800 text-sm mt-1">إعدادات الموقع العامة</p>
+          <p className="text-slate-500 text-sm mt-1">إعدادات الموقع العامة</p>
         </div>
-        {saved && <span className="text-green-400 text-sm font-medium">✓ تم الحفظ</span>}
+        {saved && (
+          <span className="text-green-600 text-sm font-medium bg-green-50 border border-green-200 px-3 py-1.5 rounded-lg">
+            ✓ تم الحفظ
+          </span>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
 
-        {/* أقسام الموقع */}
+        {/* ===== المشغّل الصوتي ===== */}
+        <div className="bg-white border-2 border-blue-100 rounded-xl p-6">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg">🎙️</span>
+            <h2 className="text-slate-900 font-bold">المشغّل الصوتي المباشر</h2>
+          </div>
+          <p className="text-slate-400 text-xs mb-5">يظهر شريط ثابت أسفل الموقع للاستماع المباشر</p>
+
+          <Toggle
+            label="إظهار المشغّل الصوتي"
+            field="show_player"
+            desc="أخفِه حتى تحصل على رابط البث"
+          />
+
+          <div className="mt-4 space-y-4">
+            <div>
+              <label className="block text-slate-700 text-sm font-medium mb-1.5">
+                رابط البث المباشر (Stream URL)
+              </label>
+              <input
+                type="url"
+                value={form.stream_url}
+                onChange={(e) => f("stream_url", e.target.value)}
+                placeholder="https://stream.example.com/radio.mp3"
+                dir="ltr"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors font-mono"
+              />
+              <p className="text-slate-400 text-xs mt-1.5">
+                يدعم: MP3 • AAC • Icecast • HLS (.m3u8)
+              </p>
+            </div>
+            <Input
+              label="اسم البرنامج الحالي على الهواء"
+              field="on_air_label"
+              placeholder="نشرة الأخبار الرئيسية"
+            />
+          </div>
+
+          {form.show_player === "true" && !form.stream_url && (
+            <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-amber-700 text-sm">
+              ⚠️ المشغّل مفعّل لكن رابط البث فارغ — لن يعمل حتى تضع الرابط
+            </div>
+          )}
+          {form.show_player === "true" && form.stream_url && (
+            <div className="mt-4 bg-green-50 border border-green-200 rounded-lg px-4 py-3 text-green-700 text-sm">
+              ✓ المشغّل جاهز — سيظهر أسفل الموقع
+            </div>
+          )}
+        </div>
+
+        {/* ===== أقسام الموقع ===== */}
         <div className="bg-white border border-slate-200 rounded-xl p-6">
-          <h2 className="text-slate-900 font-bold mb-4">أقسام الموقع</h2>
-          <p className="text-slate-800 text-xs mb-4">تحكم في إظهار وإخفاء كل قسم في الموقع</p>
+          <h2 className="text-slate-900 font-bold mb-1">أقسام الموقع</h2>
+          <p className="text-slate-400 text-xs mb-4">تحكم في إظهار وإخفاء كل قسم</p>
           <Toggle label="قسم البرامج" field="section_programs" />
           <Toggle label="قسم الجدول" field="section_schedule" />
           <Toggle label="قسم الأخبار" field="section_news" />
           <Toggle label="قسم عبر القمر" field="section_satellite" />
           <Toggle label="قسم التواصل / واتساب" field="section_contact" />
+          <Toggle label="زر الاستماع للأرشيف" field="show_listen_btn" />
         </div>
 
-        {/* الرئيسية */}
+        {/* ===== الشريط الإخباري ===== */}
         <div className="bg-white border border-slate-200 rounded-xl p-6">
-          <h2 className="text-slate-900 font-bold mb-4">الصفحة الرئيسية</h2>
-          <Toggle label="إظهار زر الاستماع" field="show_listen_btn" />
-          <div className="mt-4">
-            <label className="block text-slate-800 text-sm mb-2">البرنامج الحالي على الهواء</label>
-            <input
-              value={form.on_air_label}
-              onChange={(e) => setForm({ ...form, on_air_label: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400"
-              placeholder="نشرة الأخبار الرئيسية"
-            />
-          </div>
-        </div>
-
-        {/* الشريط الإخباري */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6">
-          <h2 className="text-slate-900 font-bold mb-4">الشريط الإخباري</h2>
+          <h2 className="text-slate-900 font-bold mb-4">الشريط الإخباري العاجل</h2>
           <Toggle label="إظهار الشريط" field="ticker_visible" />
           <div className="mt-4">
-            <label className="block text-slate-800 text-sm mb-2">نص الشريط</label>
+            <label className="block text-slate-700 text-sm font-medium mb-1.5">نص الشريط</label>
             <textarea
               value={form.ticker}
-              onChange={(e) => setForm({ ...form, ticker: e.target.value })}
+              onChange={(e) => f("ticker", e.target.value)}
               rows={3}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400"
               placeholder="إذاعة الجمهورية اليمنية — البرنامج العام..."
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors resize-none"
             />
           </div>
         </div>
 
-        {/* التواصل */}
+        {/* ===== التواصل ===== */}
         <div className="bg-white border border-slate-200 rounded-xl p-6">
           <h2 className="text-slate-900 font-bold mb-4">التواصل</h2>
-          <div>
-            <label className="block text-slate-800 text-sm mb-2">رقم واتساب</label>
-            <input
-              value={form.whatsapp}
-              onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
-              dir="ltr"
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400"
-              placeholder="9671234567"
-            />
-          </div>
+          <Input label="رقم واتساب" field="whatsapp" placeholder="9671234567" dir="ltr" />
         </div>
 
-        {/* القمر */}
+        {/* ===== القمر الصناعي ===== */}
         <div className="bg-white border border-slate-200 rounded-xl p-6">
           <h2 className="text-slate-900 font-bold mb-4">بيانات القمر الصناعي</h2>
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-slate-800 text-sm mb-2">تردد الفضائية (MHz)</label>
-              <input value={form.satellite_freq} onChange={(e) => setForm({ ...form, satellite_freq: e.target.value })} dir="ltr" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
-            </div>
-            <div>
-              <label className="block text-slate-800 text-sm mb-2">اسم القمر</label>
-              <input value={form.satellite_name} onChange={(e) => setForm({ ...form, satellite_name: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
-            </div>
-            <div>
-              <label className="block text-slate-800 text-sm mb-2">الموضع المداري</label>
-              <input value={form.satellite_position} onChange={(e) => setForm({ ...form, satellite_position: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
-            </div>
-            <div>
-              <label className="block text-slate-800 text-sm mb-2">الاستقطاب</label>
-              <input value={form.satellite_polarization} onChange={(e) => setForm({ ...form, satellite_polarization: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
-            </div>
-            <div>
-              <label className="block text-slate-800 text-sm mb-2">الموجة القصيرة (كيلو هيرتز)</label>
-              <input value={form.shortwave} onChange={(e) => setForm({ ...form, shortwave: e.target.value })} dir="ltr" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
-            </div>
+            <Input label="تردد الفضائية (MHz)" field="satellite_freq" dir="ltr" />
+            <Input label="اسم القمر" field="satellite_name" />
+            <Input label="الموضع المداري" field="satellite_position" />
+            <Input label="الاستقطاب" field="satellite_polarization" />
+            <Input label="الموجة القصيرة (كيلو هيرتز)" field="shortwave" dir="ltr" />
           </div>
         </div>
 
-        <button type="submit" disabled={saving} className="bg-blue-600 text-slate-900 px-8 py-3 rounded-lg font-bold hover:bg-blue-600/90 transition-colors disabled:opacity-50">
-          {saving ? "جاري الحفظ..." : "حفظ الإعدادات"}
+        <button
+          type="submit"
+          disabled={saving}
+          className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors disabled:opacity-50 text-sm">
+          {saving ? "جاري الحفظ..." : "💾 حفظ الإعدادات"}
         </button>
+
       </form>
     </div>
   );
