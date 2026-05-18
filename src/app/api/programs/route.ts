@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { getTokenFromRequest, verifyToken } from "@/lib/auth";
 
 export async function GET() {
-  const all = await db.select().from(programs).orderBy(programs.createdAt);
+  const all = await db.select().from(programs).orderBy(programs.sortOrder, programs.createdAt);
   return NextResponse.json(all);
 }
 

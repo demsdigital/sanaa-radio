@@ -8,6 +8,7 @@ export const users = pgTable("users", {
   role: text("role").notNull().default("team"),
   permissions: json("permissions").$type<string[]>().default([]),
   active: boolean("active").notNull().default(true),
+  sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

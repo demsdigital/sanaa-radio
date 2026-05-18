@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const [allSettings, allPrograms, latestNews, allSchedule, latestEpisodes] = await Promise.all([
     db.select().from(settings),
-    db.select().from(programs).where(eq(programs.active, true)),
+    db.select().from(programs).where(eq(programs.active, true)).orderBy(programs.sortOrder, programs.createdAt),
     db.select().from(news).orderBy(desc(news.publishedAt)).limit(6), // تم تعديل الحد إلى 6 أخبار لمظهر أفضل
     db.select().from(schedule),
     db.select().from(episodes).orderBy(desc(episodes.publishedAt)).limit(5),
