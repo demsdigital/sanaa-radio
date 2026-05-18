@@ -35,13 +35,23 @@ export default async function ProgramsPage() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 rtl">
             {allPrograms.map((p) => (
               <Link key={p.id} href={`/programs/${p.slug}`}
-                className="bg-white border border-slate-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-md transition-all group">
-                <div className="w-12 h-12 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mb-3 group-hover:bg-blue-100 transition-colors">
-                  <span className="text-xl">📻</span>
+                className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-blue-300 hover:shadow-xl transition-all group flex flex-col">
+                {p.imageUrl ? (
+                  <div className="w-full flex-shrink-0" style={{height:"180px",overflow:"hidden"}}>
+                    <img src={p.imageUrl} alt={p.name}
+                      style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}
+                      className="group-hover:scale-105 transition-transform duration-300" />
+                  </div>
+                ) : (
+                  <div className="w-full flex-shrink-0 bg-blue-50 flex items-center justify-center" style={{height:"180px"}}>
+                    <span className="text-5xl">📻</span>
+                  </div>
+                )}
+                <div className="p-4 flex-1">
+                  <div className="text-slate-900 font-bold text-sm mb-1 line-clamp-1">{p.name}</div>
+                  <div className="text-blue-600 text-xs font-medium mb-2">{p.category}</div>
+                  {p.description && <div className="text-slate-500 text-xs line-clamp-2 leading-relaxed">{p.description}</div>}
                 </div>
-                <div className="text-slate-900 font-bold text-sm mb-1">{p.name}</div>
-                <div className="text-blue-600 text-xs font-medium mb-2">{p.category}</div>
-                {p.description && <div className="text-slate-500 text-xs line-clamp-2">{p.description}</div>}
               </Link>
             ))}
           </div>
