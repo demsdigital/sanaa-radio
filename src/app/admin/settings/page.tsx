@@ -305,7 +305,71 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <button type="submit" disabled={saving}
+        {/* هيرو صفحة البرامج */}
+        <div className="bg-white border border-slate-200 rounded-xl p-6">
+          <div className="flex items-center gap-2 mb-1"><span>📻</span><h2 className="text-slate-900 font-bold">هيرو صفحة البرامج</h2></div>
+          <p className="text-slate-400 text-xs mb-4">تخصيص الجزء العلوي من صفحة البرامج</p>
+          <div className="space-y-3">
+            <div>
+              <label className="block text-slate-700 text-sm font-medium mb-1.5">العنوان</label>
+              <input value={form.programs_hero_title} onChange={e => f("programs_hero_title", e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
+            </div>
+            <div>
+              <label className="block text-slate-700 text-sm font-medium mb-1.5">العنوان الفرعي</label>
+              <input value={form.programs_hero_subtitle} onChange={e => f("programs_hero_subtitle", e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
+            </div>
+            <div>
+              <label className="block text-slate-700 text-sm font-medium mb-2">لون الخلفية</label>
+              <div className="flex gap-2 flex-wrap">
+                {[{val:"blue",label:"أزرق",bg:"linear-gradient(135deg,#0a1628,#2563eb)"},{val:"dark",label:"داكن",bg:"linear-gradient(135deg,#0f172a,#334155)"},{val:"green",label:"أخضر",bg:"linear-gradient(135deg,#064e3b,#047857)"},{val:"red",label:"أحمر",bg:"linear-gradient(135deg,#7f1d1d,#b91c1c)"}].map(c=>(
+                  <button key={c.val} type="button" onClick={()=>f("programs_hero_bg",c.val)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 text-sm transition-all ${form.programs_hero_bg===c.val?"border-blue-500 shadow-md":"border-slate-200"}`}>
+                    <span className="w-5 h-5 rounded-full" style={{background:c.bg}}/>{c.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="pt-3 border-t border-slate-100">
+              <label className="block text-slate-700 text-sm font-medium mb-2">🎬 وسائط الخلفية</label>
+              <div className="flex gap-2 mb-3 flex-wrap">
+                {[{val:"none",label:"بدون",icon:"🎨"},{val:"image",label:"صورة",icon:"🖼"},{val:"gif",label:"GIF",icon:"✨"},{val:"video",label:"فيديو",icon:"🎥"}].map(t=>(
+                  <button key={t.val} type="button" onClick={()=>f("programs_hero_media_type",t.val)}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border-2 text-sm font-medium transition-all ${form.programs_hero_media_type===t.val?"border-blue-500 bg-blue-50 text-blue-700":"border-slate-200 text-slate-600"}`}>
+                    {t.icon} {t.label}
+                  </button>
+                ))}
+              </div>
+              {form.programs_hero_media_type!=="none"&&(
+                <div className="space-y-3">
+                  <div className="flex gap-2">
+                    <input type="url" value={form.programs_hero_media_url} onChange={e=>f("programs_hero_media_url",e.target.value)}
+                      placeholder="https://..." dir="ltr"
+                      className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 font-mono"/>
+                    {form.programs_hero_media_type!=="video"&&(
+                      <button type="button" onClick={()=>uploadFile(form.programs_hero_media_type==="gif"?"image/gif":"image/*","programs_hero_media_url")}
+                        className="px-4 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700">رفع ↑</button>
+                    )}
+                  </div>
+                  {form.programs_hero_media_url&&form.programs_hero_media_type!=="video"&&(
+                    <div className="h-28 rounded-xl overflow-hidden border border-slate-200">
+                      <img src={form.programs_hero_media_url} alt="معاينة" className="w-full h-full object-cover"/>
+                    </div>
+                  )}
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-slate-700 text-sm font-medium">درجة التعتيم</span>
+                      <span className="text-blue-600 text-sm font-bold">{form.programs_hero_overlay_opacity}%</span>
+                    </div>
+                    <input type="range" min="0" max="90" step="5" value={form.programs_hero_overlay_opacity}
+                      onChange={e=>f("programs_hero_overlay_opacity",e.target.value)} className="w-full accent-blue-600"/>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+                <button type="submit" disabled={saving}
           className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold hover:bg-blue-700 transition-colors disabled:opacity-50">
           {saving ? "جاري الحفظ..." : "💾 حفظ جميع الإعدادات"}
         </button>
