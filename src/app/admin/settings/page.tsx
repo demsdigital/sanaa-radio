@@ -47,7 +47,7 @@ export default function SettingsPage() {
     const isOn = form[field] === "true";
     return (
       <div className="flex items-center justify-between py-3 border-b border-slate-100 last:border-0">
-        <span className="text-gray-300 text-sm">{label}</span>
+        <span className="text-slate-800 text-sm">{label}</span>
         <button
           type="button"
           onClick={() => setForm({ ...form, [field]: isOn ? "false" : "true" })}

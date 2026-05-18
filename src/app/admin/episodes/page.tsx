@@ -115,7 +115,7 @@ export default function EpisodesPage() {
                     <div className="text-slate-800 text-xs mt-1">{new Date(ep.publishedAt).toLocaleDateString("ar-YE")}</div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-gray-300 text-sm">{getProgramName(ep.programId)}</span>
+                    <span className="text-slate-800 text-sm">{getProgramName(ep.programId)}</span>
                   </td>
                   <td className="px-6 py-4">
                     <span className="text-slate-800 text-sm">{formatDuration(ep.duration)}</span>
