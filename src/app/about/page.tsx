@@ -18,7 +18,7 @@ export default function AboutPage() {
       </nav>
 
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden pt-20"
         style={{ background: "linear-gradient(135deg, #0a1628 0%, #1a3a7c 40%, #1e4db7 70%, #2563eb 100%)" }}>
 
         {/* Animated circles */}
@@ -45,9 +45,9 @@ export default function AboutPage() {
 
         <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
           {/* Logo with glow */}
-          <div className="relative inline-block mb-10">
+          <div className="relative inline-block mb-8">
             <div className="absolute inset-0 rounded-full blur-3xl bg-blue-400/40 scale-150" />
-            <div className="relative w-40 h-40 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center mx-auto p-4 shadow-2xl">
+            <div className="relative w-32 h-32 flex items-center justify-center mx-auto">
               <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-full h-full object-contain" />
             </div>
           </div>
