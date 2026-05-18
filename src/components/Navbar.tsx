@@ -35,6 +35,7 @@ export default async function Navbar() {
           {s.section_news !== "false" && <Link href="/news" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">الأخبار</Link>}
           {s.section_satellite !== "false" && <Link href="/#satellite" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">عبر القمر</Link>}
           <Link href="/about" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">عن الإذاعة</Link>
+          <Link href="/director" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">رئيس القطاع</Link>
           {s.section_contact !== "false" && s.whatsapp && <Link href="/#contact" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">تواصل</Link>}
         </div>
         {socials.length > 0 && (
