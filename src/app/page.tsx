@@ -1,272 +1,260 @@
-import Link from "next/link";
-import { db } from "@/db";
-import { settings, programs, episodes, news, schedule } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+"use client";
+import { useState, useEffect } from "react";
 
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "إذاعة الجمهورية اليمنية — البرنامج العام",
-  description: "إذاعة الجمهورية اليمنية — الصوت الحقيقي منذ عقود.",
-  openGraph: { title: "إذاعة الجمهورية اليمنية — البرنامج العام", description: "الصوت الحقيقي منذ عقود.", locale: "ar_YE", type: "website" },
+type News = {
+  id: number;
+  title: string;
+  body: string;
+  imageUrl: string;
+  tweetUrl: string;
+  youtubeUrl: string;
+  sourceLabel: string;
+  sourceUrl: string;
+  publishedAt: string;
 };
 
-export default async function HomePage() {
-  const [allSettings, allPrograms, latestNews, allSchedule, latestEpisodes] = await Promise.all([
-    db.select().from(settings),
-    db.select().from(programs).where(eq(programs.active, true)),
-    db.select().from(news).orderBy(desc(news.publishedAt)).limit(3),
-    db.select().from(schedule),
-    db.select().from(episodes).orderBy(desc(episodes.publishedAt)).limit(5),
-  ]);
+const emptyForm = {
+  title: "",
+  body: "",
+  imageUrl: "",
+  tweetUrl: "",
+  youtubeUrl: "",
+  sourceLabel: "",
+  sourceUrl: "",
+};
 
-  const s: Record<string, string> = {};
-  allSettings.forEach((item) => (s[item.key] = item.value));
+export default function NewsPage() {
+  const [items, setItems] = useState<News[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<News | null>(null);
+  const [form, setForm] = useState(emptyForm);
 
-  const todayMap: Record<number, string> = { 0: "sun", 1: "mon", 2: "tue", 3: "wed", 4: "thu", 5: "fri", 6: "sat" };
-  const todayKey = todayMap[new Date().getDay()];
-  const todaySchedule = allSchedule
-    .filter((i) => i.day === todayKey || i.day === "daily")
-    .sort((a, b) => a.timeStart.localeCompare(b.timeStart))
-    .slice(0, 8);
+  async function load() {
+    const res = await fetch("/api/news");
+    setItems(await res.json());
+    setLoading(false);
+  }
+
+  useEffect(() => { load(); }, []);
+
+  function openAdd() {
+    setEditing(null);
+    setForm(emptyForm);
+    setShowForm(true);
+  }
+
+  function openEdit(item: News) {
+    setEditing(item);
+    setForm({
+      title: item.title,
+      body: item.body,
+      imageUrl: item.imageUrl || "",
+      tweetUrl: item.tweetUrl || "",
+      youtubeUrl: item.youtubeUrl || "",
+      sourceLabel: item.sourceLabel || "",
+      sourceUrl: item.sourceUrl || "",
+    });
+    setShowForm(true);
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const method = editing ? "PUT" : "POST";
+    const payload = editing ? { ...form, id: editing.id } : form;
+    await fetch("/api/news", {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    setShowForm(false);
+    load();
+  }
+
+  async function handleDelete(id: number) {
+    if (!confirm("هل أنت متأكد من الحذف؟")) return;
+    await fetch("/api/news", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    load();
+  }
+
+  const f = (key: keyof typeof emptyForm, value: string) =>
+    setForm((prev) => ({ ...prev, [key]: value }));
 
   return (
-    <div className="min-h-screen bg-white text-slate-900" dir="rtl">
-
-      {/* Ticker */}
-      {s.ticker_visible !== "false" && s.ticker && (
-        <div className="bg-red-600 py-2 overflow-hidden">
-          <div className="flex items-center gap-4 whitespace-nowrap animate-marquee">
-            <span className="bg-white text-red-600 text-xs font-black px-3 py-0.5 rounded flex-shrink-0">عاجل</span>
-            <span className="text-white text-sm font-medium">{s.ticker}</span>
-          </div>
+    <div className="p-6 bg-slate-50 min-h-screen" dir="rtl">
+      <div className="flex items-center justify-between mb-8 max-w-4xl mx-auto">
+        <div>
+          <h1 className="text-slate-900 text-2xl font-bold">الأخبار</h1>
+          <p className="text-slate-500 text-sm mt-1">{items.length} خبر</p>
         </div>
-      )}
+        <button onClick={openAdd}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors">
+          + إضافة خبر
+        </button>
+      </div>
 
-      {/* Nav */}
-      <nav className="border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 bg-white z-40 shadow-sm">
-        <div className="flex items-center gap-3 py-2">
-          <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-14 h-14 object-contain" />
-          <div>
-            <div className="text-slate-900 text-base font-black leading-tight">إذاعة الجمهورية اليمنية</div>
-            <div className="text-blue-600 text-xs font-semibold">البرنامج العام • Yemen Radio</div>
-          </div>
-        </div>
-        <div className="flex items-center gap-1">
-          {s.section_programs !== "false" && <Link href="/programs" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">البرامج</Link>}
-          {s.section_schedule !== "false" && <a href="#schedule" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">الجدول</a>}
-          {s.section_news !== "false" && <a href="#news" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">الأخبار</a>}
-          {s.section_satellite !== "false" && <a href="#satellite" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">عبر القمر</a>}
-          <Link href="/about" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">عن الإذاعة</Link>
-          {s.section_contact !== "false" && s.whatsapp && <a href="#contact" className="px-4 py-5 text-sm text-slate-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-all font-medium">تواصل</a>}
-        </div>
-      </nav>
-
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800 text-white py-20 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 right-10 w-64 h-64 rounded-full border-2 border-white" />
-          <div className="absolute top-20 right-20 w-48 h-48 rounded-full border border-white" />
-          <div className="absolute bottom-10 left-10 w-80 h-80 rounded-full border border-white" />
-        </div>
-        <div className="max-w-5xl mx-auto relative">
-          <div className="flex flex-col md:flex-row items-center gap-12">
-            {/* Logo large */}
-            <div className="flex-shrink-0">
-              <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-48 h-48 object-contain drop-shadow-2xl" />
-            </div>
-            {/* Content */}
-            <div className="flex-1 text-center md:text-right">
-              <div className="inline-flex items-center gap-2 bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-full mb-6">
-                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                على الهواء الآن
-              </div>
-              <h1 className="text-4xl md:text-5xl font-black mb-2 leading-tight">إذاعة الجمهورية اليمنية</h1>
-              <p className="text-blue-100 text-xl font-semibold mb-1">البرنامج العام</p>
-              <p className="text-blue-200 text-sm mb-8">Yemen Radio • الصوت الحقيقي منذ عقود</p>
-
-              {s.on_air_label && (
-                <div className="bg-white/15 backdrop-blur border border-white/25 rounded-2xl p-5 max-w-sm">
-                  <div className="text-blue-100 text-xs uppercase tracking-widest mb-1 font-medium">البرنامج الحالي</div>
-                  <div className="text-white font-bold text-lg mb-3">{s.on_air_label}</div>
-                  <div className="flex gap-1 mb-4 h-7 items-end">
-                    {[8,16,24,12,20,28,10,22,18,14,26,8].map((h, i) => (
-                      <div key={i} className="w-1 bg-white rounded-full animate-pulse opacity-80"
-                        style={{ height: `${h}px`, animationDelay: `${i * 0.1}s` }} />
-                    ))}
-                  </div>
-                  {s.show_listen_btn !== "false" && latestEpisodes.length > 0 && (
-                    <Link href="/programs" className="flex items-center justify-center gap-2 w-full bg-white text-blue-700 py-2.5 rounded-xl font-bold hover:bg-blue-50 transition-colors text-sm">
-                      🎧 استمع للأرشيف
-                    </Link>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Programs */}
-      {s.section_programs !== "false" && allPrograms.length > 0 && (
-        <section className="px-6 py-16 max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <div className="text-blue-600 text-xs uppercase tracking-widest font-bold mb-1">ما نقدمه</div>
-              <h2 className="text-slate-900 text-2xl font-black">البرامج</h2>
-            </div>
-            <Link href="/programs" className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">عرض الكل ←</Link>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {allPrograms.slice(0, 8).map((p) => (
-              <Link key={p.id} href={`/programs/${p.slug}`}
-                className="bg-white border border-slate-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-md transition-all text-center group">
-                <div className="w-14 h-14 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-100 transition-colors">
-                  <span className="text-2xl">📻</span>
-                </div>
-                <div className="text-slate-900 font-bold text-sm mb-1">{p.name}</div>
-                <div className="text-blue-600 text-xs font-medium">{p.category}</div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Schedule */}
-      {s.section_schedule !== "false" && todaySchedule.length > 0 && (
-        <section id="schedule" className="px-6 py-16 bg-slate-50">
-          <div className="max-w-4xl mx-auto">
-            <div className="mb-8">
-              <div className="text-blue-600 text-xs uppercase tracking-widest font-bold mb-1">اليوم</div>
-              <h2 className="text-slate-900 text-2xl font-black">جدول البرامج</h2>
-            </div>
-            <div className="space-y-2">
-              {todaySchedule.map((item) => (
-                <div key={item.id} className="flex items-center gap-4 bg-white border border-slate-200 rounded-xl px-5 py-4 hover:border-blue-200 hover:shadow-sm transition-all">
-                  <span className="text-blue-600 font-bold text-sm w-28 flex-shrink-0" dir="ltr">{item.timeStart} — {item.timeEnd}</span>
-                  <span className="text-slate-800 flex-1 font-medium">{item.label}</span>
-                  {item.type === "live" && (
-                    <span className="text-red-500 text-xs flex items-center gap-1 font-medium">
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />مباشر
+      {loading ? (
+        <div className="text-slate-400 text-center py-20">جاري التحميل...</div>
+      ) : items.length === 0 ? (
+        <div className="text-slate-400 text-center py-20">لا توجد أخبار بعد</div>
+      ) : (
+        <div className="space-y-3 max-w-4xl mx-auto">
+          {items.map((item) => (
+            <div key={item.id}
+              className="bg-white border border-slate-200 rounded-xl p-5 flex items-start justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <div className="text-slate-900 font-semibold mb-1 truncate">{item.title}</div>
+                <div className="text-slate-500 text-sm line-clamp-2 mb-2">{item.body}</div>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="text-slate-400 text-xs">
+                    {new Date(item.publishedAt).toLocaleDateString("ar-YE")}
+                  </span>
+                  {item.sourceLabel && (
+                    <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">
+                      {item.sourceLabel}
                     </span>
                   )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* News */}
-      {s.section_news !== "false" && latestNews.length > 0 && (
-        <section id="news" className="px-6 py-16 max-w-6xl mx-auto">
-          <div className="mb-8">
-            <div className="text-blue-600 text-xs uppercase tracking-widest font-bold mb-1">آخر الأخبار</div>
-            <h2 className="text-slate-900 text-2xl font-black">الأخبار</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {latestNews.map((item) => (
-              <Link key={item.id} href={`/news/${item.id}`} className="bg-white border border-slate-200 rounded-xl p-5 hover:border-blue-200 hover:shadow-md transition-all group block">
-                <div className="text-slate-400 text-xs mb-2">{new Date(item.publishedAt).toLocaleDateString("ar-YE")}</div>
-                <div className="text-slate-900 font-bold mb-2 leading-snug group-hover:text-blue-600 transition-colors">{item.title}</div>
-                <div className="text-slate-500 text-sm line-clamp-3">{item.body}</div>
-                <div className="text-blue-600 text-xs font-bold mt-3">اقرأ المزيد ←</div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Satellite */}
-      {s.section_satellite !== "false" && (
-        <section id="satellite" className="px-6 py-16 bg-blue-700 text-white">
-          <div className="max-w-5xl mx-auto">
-            <div className="flex flex-col md:flex-row items-start gap-12">
-              <div className="flex-1">
-                <div className="text-blue-200 text-xs uppercase tracking-widest font-bold mb-2">بث مباشر</div>
-                <h2 className="text-white text-2xl font-black mb-6">استمع عبر القمر الصناعي</h2>
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    { label: "تردد الفضائية", value: `${s.satellite_freq} MHz` },
-                    { label: "القمر الصناعي", value: s.satellite_name },
-                    { label: "الموضع المداري", value: s.satellite_position },
-                    { label: "الاستقطاب", value: s.satellite_polarization },
-                    { label: "الموجة القصيرة", value: `${s.shortwave} كيلو هيرتز` },
-                  ].map((item) => (
-                    <div key={item.label} className="bg-white/10 border border-white/20 rounded-xl p-4">
-                      <div className="text-blue-200 text-xs mb-1 font-medium">{item.label}</div>
-                      <div className="text-white font-bold">{item.value}</div>
-                    </div>
-                  ))}
+                  {item.youtubeUrl && (
+                    <span className="text-xs bg-red-50 text-red-500 px-2 py-0.5 rounded-full font-medium">▶ يوتيوب</span>
+                  )}
+                  {item.tweetUrl && (
+                    <span className="text-xs bg-blue-50 text-blue-500 px-2 py-0.5 rounded-full font-medium">𝕏 تغريدة</span>
+                  )}
+                  {item.imageUrl && (
+                    <span className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full font-medium">🖼 صورة</span>
+                  )}
                 </div>
               </div>
-              <div className="flex-1">
-                <div className="text-blue-200 text-xs uppercase tracking-widest font-bold mb-4">خطوات الضبط</div>
-                <div className="space-y-3">
-                  {[
-                    "وجّه طبقك الفضائي نحو القمر عرب سات بدر 4 على موضع 16° شرقاً",
-                    "أدخل التردد 12182 MHz مع الاستقطاب أفقي (H)",
-                    "ابحث عن القنوات وستجد إذاعة الجمهورية اليمنية",
-                    "للموجة القصيرة اضبط على 11860 كيلو هيرتز",
-                  ].map((step, i) => (
-                    <div key={i} className="flex items-start gap-3">
-                      <span className="w-7 h-7 rounded-full bg-white/20 border border-white/30 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
-                      <span className="text-blue-100 text-sm leading-relaxed">{step}</span>
-                    </div>
-                  ))}
-                </div>
+              <div className="flex gap-2 flex-shrink-0">
+                <button onClick={() => openEdit(item)}
+                  className="text-slate-600 text-xs px-3 py-1.5 border border-slate-200 rounded-lg hover:border-blue-300 hover:text-blue-600 transition-colors">
+                  تعديل
+                </button>
+                <button onClick={() => handleDelete(item.id)}
+                  className="text-red-500 text-xs px-3 py-1.5 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">
+                  حذف
+                </button>
               </div>
             </div>
-          </div>
-        </section>
+          ))}
+        </div>
       )}
 
-      {/* Contact */}
-      {s.section_contact !== "false" && s.whatsapp && (
-        <section id="contact" className="px-6 py-16 max-w-4xl mx-auto text-center">
-          <div className="text-blue-600 text-xs uppercase tracking-widest font-bold mb-2">تفاعل معنا</div>
-          <h2 className="text-slate-900 text-2xl font-black mb-8">تواصل مع الإذاعة</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              { label: "رسالة صوتية", desc: "شاركنا رأيك على الهواء", icon: "🎤", msg: "رسالة صوتية" },
-              { label: "طلب إهداء", desc: "أهدِ من تحب أغنية", icon: "🎵", msg: "طلب إهداء" },
-              { label: "أرسل خبراً", desc: "شاركنا أخبار مجتمعك", icon: "📰", msg: "خبر للإذاعة" },
-            ].map((item) => (
-              <a key={item.label}
-                href={`https://wa.me/${s.whatsapp}?text=${encodeURIComponent(item.msg)}`}
-                target="_blank"
-                className="bg-white border border-slate-200 rounded-xl p-6 hover:border-green-300 hover:shadow-md transition-all group">
-                <div className="text-4xl mb-3">{item.icon}</div>
-                <div className="text-slate-900 font-bold mb-1">{item.label}</div>
-                <div className="text-slate-500 text-sm mb-3">{item.desc}</div>
-                <div className="text-green-600 text-xs font-bold">عبر واتساب ←</div>
-              </a>
-            ))}
-          </div>
-        </section>
-      )}
+      {showForm && (
+        <div className="fixed inset-0 bg-black/60 flex items-start justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white border border-slate-200 rounded-xl w-full max-w-2xl p-6 my-8">
+            <h2 className="text-slate-900 font-bold text-lg mb-6">
+              {editing ? "تعديل الخبر" : "إضافة خبر جديد"}
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-5">
 
-      {/* Footer */}
-      <footer className="bg-slate-900 text-white px-8 py-10">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-16 h-16 object-contain" />
-            <div>
-              <div className="text-white font-black text-lg">إذاعة الجمهورية اليمنية</div>
-              <div className="text-slate-400 text-sm">البرنامج العام • Yemen Radio</div>
-              <div className="text-slate-500 text-xs mt-1">الصوت الحقيقي منذ عقود</div>
-            </div>
-          </div>
-          <div className="flex flex-col items-center md:items-end gap-2">
-            <div className="flex gap-4 text-sm text-slate-400">
-              {s.section_programs !== "false" && <Link href="/programs" className="hover:text-white transition-colors">البرامج</Link>}
-              {s.section_news !== "false" && <a href="#news" className="hover:text-white transition-colors">الأخبار</a>}
-              {s.section_satellite !== "false" && <a href="#satellite" className="hover:text-white transition-colors">عبر القمر</a>}
-            </div>
-            <div className="text-slate-600 text-xs">© {new Date().getFullYear()} جميع الحقوق محفوظة</div>
+              {/* العنوان */}
+              <div>
+                <label className="block text-slate-700 text-sm font-medium mb-1.5">عنوان الخبر *</label>
+                <input
+                  value={form.title}
+                  onChange={(e) => f("title", e.target.value)}
+                  required
+                  placeholder="أدخل عنوان الخبر"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+                />
+              </div>
+
+              {/* نص الخبر */}
+              <div>
+                <label className="block text-slate-700 text-sm font-medium mb-1.5">نص الخبر *</label>
+                <textarea
+                  value={form.body}
+                  onChange={(e) => f("body", e.target.value)}
+                  required
+                  rows={5}
+                  placeholder="اكتب تفاصيل الخبر هنا..."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors resize-none"
+                />
+              </div>
+
+              {/* المصدر */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-slate-700 text-sm font-medium mb-1.5">اسم المصدر</label>
+                  <input
+                    value={form.sourceLabel}
+                    onChange={(e) => f("sourceLabel", e.target.value)}
+                    placeholder="مثال: رويترز"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-700 text-sm font-medium mb-1.5">رابط المصدر الأصلي</label>
+                  <input
+                    value={form.sourceUrl}
+                    onChange={(e) => f("sourceUrl", e.target.value)}
+                    placeholder="https://..."
+                    type="url"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+                    dir="ltr"
+                  />
+                </div>
+              </div>
+
+              {/* روابط الميديا والشبكات */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-slate-700 text-sm font-medium mb-1.5">▶ رابط يوتيوب</label>
+                  <input
+                    value={form.youtubeUrl}
+                    onChange={(e) => f("youtubeUrl", e.target.value)}
+                    placeholder="https://youtube.com/..."
+                    type="url"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+                    dir="ltr"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-700 text-sm font-medium mb-1.5">𝕏 رابط تغريدة X</label>
+                  <input
+                    value={form.tweetUrl}
+                    onChange={(e) => f("tweetUrl", e.target.value)}
+                    placeholder="https://x.com/..."
+                    type="url"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+                    dir="ltr"
+                  />
+                </div>
+              </div>
+
+              {/* رابط الصورة المعاينة */}
+              <div>
+                <label className="block text-slate-700 text-sm font-medium mb-1.5">🖼 رابط الصورة</label>
+                <input
+                  value={form.imageUrl}
+                  onChange={(e) => f("imageUrl", e.target.value)}
+                  placeholder="https://..."
+                  type="url"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+                  dir="ltr"
+                />
+              </div>
+
+              {/* أزرار الإجراءات */}
+              <div className="flex gap-3 pt-4 border-t border-slate-100">
+                <button type="submit"
+                  className="flex-1 bg-blue-600 text-white py-3 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors">
+                  {editing ? "حفظ التعديلات" : "نشر الخبر"}
+                </button>
+                <button type="button" onClick={() => setShowForm(false)}
+                  className="flex-1 border border-slate-200 text-slate-600 py-3 rounded-lg text-sm hover:bg-slate-50 transition-colors">
+                  إلغاء
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-      </footer>
+      )}
     </div>
   );
 }
