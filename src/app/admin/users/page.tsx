@@ -176,9 +176,15 @@ export default function UsersPage() {
                 <label className="block text-slate-700 text-sm font-medium mb-1.5">
                   {editing ? "كلمة المرور الجديدة (اتركها فارغة للإبقاء)" : "كلمة المرور"}
                 </label>
-                <input type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })}
-                  required={!editing} dir="ltr"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
+                <div className="relative">
+                  <input type={showPwd ? "text" : "password"} value={form.password} onChange={e => setForm({ ...form, password: e.target.value })}
+                    required={!editing} dir="ltr"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400 pl-10" />
+                  <button type="button" onClick={() => setShowPwd(!showPwd)}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
+                    {showPwd ? "🙈" : "👁️"}
+                  </button>
+                </div>
               </div>
               <div>
                 <label className="block text-slate-700 text-sm font-medium mb-1.5">الدور</label>
