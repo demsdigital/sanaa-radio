@@ -10,6 +10,7 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
+// استخراج الـ ID الخاص باليوتيوب
 function getYouTubeId(url: string | null) {
   if (!url) return null;
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -17,13 +18,11 @@ function getYouTubeId(url: string | null) {
   return (match && match[2].length === 11) ? match[2] : null;
 }
 
-// دالة لتنظيف وتجهيز رابط التغريدة ليفتح عبر مشغل مخصص أو رسمي
-function getTweetEmbedUrl(url: string | null) {
+// تنظيف رابط التغريدة واستخراج الـ ID الخاص بها للتضمين الرسمي المباشر بدون وسيط
+function getTweetId(url: string | null) {
   if (!url) return null;
-  // تحويل روابط x.com إلى twitter.com لضمان استقرار التضمين القديم أو استخدام iframe نظيف
-  let cleanUrl = url.split("?")[0];
-  cleanUrl = cleanUrl.replace("x.com", "twitter.com");
-  return `https://twitframe.com/show?url=${encodeURIComponent(cleanUrl)}`;
+  const match = url.match(/(?:twitter|x)\.com\/\w+\/status\/(\d+)/);
+  return match ? match[1] : null;
 }
 
 export default async function NewsDetailPage({ params }: Props) {
@@ -37,149 +36,120 @@ export default async function NewsDetailPage({ params }: Props) {
   if (!item) notFound();
 
   const youtubeId = getYouTubeId(item.youtubeUrl);
-  const tweetEmbedUrl = getTweetEmbedUrl(item.tweetUrl);
-  
-  // حساب تقريبي لزمن القراءة ذكياً
-  const wordsCount = item.body ? item.body.split(/\s+/).length : 0;
-  const readingTime = Math.max(1, Math.ceil(wordsCount / 150));
+  const tweetId = getTweetId(item.tweetUrl);
+
+  // حقل عنوان المادة المرئية الاختياري (تعديل التسمية أو إرجاع الافتراضي)
+  // ملاحظة: إذا قمت بإضافة حقل الإدخال في الداتابيز لاحقاً يمكنك استبدال "فيديو" بـ item.youtubeTitle
+  const videoLabel = "فيديو"; 
 
   return (
-    <div className="min-h-screen bg-[#0b0f19] text-slate-100 font-sans antialiased pb-12" dir="rtl">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased pb-16" dir="rtl">
       
-      {/* شريط علوي ذكي ونظيف */}
-      <header className="border-b border-slate-800 bg-[#111827]/80 backdrop-blur sticky top-0 z-50 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link href="/#news" className="text-sm font-bold text-blue-400 hover:text-blue-300 flex items-center gap-2 transition-all group">
-            <span className="group-hover:translate-x-1 transition-transform">➔</span> العودة للأخبار
+      {/* رأس الصفحة المتناسق مع الهوية العامة */}
+      <header className="border-b border-slate-200 bg-white sticky top-0 z-50 px-6 py-4 shadow-sm">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <Link href="/#news" className="text-sm font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1.5 transition-colors">
+            ➔ العودة للأخبار
           </Link>
-          <div className="flex items-center gap-4 text-xs text-slate-400">
-            <span className="bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700">معرف الخبر: #{item.id}</span>
-            <span>📅 {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString("ar-YE") : ""}</span>
+          <div className="text-slate-400 text-xs font-medium">
+            <span>نُشر في: {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString("ar-YE") : ""}</span>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 lg:px-8 pt-8">
-        {/* شبكة التوزيع الذكية العريضة */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      {/* المحتوى الرئيسي للخبر المفرد كالمواقع الإخبارية العالمية */}
+      <main className="max-w-3xl mx-auto px-4 pt-10">
+        <article className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm p-6 md:p-10 space-y-8">
           
-          {/* العمود الأيمن (8 أسطر): محتوى الخبر والصورة والتحليلات الجانبية */}
-          <div className="lg:col-span-8 space-y-8">
-            
-            {/* كرت العنوان والنص الرئيسي */}
-            <div className="bg-[#111827] border border-slate-800 rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 blur-3xl rounded-full" />
-              
-              <h1 className="text-2xl md:text-4xl font-black leading-tight text-white mb-6">
-                {item.title}
-              </h1>
+          {/* تصنيف أو شارة الخبر بالهوية الزرقاء */}
+          <div className="inline-block bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 rounded-md">
+            أخبار الإذاعة
+          </div>
 
-              {item.imageUrl && (
-                <div className="w-full h-[250px] md:h-[400px] relative rounded-xl overflow-hidden border border-slate-800 bg-[#070a13] mb-6">
-                  <img src={item.imageUrl} alt={item.title} className="w-full h-full object-contain relative z-10" />
-                  <div className="absolute inset-0 bg-cover bg-center blur-2xl opacity-20 scale-105" style={{ backgroundImage: `url(${item.imageUrl})` }} />
+          {/* عنوان الخبر العريض */}
+          <h1 className="text-slate-900 text-2xl md:text-4xl font-black leading-tight">
+            {item.title}
+          </h1>
+
+          {/* الصورة الرئيسية للمادة الإخبارية بمقاس متناسق */}
+          {item.imageUrl && (
+            <div className="w-full h-[250px] md:h-[420px] relative rounded-xl overflow-hidden border border-slate-100 bg-slate-100">
+              <img 
+                src={item.imageUrl} 
+                alt={item.title} 
+                className="w-full h-full object-cover" 
+              />
+            </div>
+          )}
+
+          {/* نص الخبر الإخباري المنسق والمريح جداً للقراءة */}
+          <div className="text-slate-800 text-base md:text-lg leading-relaxed whitespace-pre-wrap font-normal border-b border-slate-100 pb-8">
+            {item.body}
+          </div>
+
+          {/* الملحقات والمواد المرئية المضمنة في ذيل الخبر */}
+          {(youtubeId || tweetId || item.sourceLabel) && (
+            <div className="space-y-6 pt-2">
+              
+              {/* 1. حقل إدراج المادة المرئية (يوتيوب) */}
+              {youtubeId && (
+                <div className="space-y-2">
+                  <h3 className="text-sm font-bold text-slate-900 border-r-4 border-red-500 pr-2">
+                    {videoLabel}
+                  </h3>
+                  <div className="w-full aspect-video rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-black">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${youtubeId}?rel=0&modestbranding=1`}
+                      title={videoLabel}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full"
+                    />
+                  </div>
                 </div>
               )}
 
-              <div className="text-slate-300 text-base md:text-lg leading-relaxed whitespace-pre-wrap font-medium">
-                {item.body}
-              </div>
-            </div>
-
-            {/* صف التحليلات والملخص بالذكاء الاصطناعي المصمم خصيصاً كـ Dashboard */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-[#111827] border border-slate-800 p-5 rounded-xl flex flex-col justify-between">
-                <span className="text-xs text-slate-400 font-bold block mb-1">⏱️ وقت القراءة المتوقع</span>
-                <span className="text-xl font-black text-blue-400">{readingTime} دقيقة</span>
-                <span className="text-[10px] text-slate-500 mt-2">محسوب بناءً على طول النص الحالي</span>
-              </div>
-              <div className="bg-[#111827] border border-slate-800 p-5 rounded-xl flex flex-col justify-between">
-                <span className="text-xs text-slate-400 font-bold block mb-1">🧠 تصنيف المحتوى (AI)</span>
-                <span className="text-lg font-black text-green-400">إعلان رسمي وتدشين</span>
-                <span className="text-[10px] text-slate-500 mt-2">تحليل تلقائي لنبرة وسياق الخبر</span>
-              </div>
-              <div className="bg-[#111827] border border-slate-800 p-5 rounded-xl flex flex-col justify-between">
-                <span className="text-xs text-slate-400 font-bold block mb-1">🎯 الكلمات المفتاحية</span>
-                <div className="flex gap-1 flex-wrap mt-1">
-                  <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded">#إذاعة_صنعاء</span>
-                  <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded">#تدشين</span>
-                  <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded">#اليمن</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          {/* العمود الأيسر (4 أسطر): التضمينات والميديا الحية التفاعلية */}
-          <div className="lg:col-span-4 space-y-6">
-            
-            {/* كرت التقرير المرئي بيوتيوب */}
-            {youtubeId && (
-              <div className="bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                  <h3 className="text-sm font-black text-white flex items-center gap-2">
-                    <span className="text-red-500">▶</span> التقرير المرئي الحي
+              {/* 2. تضمين التغريدة الرسمي الصافي من خوادم Twitter/X مباشرة */}
+              {tweetId && (
+                <div className="space-y-2">
+                  <h3 className="text-sm font-bold text-slate-900 border-r-4 border-slate-900 pr-2">
+                    تغطية ذات صلة عبر منصة 𝕏
                   </h3>
-                  <span className="text-[10px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded font-bold">YouTube</span>
+                  <div className="w-full min-h-[400px] flex justify-center bg-slate-50 border border-slate-200 rounded-xl p-4 overflow-hidden">
+                    <iframe
+                      src={`https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&theme=light&widgetsVersion=2611156522%3A1701165234551&width=550px`}
+                      className="w-full max-w-[550px] h-[500px]"
+                      frameBorder="0"
+                      scrolling="no"
+                    />
+                  </div>
                 </div>
-                <div className="w-full aspect-video rounded-xl overflow-hidden border border-slate-800 shadow-inner bg-black">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${youtubeId}?rel=0&modestbranding=1`}
-                    title="YouTube video player"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full"
-                  />
-                </div>
-              </div>
-            )}
+              )}
 
-            {/* كرت تضمين التغريدة بعد تنظيف المشغل المكسور */}
-            {item.tweetUrl && tweetEmbedUrl && (
-              <div className="bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                  <h3 className="text-sm font-black text-white flex items-center gap-2">
-                    <span className="text-blue-400">𝕏</span> التغطية التفاعلية عبر تويتر
-                  </h3>
-                  <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded font-bold">Twitter</span>
+              {/* 3. توثيق المصدر */}
+              {item.sourceLabel && (
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-center justify-between mt-6">
+                  <span className="text-xs text-slate-500">
+                    المصدر الأصلي للخبر: <strong className="text-slate-800">{item.sourceLabel}</strong>
+                  </span>
+                  {item.sourceUrl && (
+                    <a 
+                      href={item.sourceUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-0.5"
+                    >
+                      زيارة الرابط الأصلي ↗
+                    </a>
+                  )}
                 </div>
-                {/* ضبط الـ iframe ليقرأ التغريدة الفعلية دون تحويلات عشوائية */}
-                <div className="w-full h-[360px] overflow-hidden rounded-xl border border-slate-800 bg-white">
-                  <iframe
-                    src={tweetEmbedUrl}
-                    className="w-full h-full"
-                    frameBorder="0"
-                    scrolling="no"
-                  />
-                </div>
-              </div>
-            )}
+              )}
 
-            {/* كرت توثيق المصدر الأنيق بالأسفل */}
-            {item.sourceLabel && (
-              <div className="bg-[#111827] border border-slate-800 rounded-2xl p-5 text-center space-y-4">
-                <div className="text-xs text-slate-400">
-                  ⚠️ تم التحقق من هذا الخبر وتوثيقه عبر المصدر الرسمي الإخباري.
-                </div>
-                {item.sourceUrl ? (
-                  <a 
-                    href={item.sourceUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="w-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-3 px-4 rounded-xl block transition-all shadow-md shadow-blue-600/10"
-                  >
-                    الانتقال لموقع {item.sourceLabel} ↗
-                  </a>
-                ) : (
-                  <div className="bg-slate-800 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700">{item.sourceLabel}</div>
-                )}
-              </div>
-            )}
+            </div>
+          )}
 
-          </div>
-
-        </div>
+        </article>
       </main>
     </div>
   );
