@@ -61,7 +61,7 @@ export default function ProgramsPage() {
           <h1 className="text-slate-900 text-2xl font-bold">البرامج</h1>
           <p className="text-slate-500 text-sm mt-1">{programs.length} برنامج</p>
         </div>
-        <button onClick={openAdd} className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors">
+        <button onClick={openAdd} className="bg-blue-600 text-slate-900 px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors">
           + إضافة برنامج
         </button>
       </div>
@@ -99,7 +99,7 @@ export default function ProgramsPage() {
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       <button onClick={() => openEdit(p)} className="text-slate-500 hover:text-slate-900 text-xs px-3 py-1 border border-slate-200 rounded hover:border-slate-400 transition-colors">تعديل</button>
-                      <button onClick={() => handleDelete(p.id)} className="text-red-400 hover:text-red-600 text-xs px-3 py-1 border border-red-100 rounded hover:border-red-300 transition-colors">حذف</button>
+                      <button onClick={() => handleDelete(p.id)} className="text-red-500 hover:text-red-600 text-xs px-3 py-1 border border-red-100 rounded hover:border-red-300 transition-colors">حذف</button>
                     </div>
                   </td>
                 </tr>
@@ -137,7 +137,7 @@ export default function ProgramsPage() {
                 <label htmlFor="active" className="text-slate-600 text-sm">برنامج نشط</label>
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="submit" className="flex-1 bg-blue-600 text-white py-3 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors">
+                <button type="submit" className="flex-1 bg-blue-600 text-slate-900 py-3 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors">
                   {editing ? "حفظ التعديلات" : "إضافة البرنامج"}
                 </button>
                 <button type="button" onClick={() => setShowForm(false)} className="flex-1 border border-slate-200 text-slate-600 py-3 rounded-lg text-sm hover:bg-slate-50 transition-colors">

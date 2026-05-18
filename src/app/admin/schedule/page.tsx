@@ -76,10 +76,10 @@ export default function SchedulePage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-white text-2xl font-bold">جدول البرامج</h1>
-          <p className="text-gray-500 text-sm mt-1">{items.length} برنامج في الجدول</p>
+          <h1 className="text-slate-900 text-2xl font-bold">جدول البرامج</h1>
+          <p className="text-slate-400 text-sm mt-1">{items.length} برنامج في الجدول</p>
         </div>
-        <button onClick={openAdd} className="bg-[#1a4fd6] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#1a4fd6]/90 transition-colors">
+        <button onClick={openAdd} className="bg-blue-600 text-slate-900 px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-600/90 transition-colors">
           + إضافة
         </button>
       </div>
@@ -88,45 +88,45 @@ export default function SchedulePage() {
       <div className="flex gap-2 mb-6 flex-wrap">
         {days.map(d => (
           <button key={d.value} onClick={() => setSelectedDay(d.value)}
-            className={`px-4 py-2 rounded-lg text-sm transition-colors ${selectedDay === d.value ? "bg-[#1a4fd6] text-white font-bold" : "bg-[#0e0e18] text-gray-400 border border-white/10 hover:text-white"}`}>
+            className={`px-4 py-2 rounded-lg text-sm transition-colors ${selectedDay === d.value ? "bg-blue-600 text-slate-900 font-bold" : "bg-white text-slate-500 border border-slate-200 hover:text-slate-900"}`}>
             {d.label}
           </button>
         ))}
       </div>
 
       {loading ? (
-        <div className="text-gray-500 text-center py-20">جاري التحميل...</div>
+        <div className="text-slate-400 text-center py-20">جاري التحميل...</div>
       ) : filtered.length === 0 ? (
-        <div className="text-gray-500 text-center py-20">لا يوجد جدول لهذا اليوم</div>
+        <div className="text-slate-400 text-center py-20">لا يوجد جدول لهذا اليوم</div>
       ) : (
-        <div className="bg-[#0e0e18] border border-white/10 rounded-xl overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/10">
-                <th className="text-right text-gray-400 text-xs font-medium px-6 py-4">الوقت</th>
-                <th className="text-right text-gray-400 text-xs font-medium px-6 py-4">البرنامج</th>
-                <th className="text-right text-gray-400 text-xs font-medium px-6 py-4">النوع</th>
-                <th className="text-right text-gray-400 text-xs font-medium px-6 py-4">إجراءات</th>
+              <tr className="border-b border-slate-200">
+                <th className="text-right text-slate-500 text-xs font-medium px-6 py-4">الوقت</th>
+                <th className="text-right text-slate-500 text-xs font-medium px-6 py-4">البرنامج</th>
+                <th className="text-right text-slate-500 text-xs font-medium px-6 py-4">النوع</th>
+                <th className="text-right text-slate-500 text-xs font-medium px-6 py-4">إجراءات</th>
               </tr>
             </thead>
             <tbody>
               {filtered.sort((a, b) => a.timeStart.localeCompare(b.timeStart)).map((item) => (
-                <tr key={item.id} className="border-b border-white/5 hover:bg-white/2">
+                <tr key={item.id} className="border-b border-slate-100 hover:bg-white/2">
                   <td className="px-6 py-4">
-                    <span className="text-[#1a4fd6] font-bold text-sm" dir="ltr">{item.timeStart} — {item.timeEnd}</span>
+                    <span className="text-blue-600 font-bold text-sm" dir="ltr">{item.timeStart} — {item.timeEnd}</span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-white font-medium">{item.label}</div>
+                    <div className="text-slate-900 font-medium">{item.label}</div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`text-xs px-2 py-1 rounded ${item.type === "live" ? "bg-red-500/20 text-red-400" : "bg-gray-500/20 text-gray-400"}`}>
+                    <span className={`text-xs px-2 py-1 rounded ${item.type === "live" ? "bg-red-500/20 text-red-500" : "bg-gray-500/20 text-slate-500"}`}>
                       {item.type === "live" ? "🔴 مباشر" : "تسجيل"}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
-                      <button onClick={() => openEdit(item)} className="text-gray-400 hover:text-white text-xs px-3 py-1 border border-white/10 rounded hover:border-white/30 transition-colors">تعديل</button>
-                      <button onClick={() => handleDelete(item.id)} className="text-red-400 hover:text-red-300 text-xs px-3 py-1 border border-red-500/20 rounded hover:border-red-500/40 transition-colors">حذف</button>
+                      <button onClick={() => openEdit(item)} className="text-slate-500 hover:text-slate-900 text-xs px-3 py-1 border border-slate-200 rounded hover:border-white/30 transition-colors">تعديل</button>
+                      <button onClick={() => handleDelete(item.id)} className="text-red-500 hover:text-red-300 text-xs px-3 py-1 border border-red-500/20 rounded hover:border-red-500/40 transition-colors">حذف</button>
                     </div>
                   </td>
                 </tr>
@@ -138,41 +138,41 @@ export default function SchedulePage() {
 
       {showForm && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-[#0e0e18] border border-white/10 rounded-xl w-full max-w-md p-6">
-            <h2 className="text-white font-bold text-lg mb-6">{editing ? "تعديل" : "إضافة للجدول"}</h2>
+          <div className="bg-white border border-slate-200 rounded-xl w-full max-w-md p-6">
+            <h2 className="text-slate-900 font-bold text-lg mb-6">{editing ? "تعديل" : "إضافة للجدول"}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-gray-400 text-sm mb-2">اسم البرنامج</label>
-                <input value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} required className="w-full bg-[#14141f] border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-[#1a4fd6]" />
+                <label className="block text-slate-500 text-sm mb-2">اسم البرنامج</label>
+                <input value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} required className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-gray-400 text-sm mb-2">من</label>
-                  <input type="time" value={form.timeStart} onChange={(e) => setForm({ ...form, timeStart: e.target.value })} required dir="ltr" className="w-full bg-[#14141f] border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-[#1a4fd6]" />
+                  <label className="block text-slate-500 text-sm mb-2">من</label>
+                  <input type="time" value={form.timeStart} onChange={(e) => setForm({ ...form, timeStart: e.target.value })} required dir="ltr" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
                 </div>
                 <div>
-                  <label className="block text-gray-400 text-sm mb-2">إلى</label>
-                  <input type="time" value={form.timeEnd} onChange={(e) => setForm({ ...form, timeEnd: e.target.value })} required dir="ltr" className="w-full bg-[#14141f] border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-[#1a4fd6]" />
+                  <label className="block text-slate-500 text-sm mb-2">إلى</label>
+                  <input type="time" value={form.timeEnd} onChange={(e) => setForm({ ...form, timeEnd: e.target.value })} required dir="ltr" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
                 </div>
               </div>
               <div>
-                <label className="block text-gray-400 text-sm mb-2">اليوم</label>
-                <select value={form.day} onChange={(e) => setForm({ ...form, day: e.target.value })} className="w-full bg-[#14141f] border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-[#1a4fd6]">
+                <label className="block text-slate-500 text-sm mb-2">اليوم</label>
+                <select value={form.day} onChange={(e) => setForm({ ...form, day: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400">
                   {days.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-gray-400 text-sm mb-2">النوع</label>
-                <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} className="w-full bg-[#14141f] border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-[#1a4fd6]">
+                <label className="block text-slate-500 text-sm mb-2">النوع</label>
+                <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400">
                   <option value="recorded">تسجيل</option>
                   <option value="live">مباشر</option>
                 </select>
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="submit" className="flex-1 bg-[#1a4fd6] text-white py-3 rounded-lg text-sm font-bold hover:bg-[#1a4fd6]/90 transition-colors">
+                <button type="submit" className="flex-1 bg-blue-600 text-slate-900 py-3 rounded-lg text-sm font-bold hover:bg-blue-600/90 transition-colors">
                   {editing ? "حفظ" : "إضافة"}
                 </button>
-                <button type="button" onClick={() => setShowForm(false)} className="flex-1 border border-white/10 text-gray-400 py-3 rounded-lg text-sm hover:bg-white/5 transition-colors">
+                <button type="button" onClick={() => setShowForm(false)} className="flex-1 border border-slate-200 text-slate-500 py-3 rounded-lg text-sm hover:bg-white/5 transition-colors">
                   إلغاء
                 </button>
               </div>
