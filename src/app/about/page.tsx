@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "عن الإذاعة | إذاعة الجمهورية اليمنية",
+  description: "تعرف على إذاعة الجمهورية اليمنية — أعرق المؤسسات الإعلامية في اليمن منذ عام 1947.",
+  openGraph: { title: "عن الإذاعة | إذاعة الجمهورية اليمنية", description: "تعرف على إذاعة الجمهورية اليمنية.", locale: "ar_YE", type: "website" },
+};
+
 import Link from "next/link";
 import ScrollReveal from "@/components/ScrollReveal";
 

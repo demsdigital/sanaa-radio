@@ -3,6 +3,14 @@ import { db } from "@/db";
 import { settings, programs, episodes, news, schedule } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "إذاعة الجمهورية اليمنية — البرنامج العام",
+  description: "إذاعة الجمهورية اليمنية — الصوت الحقيقي منذ عقود.",
+  openGraph: { title: "إذاعة الجمهورية اليمنية — البرنامج العام", description: "الصوت الحقيقي منذ عقود.", locale: "ar_YE", type: "website" },
+};
+
 export default async function HomePage() {
   const [allSettings, allPrograms, latestNews, allSchedule, latestEpisodes] = await Promise.all([
     db.select().from(settings),
@@ -158,11 +166,12 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {latestNews.map((item) => (
-              <div key={item.id} className="bg-white border border-slate-200 rounded-xl p-5 hover:border-blue-200 hover:shadow-md transition-all">
+              <Link key={item.id} href={`/news/${item.id}`} className="bg-white border border-slate-200 rounded-xl p-5 hover:border-blue-200 hover:shadow-md transition-all group block">
                 <div className="text-slate-400 text-xs mb-2">{new Date(item.publishedAt).toLocaleDateString("ar-YE")}</div>
-                <div className="text-slate-900 font-bold mb-2 leading-snug">{item.title}</div>
+                <div className="text-slate-900 font-bold mb-2 leading-snug group-hover:text-blue-600 transition-colors">{item.title}</div>
                 <div className="text-slate-500 text-sm line-clamp-3">{item.body}</div>
-              </div>
+                <div className="text-blue-600 text-xs font-bold mt-3">اقرأ المزيد ←</div>
+              </Link>
             ))}
           </div>
         </section>

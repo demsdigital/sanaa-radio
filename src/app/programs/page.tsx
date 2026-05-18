@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "البرامج | إذاعة الجمهورية اليمنية",
+  description: "استعرض جميع برامج إذاعة الجمهورية اليمنية — البرنامج العام.",
+  openGraph: { title: "البرامج | إذاعة الجمهورية اليمنية", description: "استعرض جميع برامج إذاعة الجمهورية اليمنية.", locale: "ar_YE", type: "website" },
+};
+
 import { db } from "@/db";
 import { programs } from "@/db/schema";
 import { eq } from "drizzle-orm";

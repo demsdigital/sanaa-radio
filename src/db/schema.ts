@@ -5,7 +5,7 @@ export const users = pgTable("users", {
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
-  role: text("role").notNull().default("team"), // admin | team
+  role: text("role").notNull().default("team"),
   permissions: json("permissions").$type<string[]>().default([]),
   active: boolean("active").notNull().default(true),
   createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -27,8 +27,8 @@ export const episodes = pgTable("episodes", {
   programId: integer("program_id").notNull().references(() => programs.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
   description: text("description"),
-  audioUrl: text("audio_url"), // nullable — R2 URL
-  duration: integer("duration"), // seconds
+  audioUrl: text("audio_url"),
+  duration: integer("duration"),
   publishedAt: timestamp("published_at").notNull().defaultNow(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
@@ -36,11 +36,11 @@ export const episodes = pgTable("episodes", {
 export const schedule = pgTable("schedule", {
   id: serial("id").primaryKey(),
   programId: integer("program_id").references(() => programs.id, { onDelete: "set null" }),
-  label: text("label").notNull(), // اسم البرنامج في الجدول
-  day: text("day").notNull(), // sat|sun|mon|tue|wed|thu|fri | daily
-  timeStart: text("time_start").notNull(), // "08:00"
-  timeEnd: text("time_end").notNull(),   // "09:00"
-  type: text("type").notNull().default("recorded"), // live | recorded
+  label: text("label").notNull(),
+  day: text("day").notNull(),
+  timeStart: text("time_start").notNull(),
+  timeEnd: text("time_end").notNull(),
+  type: text("type").notNull().default("recorded"),
 });
 
 export const news = pgTable("news", {
@@ -48,6 +48,10 @@ export const news = pgTable("news", {
   title: text("title").notNull(),
   body: text("body").notNull(),
   imageUrl: text("image_url"),
+  tweetUrl: text("tweet_url"),       // رابط تغريدة X
+  youtubeUrl: text("youtube_url"),   // رابط يوتيوب
+  sourceLabel: text("source_label"), // اسم المصدر (سبأ، رويترز...)
+  sourceUrl: text("source_url"),     // رابط المصدر الأصلي
   publishedAt: timestamp("published_at").notNull().defaultNow(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
