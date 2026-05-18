@@ -70,7 +70,7 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <div>
-              <div className="text-blue-600 text-xs uppercase tracking-widest font-bold mb-3">من نحن</div>
+              <div className="inline-flex items-center gap-2 text-blue-600 text-xs uppercase tracking-widest font-bold mb-4 bg-blue-50 px-4 py-2 rounded-full border border-blue-100">من نحن</div>
               <h2 className="text-slate-900 text-3xl font-black mb-6 leading-tight">أعرق المؤسسات الإعلامية في اليمن والمنطقة العربية</h2>
               <p className="text-slate-600 leading-loose mb-4">
                 تُعد إذاعة الجمهورية اليمنية واحدة من أعرق المؤسسات الإعلامية في اليمن، ارتبط اسمها بصوت الدولة اليمنية الحديثة وبالتحولات الوطنية منذ منتصف القرن العشرين.
@@ -102,7 +102,7 @@ export default function AboutPage() {
       <section className="px-6 py-16 bg-slate-50">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <div className="text-blue-600 text-xs uppercase tracking-widest font-bold mb-3">التاريخ</div>
+            <div className="inline-flex items-center gap-2 text-blue-600 text-xs uppercase tracking-widest font-bold mb-4 bg-blue-50 px-4 py-2 rounded-full border border-blue-100">التاريخ</div>
             <h2 className="text-slate-900 text-3xl font-black">رحلة عبر الزمن</h2>
           </div>
           <div className="relative">
@@ -137,7 +137,7 @@ export default function AboutPage() {
       <section className="px-6 py-16">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <div className="text-blue-600 text-xs uppercase tracking-widest font-bold mb-3">المحتوى</div>
+            <div className="inline-flex items-center gap-2 text-blue-600 text-xs uppercase tracking-widest font-bold mb-4 bg-blue-50 px-4 py-2 rounded-full border border-blue-100">المحتوى</div>
             <h2 className="text-slate-900 text-4xl font-black">خارطة برامجية متنوعة</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -173,7 +173,7 @@ export default function AboutPage() {
           <div className="absolute w-96 h-96 rounded-full bg-blue-400/10 blur-3xl -bottom-20 -left-20" />
         </div>
         <div className="relative max-w-4xl mx-auto text-center">
-          <div className="text-blue-300 text-xs uppercase tracking-widest font-bold mb-4">رسالتنا</div>
+          <div className="inline-flex items-center gap-2 text-blue-300 text-xs uppercase tracking-widest font-bold mb-4 bg-white/10 px-4 py-2 rounded-full border border-white/20">رسالتنا</div>
           <h2 className="text-white text-4xl font-black mb-4">الكلمة أمانة والأثير رسالة</h2>
           <p className="text-blue-200 mb-12 max-w-2xl mx-auto">على امتداد أكثر من سبعة عقود، بقينا حاضرين في وجدان اليمنيين — شاهدين على التاريخ، وناقلين لصوت الوطن.</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -201,7 +201,7 @@ export default function AboutPage() {
       <section className="px-6 py-16 bg-slate-50">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
-            <div className="text-blue-600 text-xs uppercase tracking-widest font-bold mb-3">بيانات</div>
+            <div className="inline-flex items-center gap-2 text-blue-600 text-xs uppercase tracking-widest font-bold mb-4 bg-blue-50 px-4 py-2 rounded-full border border-blue-100">بيانات</div>
             <h2 className="text-slate-900 text-3xl font-black">معلومات مختصرة</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
