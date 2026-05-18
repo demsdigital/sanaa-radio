@@ -2,7 +2,6 @@ import { db } from "@/db";
 import { news } from "@/db/schema";
 import { desc } from "drizzle-orm";
 import Link from "next/link";
-import Footer from "@/components/Footer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -90,7 +89,6 @@ export default async function NewsArchivePage() {
         )}
       </div>
 
-      <Footer />
     </div>
   );
 }

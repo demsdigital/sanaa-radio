@@ -1,7 +1,6 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import Footer from "@/components/Footer";
 import { db } from "@/db";
 import { settings, programs, episodes, news, schedule } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
@@ -275,7 +274,6 @@ export default async function HomePage() {
       )}
 
       {/* Footer */}
-      <Footer />
     </div>
   );
 }
