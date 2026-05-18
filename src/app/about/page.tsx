@@ -163,7 +163,8 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Mission — dramatic */}
+cat > /tmp/mission_patch.txt << 'PATCH'
+      {/* Mission */}
       <section className="relative py-24 px-6 overflow-hidden"
         style={{ background: "linear-gradient(135deg, #0a1628 0%, #1e3a8a 60%, #1d4ed8 100%)" }}>
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -174,19 +175,22 @@ export default function AboutPage() {
           <div className="text-blue-300 text-xs uppercase tracking-widest font-bold mb-4">رسالتنا</div>
           <h2 className="text-white text-4xl font-black mb-4">الكلمة أمانة والأثير رسالة</h2>
           <p className="text-blue-200 mb-12 max-w-2xl mx-auto">على امتداد أكثر من سبعة عقود، بقينا حاضرين في وجدان اليمنيين — شاهدين على التاريخ، وناقلين لصوت الوطن.</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-right">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              "الدفاع عن الجمهورية والهوية الوطنية اليمنية",
-              "نقل الحقيقة بمهنية ومسؤولية كاملة",
-              "الحفاظ على التراث الثقافي والإذاعي اليمني",
-              "تعزيز قيم الوحدة الوطنية والتعايش",
-              "دعم مؤسسات الدولة الشرعية",
-              "مواكبة التطورات الإعلامية والتقنية الحديثة",
+              { icon: "🛡️", title: "الدفاع الوطني", desc: "الدفاع عن الجمهورية والهوية الوطنية اليمنية" },
+              { icon: "✊", title: "دعم الشرعية", desc: "دعم مؤسسات الدولة الشرعية في كل الأوقات" },
+              { icon: "🎯", title: "المهنية", desc: "نقل الحقيقة بمهنية ومسؤولية كاملة" },
+              { icon: "📜", title: "التراث", desc: "الحفاظ على التراث الثقافي والإذاعي اليمني" },
+              { icon: "🤝", title: "الوحدة", desc: "تعزيز قيم الوحدة الوطنية والتعايش" },
+              { icon: "🚀", title: "التطور", desc: "مواكبة التطورات الإعلامية والتقنية الحديثة" },
             ].map((item, i) => (
-              <div key={i} className="flex items-start gap-3 bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-colors">
-                <span className="text-blue-400 font-black mt-0.5">✓</span>
-                <span className="text-blue-100 text-sm leading-relaxed">{item}</span>
-              </div>
+              <ScrollReveal key={i} delay={i * 100} direction="up">
+                <div className="group bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/15 hover:border-white/30 transition-all duration-300 hover:-translate-y-1 text-right cursor-pointer">
+                  <div className="text-3xl mb-3">{item.icon}</div>
+                  <div className="text-white font-bold mb-2">{item.title}</div>
+                  <div className="text-blue-200 text-sm leading-relaxed">{item.desc}</div>
+                </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
@@ -197,30 +201,32 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <div className="text-blue-600 text-xs uppercase tracking-widest font-bold mb-3">بيانات</div>
-            <h2 className="text-slate-900 text-2xl font-black">معلومات مختصرة</h2>
+            <h2 className="text-slate-900 text-3xl font-black">معلومات مختصرة</h2>
           </div>
-          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-            <div className="grid grid-cols-1 md:grid-cols-2">
-              {[
-                { label: "الاسم الرسمي", value: "إذاعة الجمهورية اليمنية – البرنامج العام" },
-                { label: "النوع", value: "إذاعة رسمية وطنية" },
-                { label: "الدولة", value: "الجمهورية اليمنية" },
-                { label: "اللغة", value: "العربية" },
-                { label: "التغطية", value: "اليمن والعالم العربي" },
-                { label: "البث الفضائي", value: "عرب سات بدر 4 — 12182 MHz" },
-                { label: "الموجة القصيرة", value: "11860 كيلو هيرتز" },
-                { label: "الهوية الحالية", value: "صوت الشرعية اليمنية" },
-              ].map((item, i) => (
-                <div key={item.label} className={`flex items-center justify-between px-6 py-4 border-b border-slate-100 ${i % 2 === 0 ? "md:border-l border-slate-100" : ""}`}>
-                  <span className="text-slate-400 text-sm">{item.label}</span>
-                  <span className="text-slate-900 font-semibold text-sm text-left">{item.value}</span>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { icon: "📛", label: "الاسم الرسمي", value: "إذاعة الجمهورية اليمنية – البرنامج العام" },
+              { icon: "📡", label: "البث الفضائي", value: "عرب سات بدر 4 — 12182 MHz" },
+              { icon: "📻", label: "الموجة القصيرة", value: "11860 كيلو هيرتز" },
+              { icon: "🌍", label: "التغطية", value: "اليمن والعالم العربي" },
+              { icon: "🗣️", label: "اللغة", value: "العربية" },
+              { icon: "🏛️", label: "النوع", value: "إذاعة رسمية وطنية" },
+              { icon: "🇾🇪", label: "الدولة", value: "الجمهورية اليمنية" },
+              { icon: "⚡", label: "الهوية الحالية", value: "صوت الشرعية اليمنية" },
+            ].map((item, i) => (
+              <ScrollReveal key={i} delay={i * 80} direction="up">
+                <div className="bg-white rounded-2xl border border-slate-200 p-5 hover:border-blue-300 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center">
+                  <div className="text-3xl mb-3">{item.icon}</div>
+                  <div className="text-slate-400 text-xs mb-2 font-medium">{item.label}</div>
+                  <div className="text-slate-900 font-bold text-sm leading-snug">{item.value}</div>
                 </div>
-              ))}
-            </div>
+              </ScrollReveal>
+            ))}
           </div>
         </div>
       </section>
-
+PATCH
+echo "Patch ready"
       {/* CTA */}
       <section className="px-6 py-20 text-center">
         <div className="max-w-2xl mx-auto">
