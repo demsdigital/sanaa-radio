@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { programs } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { getTokenFromRequest, verifyToken } from "@/lib/auth";
 
 export async function GET() {
-  const all = await db.select().from(programs).orderBy(programs.sortOrder, programs.createdAt);
+  const all = await db.select().from(programs).orderBy(sql`sort_order`, programs.createdAt);
   return NextResponse.json(all);
 }
 
