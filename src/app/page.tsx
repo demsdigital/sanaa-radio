@@ -38,7 +38,7 @@ export default async function HomePage() {
 
       {/* Ticker */}
       {s.ticker_visible !== "false" && s.ticker && (
-        <div className="bg-red-600 py-2 overflow-hidden">
+        <div className="bg-red-600 py-2 overflow-hidden sticky top-0 z-40">
           <div className="flex items-center gap-4 whitespace-nowrap animate-marquee">
             <span className="bg-white text-red-600 text-xs font-black px-3 py-0.5 rounded flex-shrink-0">عاجل</span>
             <span className="text-white text-sm font-medium">{s.ticker}</span>
