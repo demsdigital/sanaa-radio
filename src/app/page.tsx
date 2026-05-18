@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
+import Footer from "@/components/Footer";
 import { db } from "@/db";
 import { settings, programs, episodes, news, schedule } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
@@ -278,26 +279,7 @@ export default async function HomePage() {
       )}
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white px-8 py-10">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-16 h-16 object-contain" />
-            <div>
-              <div className="text-white font-black text-lg">إذاعة الجمهورية اليمنية</div>
-              <div className="text-slate-400 text-sm">البرنامج العام • Yemen Radio</div>
-              <div className="text-slate-500 text-xs mt-1">الصوت الحقيقي منذ عقود</div>
-            </div>
-          </div>
-          <div className="flex flex-col items-center md:items-end gap-2">
-            <div className="flex gap-4 text-sm text-slate-400">
-              {s.section_programs !== "false" && <Link href="/programs" className="hover:text-white transition-colors">البرامج</Link>}
-              {s.section_news !== "false" && <a href="#news" className="hover:text-white transition-colors">الأخبار</a>}
-              {s.section_satellite !== "false" && <a href="#satellite" className="hover:text-white transition-colors">عبر القمر</a>}
-            </div>
-            <div className="text-slate-600 text-xs">© {new Date().getFullYear()} جميع الحقوق محفوظة</div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
