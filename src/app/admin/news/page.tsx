@@ -6,7 +6,21 @@ type News = {
   title: string;
   body: string;
   imageUrl: string;
+  tweetUrl: string;
+  youtubeUrl: string;
+  sourceLabel: string;
+  sourceUrl: string;
   publishedAt: string;
+};
+
+const emptyForm = {
+  title: "",
+  body: "",
+  imageUrl: "",
+  tweetUrl: "",
+  youtubeUrl: "",
+  sourceLabel: "",
+  sourceUrl: "",
 };
 
 export default function NewsPage() {
@@ -14,7 +28,7 @@ export default function NewsPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<News | null>(null);
-  const [form, setForm] = useState({ title: "", body: "", imageUrl: "" });
+  const [form, setForm] = useState(emptyForm);
 
   async function load() {
     const res = await fetch("/api/news");
@@ -26,13 +40,21 @@ export default function NewsPage() {
 
   function openAdd() {
     setEditing(null);
-    setForm({ title: "", body: "", imageUrl: "" });
+    setForm(emptyForm);
     setShowForm(true);
   }
 
   function openEdit(item: News) {
     setEditing(item);
-    setForm({ title: item.title, body: item.body, imageUrl: item.imageUrl || "" });
+    setForm({
+      title: item.title,
+      body: item.body,
+      imageUrl: item.imageUrl || "",
+      tweetUrl: item.tweetUrl || "",
+      youtubeUrl: item.youtubeUrl || "",
+      sourceLabel: item.sourceLabel || "",
+      sourceUrl: item.sourceUrl || "",
+    });
     setShowForm(true);
   }
 
@@ -40,45 +62,82 @@ export default function NewsPage() {
     e.preventDefault();
     const method = editing ? "PUT" : "POST";
     const payload = editing ? { ...form, id: editing.id } : form;
-    await fetch("/api/news", { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    await fetch("/api/news", {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
     setShowForm(false);
     load();
   }
 
   async function handleDelete(id: number) {
     if (!confirm("هل أنت متأكد من الحذف؟")) return;
-    await fetch("/api/news", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
+    await fetch("/api/news", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
     load();
   }
+
+  const f = (key: keyof typeof emptyForm, value: string) =>
+    setForm((prev) => ({ ...prev, [key]: value }));
 
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-slate-900 text-2xl font-bold">الأخبار</h1>
-          <p className="text-slate-800 text-sm mt-1">{items.length} خبر</p>
+          <p className="text-slate-500 text-sm mt-1">{items.length} خبر</p>
         </div>
-        <button onClick={openAdd} className="bg-blue-600 text-slate-900 px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-600/90 transition-colors">
+        <button onClick={openAdd}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors">
           + إضافة خبر
         </button>
       </div>
 
       {loading ? (
-        <div className="text-slate-800 text-center py-20">جاري التحميل...</div>
+        <div className="text-slate-400 text-center py-20">جاري التحميل...</div>
       ) : items.length === 0 ? (
-        <div className="text-slate-800 text-center py-20">لا توجد أخبار بعد</div>
+        <div className="text-slate-400 text-center py-20">لا توجد أخبار بعد</div>
       ) : (
         <div className="space-y-3">
           {items.map((item) => (
-            <div key={item.id} className="bg-white border border-slate-200 rounded-xl p-5 flex items-start justify-between gap-4">
-              <div className="flex-1">
-                <div className="text-slate-900 font-medium mb-1">{item.title}</div>
-                <div className="text-slate-800 text-sm line-clamp-2">{item.body}</div>
-                <div className="text-slate-800 text-xs mt-2">{new Date(item.publishedAt).toLocaleDateString("ar-YE")}</div>
+            <div key={item.id}
+              className="bg-white border border-slate-200 rounded-xl p-5 flex items-start justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <div className="text-slate-900 font-semibold mb-1 truncate">{item.title}</div>
+                <div className="text-slate-500 text-sm line-clamp-2 mb-2">{item.body}</div>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="text-slate-400 text-xs">
+                    {new Date(item.publishedAt).toLocaleDateString("ar-YE")}
+                  </span>
+                  {item.sourceLabel && (
+                    <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">
+                      {item.sourceLabel}
+                    </span>
+                  )}
+                  {item.youtubeUrl && (
+                    <span className="text-xs bg-red-50 text-red-500 px-2 py-0.5 rounded-full font-medium">▶ يوتيوب</span>
+                  )}
+                  {item.tweetUrl && (
+                    <span className="text-xs bg-blue-50 text-blue-500 px-2 py-0.5 rounded-full font-medium">𝕏 تغريدة</span>
+                  )}
+                  {item.imageUrl && (
+                    <span className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full font-medium">🖼 صورة</span>
+                  )}
+                </div>
               </div>
               <div className="flex gap-2 flex-shrink-0">
-                <button onClick={() => openEdit(item)} className="text-slate-800 hover:text-slate-900 text-xs px-3 py-1 border border-slate-200 rounded hover:border-white/30 transition-colors">تعديل</button>
-                <button onClick={() => handleDelete(item.id)} className="text-red-500 hover:text-red-300 text-xs px-3 py-1 border border-red-500/20 rounded hover:border-red-500/40 transition-colors">حذف</button>
+                <button onClick={() => openEdit(item)}
+                  className="text-slate-600 text-xs px-3 py-1.5 border border-slate-200 rounded-lg hover:border-blue-300 hover:text-blue-600 transition-colors">
+                  تعديل
+                </button>
+                <button onClick={() => handleDelete(item.id)}
+                  className="text-red-500 text-xs px-3 py-1.5 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">
+                  حذف
+                </button>
               </div>
             </div>
           ))}
@@ -86,23 +145,116 @@ export default function NewsPage() {
       )}
 
       {showForm && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-slate-200 rounded-xl w-full max-w-lg p-6">
-            <h2 className="text-slate-900 font-bold text-lg mb-6">{editing ? "تعديل الخبر" : "إضافة خبر جديد"}</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="fixed inset-0 bg-black/60 flex items-start justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white border border-slate-200 rounded-xl w-full max-w-2xl p-6 my-8" dir="rtl">
+            <h2 className="text-slate-900 font-bold text-lg mb-6">
+              {editing ? "تعديل الخبر" : "إضافة خبر جديد"}
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-5">
+
+              {/* العنوان */}
               <div>
-                <label className="block text-slate-800 text-sm mb-2">عنوان الخبر</label>
-                <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
+                <label className="block text-slate-700 text-sm font-medium mb-1.5">
+                  عنوان الخبر <span className="text-red-500">*</span>
+                </label>
+                <input
+                  value={form.title}
+                  onChange={(e) => f("title", e.target.value)}
+                  required
+                  placeholder="أدخل عنوان الخبر"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+                />
               </div>
+
+              {/* نص الخبر */}
               <div>
-                <label className="block text-slate-800 text-sm mb-2">نص الخبر</label>
-                <textarea value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} required rows={5} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
+                <label className="block text-slate-700 text-sm font-medium mb-1.5">
+                  نص الخبر <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  value={form.body}
+                  onChange={(e) => f("body", e.target.value)}
+                  required
+                  rows={6}
+                  placeholder="اكتب تفاصيل الخبر هنا..."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors resize-none"
+                />
               </div>
+
+              {/* المصدر */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-700 text-sm font-medium mb-1.5">اسم المصدر</label>
+                  <input
+                    value={form.sourceLabel}
+                    onChange={(e) => f("sourceLabel", e.target.value)}
+                    placeholder="مثال: وكالة سبأ"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-700 text-sm font-medium mb-1.5">رابط المصدر</label>
+                  <input
+                    value={form.sourceUrl}
+                    onChange={(e) => f("sourceUrl", e.target.value)}
+                    placeholder="https://..."
+                    type="url"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+                    dir="ltr"
+                  />
+                </div>
+              </div>
+
+              {/* الصورة */}
+              <div>
+                <label className="block text-slate-700 text-sm font-medium mb-1.5">🖼 رابط الصورة</label>
+                <input
+                  value={form.imageUrl}
+                  onChange={(e) => f("imageUrl", e.target.value)}
+                  placeholder="https://..."
+                  type="url"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+                  dir="ltr"
+                />
+                {form.imageUrl && (
+                  <img src={form.imageUrl} alt="معاينة" className="mt-2 h-28 rounded-lg object-cover border border-slate-200" />
+                )}
+              </div>
+
+              {/* يوتيوب */}
+              <div>
+                <label className="block text-slate-700 text-sm font-medium mb-1.5">▶ رابط فيديو يوتيوب</label>
+                <input
+                  value={form.youtubeUrl}
+                  onChange={(e) => f("youtubeUrl", e.target.value)}
+                  placeholder="https://www.youtube.com/watch?v=... أو https://youtu.be/..."
+                  type="url"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+                  dir="ltr"
+                />
+              </div>
+
+              {/* تغريدة */}
+              <div>
+                <label className="block text-slate-700 text-sm font-medium mb-1.5">𝕏 رابط تغريدة</label>
+                <input
+                  value={form.tweetUrl}
+                  onChange={(e) => f("tweetUrl", e.target.value)}
+                  placeholder="https://x.com/user/status/..."
+                  type="url"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+                  dir="ltr"
+                />
+              </div>
+
+              {/* أزرار */}
               <div className="flex gap-3 pt-2">
-                <button type="submit" className="flex-1 bg-blue-600 text-slate-900 py-3 rounded-lg text-sm font-bold hover:bg-blue-600/90 transition-colors">
+                <button type="submit"
+                  className="flex-1 bg-blue-600 text-white py-3 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors">
                   {editing ? "حفظ التعديلات" : "نشر الخبر"}
                 </button>
-                <button type="button" onClick={() => setShowForm(false)} className="flex-1 border border-slate-200 text-slate-800 py-3 rounded-lg text-sm hover:bg-white/5 transition-colors">
+                <button type="button" onClick={() => setShowForm(false)}
+                  className="flex-1 border border-slate-200 text-slate-600 py-3 rounded-lg text-sm hover:bg-slate-50 transition-colors">
                   إلغاء
                 </button>
               </div>
