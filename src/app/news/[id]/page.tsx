@@ -1,14 +1,16 @@
+type Article = {
+  title: string;
+  excerpt: string;
+  content: string;
+  image?: string | null;
+  category?: string | null;
+  publishedAt?: string | null;
+};
+
 export default function NewsArticleTemplate({
   article,
 }: {
-  article: {
-    title: string;
-    excerpt: string;
-    content: string;
-    image?: string;
-    category?: string;
-    publishedAt?: string;
-  };
+  article: Article;
 }) {
   return (
     <main className="min-h-screen bg-slate-50" dir="rtl">
@@ -24,7 +26,7 @@ export default function NewsArticleTemplate({
           </a>
 
           <div className="text-sm text-slate-500">
-            {article.publishedAt}
+            {article?.publishedAt || "—"}
           </div>
         </div>
       </section>
@@ -42,15 +44,15 @@ export default function NewsArticleTemplate({
             {/* Content */}
             <div className="order-2 text-center lg:order-1 lg:text-right">
               <div className="mb-5 inline-flex rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-medium text-blue-100 backdrop-blur">
-                {article.category || "أخبار الإذاعة"}
+                {article?.category || "أخبار الإذاعة"}
               </div>
 
               <h1 className="text-4xl font-black leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">
-                {article.title}
+                {article?.title || "عنوان الخبر"}
               </h1>
 
               <p className="mx-auto mt-8 max-w-2xl text-lg leading-9 text-blue-100 lg:mx-0">
-                {article.excerpt}
+                {article?.excerpt || "وصف مختصر للخبر يظهر هنا."}
               </p>
             </div>
 
@@ -59,8 +61,8 @@ export default function NewsArticleTemplate({
               <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/10 shadow-2xl backdrop-blur-xl">
                 <div className="aspect-[4/3] overflow-hidden bg-white/95 p-6">
                   <img
-                    src={article.image || "/logo.png"}
-                    alt={article.title}
+                    src={article?.image || "/logo.png"}
+                    alt={article?.title || "عنوان الخبر"}
                     className="h-full w-full rounded-2xl object-contain"
                   />
                 </div>
@@ -82,7 +84,7 @@ export default function NewsArticleTemplate({
               </div>
 
               <div className="rounded-2xl bg-slate-100 px-4 py-2 text-sm text-slate-600">
-                {article.category || "أخبار الإذاعة"}
+                {article?.category || "أخبار الإذاعة"}
               </div>
             </div>
           </div>
@@ -91,7 +93,9 @@ export default function NewsArticleTemplate({
           <div className="px-8 py-10 md:px-12 md:py-14">
             <div
               className="prose prose-lg max-w-none prose-headings:font-black prose-headings:text-slate-900 prose-p:text-slate-700 prose-p:leading-9 prose-li:text-slate-700 rtl:prose-p:text-right rtl:prose-headings:text-right rtl:prose-li:text-right"
-              dangerouslySetInnerHTML={{ __html: article.content }}
+              dangerouslySetInnerHTML={{
+                __html: article?.content || ""
+              }}
             />
           </div>
 
