@@ -106,8 +106,8 @@ export default async function HomePage() {
               <Link key={p.id} href={`/programs/${p.slug}`}
                 className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-blue-300 hover:shadow-md transition-all group">
                 {p.imageUrl ? (
-                  <div className="w-full bg-slate-50 flex items-center justify-center" style={{minHeight:"130px"}}>
-                    <img src={p.imageUrl} alt={p.name} className="w-full h-auto object-contain max-h-40" />
+                  <div className="w-full bg-slate-50 flex items-center justify-center" style={{height:"200px",overflow:"hidden"}}>
+                    <img src={p.imageUrl} alt={p.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}} className="group-hover:scale-105 transition-transform duration-300" />
                   </div>
                 ) : (
                   <div className="w-full h-24 bg-blue-50 flex items-center justify-center">
