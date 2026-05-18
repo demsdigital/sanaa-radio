@@ -59,8 +59,7 @@ export default async function HomePage() {
                   <p className="text-blue-100 text-xl font-semibold mb-1 drop-shadow">{s.hero_subtitle||"البرنامج العام"}</p>
                   <p className="text-blue-200 text-sm mb-8 drop-shadow">Yemen Radio • {s.hero_tagline||"الصوت الحقيقي منذ عقود"}</p>
                   {s.on_air_label&&(
-                    <div className="backdrop-blur border border-white/20 rounded-xl p-4 max-w-sm shadow-lg"
-                      style={{background:`rgba(255,255,255,${Number(s.hero_card_opacity||"12")/100})`}}>
+                    <div className="backdrop-blur border border-white/20 rounded-xl p-4 max-w-sm shadow-lg" style={{background:`rgba(255,255,255,${Number(s.hero_card_opacity||"12")/100})`}}>
                       <div className="text-blue-100 text-xs uppercase tracking-widest mb-1 font-medium">البرنامج الحالي</div>
                       <div className="text-white font-bold text-base mb-2">{s.on_air_label}</div>
                       <div className="flex gap-1 mb-3 h-5 items-end">
