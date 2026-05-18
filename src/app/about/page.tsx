@@ -18,57 +18,26 @@ export default function AboutPage() {
       </nav>
 
       {/* HERO */}
-      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden pt-20"
-        style={{ background: "linear-gradient(135deg, #0a1628 0%, #1a3a7c 40%, #1e4db7 70%, #2563eb 100%)" }}>
-
-        {/* Animated circles */}
+      <section className="relative flex items-center justify-center overflow-hidden pt-24 pb-32 px-6" style={{ background: "linear-gradient(135deg, #0a1628 0%, #1a3a7c 50%, #2563eb 100%)", minHeight: "70vh" }}>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute rounded-full border border-white/10 animate-ping"
-            style={{ width: 600, height: 600, top: "50%", left: "50%", transform: "translate(-50%,-50%)", animationDuration: "4s" }} />
-          <div className="absolute rounded-full border border-white/5"
-            style={{ width: 800, height: 800, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
-          <div className="absolute rounded-full border border-white/5"
-            style={{ width: 1000, height: 1000, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
-          {/* Glowing dots */}
-          {[...Array(20)].map((_, i) => (
-            <div key={i} className="absolute rounded-full bg-white/20 animate-pulse"
-              style={{
-                width: Math.random() * 4 + 2,
-                height: Math.random() * 4 + 2,
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${Math.random() * 3 + 2}s`,
-              }} />
-          ))}
+          <div className="absolute rounded-full border border-white/5" style={{ width: 500, height: 500, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
+          <div className="absolute rounded-full border border-white/5" style={{ width: 750, height: 750, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
         </div>
-
-        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-          {/* Logo with glow */}
-          <div className="relative inline-block mb-8">
-            <div className="absolute inset-0 rounded-full blur-3xl bg-blue-400/40 scale-150" />
-            <div className="relative w-32 h-32 flex items-center justify-center mx-auto">
-              <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="w-full h-full object-contain" />
+        <div className="relative z-10 flex flex-col md:flex-row items-center gap-12 max-w-5xl mx-auto w-full">
+          <div className="flex-shrink-0">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full blur-2xl bg-blue-400/30 scale-125" />
+              <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="relative w-36 h-36 object-contain drop-shadow-2xl" />
             </div>
           </div>
-
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-red-500/90 backdrop-blur text-white text-xs font-bold px-5 py-2 rounded-full mb-6 shadow-lg">
-            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-            صوت الشرعية اليمنية
-          </div>
-
-          <h1 className="text-5xl md:text-7xl font-black text-white mb-4 leading-tight tracking-tight">
-            إذاعة الجمهورية
-            <span className="block text-blue-300">اليمنية</span>
-          </h1>
-          <p className="text-blue-200 text-xl font-semibold mb-3">البرنامج العام • Yemen Radio</p>
-          <p className="text-blue-300/80 text-lg">صوت اليمن الجمهوري… وذاكرة الوطن الحية</p>
-
-          {/* Scroll indicator */}
-          <div className="mt-16 flex flex-col items-center gap-2 text-white/40">
-            <span className="text-xs tracking-widest uppercase">اكتشف المزيد</span>
-            <div className="w-px h-12 bg-gradient-to-b from-white/40 to-transparent animate-pulse" />
+          <div className="flex-1 text-right">
+            <div className="inline-flex items-center gap-2 bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-full mb-5 shadow-lg">
+              <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+              صوت الشرعية اليمنية
+            </div>
+            <h1 className="text-4xl md:text-5xl font-black text-white mb-3 leading-tight">إذاعة الجمهورية اليمنية</h1>
+            <p className="text-blue-200 text-lg font-semibold mb-2">البرنامج العام • Yemen Radio</p>
+            <p className="text-blue-300/80">صوت اليمن الجمهوري… وذاكرة الوطن الحية</p>
           </div>
         </div>
       </section>
