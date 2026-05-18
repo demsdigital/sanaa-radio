@@ -1,126 +1,136 @@
 type Article = {
   title: string;
-  excerpt: string;
+  excerpt?: string | null;
   content: string;
   image?: string | null;
   category?: string | null;
-  publishedAt?: string | null;
+  publishedAt?: string | Date | null;
+  author?: string | null;
 };
+
+function formatDate(date?: string | Date | null) {
+  if (!date) return "";
+
+  try {
+    return new Intl.DateTimeFormat("ar-YE", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(new Date(date));
+  } catch {
+    return String(date);
+  }
+}
 
 export default function NewsArticleTemplate({
   article,
 }: {
   article: Article;
 }) {
+  const publishedDate = formatDate(article?.publishedAt);
+
   return (
-    <main className="min-h-screen bg-slate-50" dir="rtl">
-      {/* Top Bar */}
-      <section className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <main dir="rtl" className="min-h-screen bg-[#f8fafc] text-slate-900">
+      {/* Header */}
+      <section className="border-b border-slate-200 bg-white">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
           <a
             href="/news"
-            className="flex items-center gap-2 text-sm font-medium text-blue-700 transition hover:text-blue-900"
+            className="text-sm font-semibold text-blue-700 transition hover:text-blue-900"
           >
-            العودة للأخبار
-            <span>←</span>
+            ← العودة للأخبار
           </a>
 
-          <div className="text-sm text-slate-500">
-            {article?.publishedAt || "—"}
-          </div>
+          <span className="text-sm text-slate-500">
+            إذاعة الجمهورية اليمنية
+          </span>
         </div>
       </section>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#0a1628] via-[#10284a] to-[#2563eb]">
-        {/* Background Effects */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute -left-40 top-0 h-[500px] w-[500px] rounded-full bg-blue-400 blur-3xl" />
-          <div className="absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-cyan-300 blur-3xl" />
+      {/* Article */}
+      <article className="mx-auto max-w-5xl px-5 py-8 md:py-12">
+        {/* Category */}
+        <div className="mb-5">
+          <span className="inline-flex rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700 ring-1 ring-blue-100">
+            {article?.category || "أخبار الإذاعة"}
+          </span>
         </div>
 
-        <div className="relative mx-auto max-w-6xl px-6 py-16 lg:py-24">
-          <div className="grid items-center gap-14 lg:grid-cols-2">
-            {/* Content */}
-            <div className="order-2 text-center lg:order-1 lg:text-right">
-              <div className="mb-5 inline-flex rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-medium text-blue-100 backdrop-blur">
-                {article?.category || "أخبار الإذاعة"}
-              </div>
+        {/* Title */}
+        <header className="max-w-3xl">
+          <h1 className="text-3xl font-black leading-[1.35] tracking-tight text-slate-950 md:text-5xl">
+            {article?.title || "عنوان الخبر"}
+          </h1>
 
-              <h1 className="text-4xl font-black leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">
-                {article?.title || "عنوان الخبر"}
-              </h1>
+          {article?.excerpt ? (
+            <p className="mt-5 text-lg leading-9 text-slate-600 md:text-xl">
+              {article.excerpt}
+            </p>
+          ) : null}
 
-              <p className="mx-auto mt-8 max-w-2xl text-lg leading-9 text-blue-100 lg:mx-0">
-                {article?.excerpt || "وصف مختصر للخبر يظهر هنا."}
-              </p>
-            </div>
-
-            {/* Featured Image */}
-            <div className="order-1 lg:order-2">
-              <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/10 shadow-2xl backdrop-blur-xl">
-                <div className="aspect-[4/3] overflow-hidden bg-white/95 p-6">
-                  <img
-                    src={article?.image || "/logo.png"}
-                    alt={article?.title || "عنوان الخبر"}
-                    className="h-full w-full rounded-2xl object-contain"
-                  />
-                </div>
-              </div>
-            </div>
+          <div className="mt-6 flex flex-wrap items-center gap-3 border-y border-slate-200 py-4 text-sm text-slate-500">
+            <span>{article?.author || "فريق التحرير"}</span>
+            {publishedDate ? <span>•</span> : null}
+            {publishedDate ? <time>{publishedDate}</time> : null}
           </div>
-        </div>
-      </section>
+        </header>
 
-      {/* Article Content */}
-      <section className="relative mx-auto max-w-5xl px-6 py-14 lg:-mt-16">
-        <article className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl">
-          {/* Meta */}
-          <div className="border-b border-slate-100 px-8 py-6 md:px-12">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <div className="text-sm text-slate-500">إذاعة الجمهورية اليمنية</div>
-                <div className="font-bold text-slate-900">البرنامج العام</div>
-              </div>
-
-              <div className="rounded-2xl bg-slate-100 px-4 py-2 text-sm text-slate-600">
-                {article?.category || "أخبار الإذاعة"}
-              </div>
+        {/* Featured Image */}
+        {article?.image ? (
+          <figure className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+            <div className="bg-slate-100">
+              <img
+                src={article.image}
+                alt={article?.title || "صورة الخبر"}
+                className="h-auto max-h-[460px] w-full object-contain"
+              />
             </div>
-          </div>
+          </figure>
+        ) : null}
 
-          {/* Body */}
-          <div className="px-8 py-10 md:px-12 md:py-14">
+        {/* Content */}
+        <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_280px]">
+          <div className="min-w-0 rounded-3xl border border-slate-200 bg-white px-6 py-8 shadow-sm md:px-10 md:py-10">
             <div
-              className="prose prose-lg max-w-none prose-headings:font-black prose-headings:text-slate-900 prose-p:text-slate-700 prose-p:leading-9 prose-li:text-slate-700 rtl:prose-p:text-right rtl:prose-headings:text-right rtl:prose-li:text-right"
-              dangerouslySetInnerHTML={{
-                __html: article?.content || ""
-              }}
+              className="prose prose-lg max-w-none prose-headings:font-black prose-headings:text-slate-950 prose-p:leading-9 prose-p:text-slate-700 prose-li:leading-8 prose-li:text-slate-700 prose-a:font-semibold prose-a:text-blue-700 prose-blockquote:border-blue-600 prose-blockquote:bg-blue-50 prose-blockquote:px-5 prose-blockquote:py-3 prose-blockquote:text-slate-700 rtl:prose-headings:text-right rtl:prose-p:text-right rtl:prose-li:text-right"
+              dangerouslySetInnerHTML={{ __html: article?.content || "" }}
             />
           </div>
 
-          {/* Footer */}
-          <div className="border-t border-slate-100 bg-slate-50 px-8 py-6 md:px-12">
-            <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-              <div>
-                <div className="text-sm text-slate-500">
-                  الموقع الرسمي لإذاعة الجمهورية اليمنية
+          {/* Side Info */}
+          <aside className="hidden lg:block">
+            <div className="sticky top-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50">
+                  <img
+                    src="/logo.png"
+                    alt="إذاعة الجمهورية اليمنية"
+                    className="h-9 w-9 object-contain"
+                  />
                 </div>
-                <div className="font-semibold text-slate-900">
-                  Yemen Radio • البرنامج العام
+
+                <div>
+                  <div className="font-black text-slate-950">
+                    إذاعة الجمهورية اليمنية
+                  </div>
+                  <div className="text-sm text-slate-500">البرنامج العام</div>
                 </div>
               </div>
 
+              <p className="text-sm leading-7 text-slate-600">
+                تابع آخر الأخبار والبرامج عبر الموقع الرسمي لإذاعة الجمهورية اليمنية.
+              </p>
+
               <a
-                href="/news"
-                className="rounded-2xl bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
+                href="/programs"
+                className="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
               >
-                العودة إلى الأخبار
+                تصفح البرامج
               </a>
             </div>
-          </div>
-        </article>
-      </section>
+          </aside>
+        </div>
+      </article>
     </main>
   );
 }
