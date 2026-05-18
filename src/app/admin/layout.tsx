@@ -22,38 +22,35 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen bg-[#07070d] flex" dir="rtl">
+    <div className="min-h-screen bg-slate-50 flex" dir="rtl">
       {/* Sidebar */}
-      <aside className="w-64 bg-[#0e0e18] border-l border-white/10 flex flex-col fixed h-full">
+      <aside className="w-64 bg-white border-l border-slate-200 flex flex-col fixed h-full shadow-sm">
         {/* Logo */}
-        <div className="p-6 border-b border-white/10">
+        <div className="p-5 border-b border-slate-200">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#1a4fd6]/20 border border-[#1a4fd6]/40 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0">
               <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
-                <circle cx="20" cy="20" r="4" fill="#1a4fd6"/>
-                <path d="M12 20c0-4.42 3.58-8 8-8s8 3.58 8 8" stroke="#1a4fd6" strokeWidth="2" strokeLinecap="round" fill="none"/>
-                <path d="M6 20c0-7.73 6.27-14 14-14s14 6.27 14 14" stroke="#1a4fd6" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity=".5"/>
+                <circle cx="20" cy="20" r="4" fill="white"/>
+                <path d="M12 20c0-4.42 3.58-8 8-8s8 3.58 8 8" stroke="white" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+                <path d="M6 20c0-7.73 6.27-14 14-14s14 6.27 14 14" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" opacity=".7"/>
               </svg>
             </div>
             <div>
-              <div className="text-white text-sm font-bold">إذاعة الجمهورية</div>
-              <div className="text-gray-500 text-xs">لوحة التحكم</div>
+              <div className="text-slate-900 text-sm font-bold leading-tight">إذاعة الجمهورية</div>
+              <div className="text-blue-600 text-xs font-medium">لوحة التحكم</div>
             </div>
           </div>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-3 space-y-1">
           {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-colors ${
+            <Link key={item.href} href={item.href}
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-colors ${
                 pathname === item.href
-                  ? "bg-[#1a4fd6] text-white font-bold"
-                  : "text-gray-400 hover:bg-white/5 hover:text-white"
-              }`}
-            >
+                  ? "bg-blue-600 text-white font-bold"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+              }`}>
               <span>{item.icon}</span>
               <span>{item.label}</span>
             </Link>
@@ -61,18 +58,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         {/* Logout */}
-        <div className="p-4 border-t border-white/10">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-red-400 hover:bg-red-500/10 transition-colors"
-          >
+        <div className="p-3 border-t border-slate-200">
+          <button onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-red-500 hover:bg-red-50 transition-colors">
             <span>🚪</span>
             <span>تسجيل الخروج</span>
           </button>
         </div>
       </aside>
 
-      {/* Main content */}
+      {/* Main */}
       <main className="flex-1 mr-64 p-8">
         {children}
       </main>
