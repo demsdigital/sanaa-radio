@@ -9,34 +9,31 @@ type Program = {
   imageUrl: string;
   category: string;
   active: boolean;
-  sortOrder: number;
 };
 
 const categories = ["أخبار", "ديني", "ثقافي", "اجتماعي", "رياضي", "ترفيهي", "عام"];
 
 export default function ProgramsPage() {
-  const [programs, setPrograms]         = useState<Program[]>([]);
-  const [loading, setLoading]           = useState(true);
-  const [showForm, setShowForm]         = useState(false);
-  const [editing, setEditing]           = useState<Program | null>(null);
-  const [form, setForm]                 = useState({ name: "", slug: "", description: "", imageUrl: "", category: "عام", active: true });
-  const [uploading, setUploading]       = useState(false);
+  const [programs, setPrograms]             = useState<Program[]>([]);
+  const [loading, setLoading]               = useState(true);
+  const [showForm, setShowForm]             = useState(false);
+  const [editing, setEditing]               = useState<Program | null>(null);
+  const [form, setForm]                     = useState({ name: "", slug: "", description: "", imageUrl: "", category: "عام", active: true });
+  const [uploading, setUploading]           = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [savingOrder, setSavingOrder]   = useState(false);
-  const [orderSaved, setOrderSaved]     = useState(false);
-  const fileInputRef                    = useRef<HTMLInputElement>(null);
-  const dragItem                        = useRef<number | null>(null);
-  const dragOverItem                    = useRef<number | null>(null);
+  const [savingOrder, setSavingOrder]       = useState(false);
+  const [orderSaved, setOrderSaved]         = useState(false);
+  const fileInputRef                        = useRef<HTMLInputElement>(null);
+  const dragItem                            = useRef<number | null>(null);
+  const dragOverItem                        = useRef<number | null>(null);
 
   async function load() {
     const res = await fetch("/api/programs");
-    const data: Program[] = await res.json();
-    setPrograms(data.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)));
+    setPrograms(await res.json());
     setLoading(false);
   }
   useEffect(() => { load(); }, []);
 
-  /* ── Drag & Drop ── */
   function onDragStart(index: number) { dragItem.current = index; }
   function onDragEnter(index: number) { dragOverItem.current = index; }
   function onDragEnd() {
@@ -52,21 +49,16 @@ export default function ProgramsPage() {
 
   async function saveOrder() {
     setSavingOrder(true);
-    await Promise.all(
-      programs.map((p, i) =>
-        fetch("/api/programs", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: p.id, sortOrder: i }),
-        })
-      )
-    );
+    await fetch("/api/programs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ saveOrder: true, order: programs.map(p => p.id) }),
+    });
     setSavingOrder(false);
     setOrderSaved(true);
     setTimeout(() => setOrderSaved(false), 2500);
   }
 
-  /* ── Form ── */
   function openAdd() {
     setEditing(null);
     setForm({ name: "", slug: "", description: "", imageUrl: "", category: "عام", active: true });
@@ -113,7 +105,6 @@ export default function ProgramsPage() {
 
   return (
     <div>
-      {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-slate-900 text-2xl font-bold">البرامج</h1>
@@ -134,7 +125,6 @@ export default function ProgramsPage() {
         </div>
       </div>
 
-      {/* تلميح الترتيب */}
       <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 text-blue-700 text-sm mb-5 flex items-center gap-2">
         <span>☝️</span>
         <span>اسحب البطاقات لتغيير الترتيب، ثم اضغط <strong>حفظ الترتيب</strong></span>
@@ -154,29 +144,21 @@ export default function ProgramsPage() {
               onDragEnd={onDragEnd}
               onDragOver={e => e.preventDefault()}
               className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-4 cursor-grab active:cursor-grabbing active:shadow-lg active:border-blue-300 transition-all select-none">
-
-              {/* مقبض السحب */}
-              <div className="text-slate-300 hover:text-slate-500 flex-shrink-0 cursor-grab">
+              <div className="text-slate-300 hover:text-slate-500 flex-shrink-0">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                   <circle cx="5" cy="4" r="1.5"/><circle cx="11" cy="4" r="1.5"/>
                   <circle cx="5" cy="8" r="1.5"/><circle cx="11" cy="8" r="1.5"/>
                   <circle cx="5" cy="12" r="1.5"/><circle cx="11" cy="12" r="1.5"/>
                 </svg>
               </div>
-
-              {/* رقم الترتيب */}
               <div className="w-6 h-6 rounded-full bg-slate-100 text-slate-500 text-xs font-bold flex items-center justify-center flex-shrink-0">
                 {index + 1}
               </div>
-
-              {/* صورة */}
               {p.imageUrl ? (
                 <img src={p.imageUrl} alt={p.name} className="w-16 h-16 rounded-lg object-cover border border-slate-100 flex-shrink-0" />
               ) : (
                 <div className="w-16 h-16 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0 text-2xl">📻</div>
               )}
-
-              {/* معلومات */}
               <div className="flex-1 min-w-0">
                 <div className="text-slate-900 font-semibold">{p.name}</div>
                 <div className="text-slate-400 text-xs mt-0.5 font-mono">{p.slug}</div>
@@ -188,8 +170,6 @@ export default function ProgramsPage() {
                   </span>
                 </div>
               </div>
-
-              {/* أزرار */}
               <div className="flex gap-2 flex-shrink-0">
                 <button onClick={() => openEdit(p)}
                   className="text-slate-600 text-xs px-3 py-1.5 border border-slate-200 rounded-lg hover:border-blue-300 hover:text-blue-600 transition-colors">
@@ -205,7 +185,6 @@ export default function ProgramsPage() {
         </div>
       )}
 
-      {/* Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-start justify-center z-50 p-4 overflow-y-auto">
           <div className="bg-white border border-slate-200 rounded-xl w-full max-w-lg p-6 my-8" dir="rtl">
@@ -221,8 +200,7 @@ export default function ProgramsPage() {
               </div>
               <div>
                 <label className="block text-slate-700 text-sm font-medium mb-1.5">الـ Slug (رابط) <span className="text-red-500">*</span></label>
-                <input value={form.slug} onChange={e => setForm({ ...form, slug: e.target.value })} required dir="ltr"
-                  placeholder="morning-show"
+                <input value={form.slug} onChange={e => setForm({ ...form, slug: e.target.value })} required dir="ltr" placeholder="morning-show"
                   className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors font-mono" />
               </div>
               <div>
@@ -234,8 +212,7 @@ export default function ProgramsPage() {
                 <label className="block text-slate-700 text-sm font-medium mb-1.5">🖼 صورة البرنامج</label>
                 <input ref={fileInputRef} type="file" accept="image/*" className="hidden"
                   onChange={e => { const f = e.target.files?.[0]; if (f) handleImageUpload(f); }} />
-                <div
-                  onClick={() => !uploading && fileInputRef.current?.click()}
+                <div onClick={() => !uploading && fileInputRef.current?.click()}
                   onDragOver={e => e.preventDefault()}
                   onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handleImageUpload(f); }}
                   className={`border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-all ${
