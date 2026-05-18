@@ -41,6 +41,7 @@ export const schedule = pgTable("schedule", {
   timeStart: text("time_start").notNull(),
   timeEnd: text("time_end").notNull(),
   type: text("type").notNull().default("recorded"),
+  color: text("color").default("blue"),
 });
 
 export const news = pgTable("news", {
