@@ -48,7 +48,7 @@ export default async function HomePage() {
         const mu=s.hero_media_url||"";
         const op=s.hero_overlay_opacity?Number(s.hero_overlay_opacity)/100:0.55;
         return(
-          <section className="relative text-white py-20 px-6 overflow-hidden" style={{minHeight:"520px",background:bg[s.hero_bg||"blue"]||bg.blue}}>
+          <section className="relative text-white py-12 md:py-20 px-4 md:px-6 overflow-hidden" style={{minHeight:"420px",background:bg[s.hero_bg||"blue"]||bg.blue}}>
             {(mt==="image"||mt==="gif")&&mu&&(<><div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage:`url(${mu})`}}/><div className="absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
             {mt==="video"&&mu&&(<><video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover"><source src={mu}/></video><div className="absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
             {mt==="none"&&(<div className="absolute inset-0 opacity-10 pointer-events-none"><div className="absolute top-10 right-10 w-64 h-64 rounded-full border-2 border-white"/><div className="absolute top-20 right-20 w-48 h-48 rounded-full border border-white"/><div className="absolute bottom-10 left-10 w-80 h-80 rounded-full border border-white"/></div>)}
@@ -59,11 +59,11 @@ export default async function HomePage() {
                     <span className="w-2 h-2 rounded-full bg-white animate-pulse"/>
                     {s.hero_badge||"على الهواء الآن"}
                   </div>
-                  <h1 className="text-4xl md:text-5xl font-black mb-2 leading-tight drop-shadow-lg">{s.hero_title||"إذاعة الجمهورية اليمنية"}</h1>
-                  <p className="text-blue-100 text-xl font-semibold mb-1 drop-shadow">{s.hero_subtitle||"البرنامج العام"}</p>
-                  <p className="text-blue-200 text-sm mb-8 drop-shadow">Yemen Radio • {s.hero_tagline||"الصوت الحقيقي منذ عقود"}</p>
+                  <h1 className="text-2xl md:text-5xl font-black mb-2 leading-tight drop-shadow-lg">{s.hero_title||"إذاعة الجمهورية اليمنية"}</h1>
+                  <p className="text-blue-100 text-base md:text-xl font-semibold mb-1 drop-shadow">{s.hero_subtitle||"البرنامج العام"}</p>
+                  <p className="text-blue-200 text-sm mb-4 md:mb-8 drop-shadow">Yemen Radio • {s.hero_tagline||"الصوت الحقيقي منذ عقود"}</p>
                   {s.on_air_label&&(
-                    <div className="backdrop-blur border border-white/20 rounded-xl p-4 max-w-sm shadow-lg" style={{background:`rgba(255,255,255,${Number(s.hero_card_opacity||"12")/100})`}}>
+                    <div className="backdrop-blur border border-white/20 rounded-xl p-4 w-full md:max-w-sm shadow-lg" style={{background:`rgba(255,255,255,${Number(s.hero_card_opacity||"12")/100})`}}>
                       <div className="text-blue-100 text-xs uppercase tracking-widest mb-1 font-medium">البرنامج الحالي</div>
                       <div className="text-white font-bold text-base mb-2">{s.on_air_label}</div>
                       <div className="flex gap-1 mb-3 h-5 items-end">
