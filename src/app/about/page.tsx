@@ -242,18 +242,6 @@ export default function AboutPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white px-8 py-10">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <img src="/logo.png" alt="شعار" className="w-12 h-12 object-contain opacity-80" />
-            <div>
-              <div className="text-white font-black text-base">إذاعة الجمهورية اليمنية</div>
-              <div className="text-slate-400 text-sm">البرنامج العام • Yemen Radio</div>
-            </div>
-          </div>
-          <div className="text-slate-600 text-sm">© {new Date().getFullYear()} جميع الحقوق محفوظة</div>
-        </div>
-      </footer>
     </div>
   );
 }
