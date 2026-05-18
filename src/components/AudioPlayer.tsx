@@ -51,11 +51,12 @@ export default function AudioPlayer({ streamUrl, stationName, onAirLabel }: Prop
 
       <div
         dir="rtl"
-        className="fixed bottom-0 left-0 right-0 z-50 transition-all duration-300"
+        className="fixed bottom-2 left-4 right-4 z-50 transition-all duration-300 rounded-2xl"
         style={{
-          background: "linear-gradient(135deg, #0a1628 0%, #1a3a7c 60%, #2563eb 100%)",
-          borderTop: "1px solid rgba(255,255,255,0.1)",
-          boxShadow: "0 -8px 32px rgba(0,0,0,0.4)",
+          background: "rgba(10,22,40,0.82)",
+          backdropFilter: "blur(20px)",
+          border: "1px solid rgba(255,255,255,0.12)",
+          boxShadow: "0 -4px 24px rgba(0,0,0,0.3)",
         }}>
 
         {/* الشريط المُصغَّر */}
@@ -92,7 +93,7 @@ export default function AudioPlayer({ streamUrl, stationName, onAirLabel }: Prop
           </div>
         ) : (
           /* الشريط الكامل */
-          <div className="max-w-5xl mx-auto px-4 py-3">
+          <div className="max-w-5xl mx-auto px-4 py-2">
             <div className="flex items-center gap-4">
 
               {/* أيقونة وموجات */}
@@ -134,7 +135,7 @@ export default function AudioPlayer({ streamUrl, stationName, onAirLabel }: Prop
 
               {/* زر التشغيل الرئيسي */}
               <button onClick={togglePlay}
-                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all flex-shrink-0 font-bold text-lg ${
+                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all flex-shrink-0 font-bold text-base ${
                   playing
                     ? "bg-red-500 hover:bg-red-600 text-white"
                     : "bg-white text-blue-700 hover:bg-blue-50"
