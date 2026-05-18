@@ -49,7 +49,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-colors ${
                 pathname === item.href
                   ? "bg-blue-600 text-slate-900 font-bold"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  : "text-slate-800 hover:bg-slate-100 hover:text-slate-900"
               }`}>
               <span>{item.icon}</span>
               <span>{item.label}</span>
