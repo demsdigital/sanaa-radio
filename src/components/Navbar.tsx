@@ -31,7 +31,7 @@ export default async function Navbar() {
         </Link>
         <div className="hidden md:flex items-center gap-1 text-sm">
           {s.section_programs !== "false" && <Link href="/programs" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">البرامج</Link>}
-          {s.section_schedule !== "false" && <Link href="/#schedule" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">الجدول</Link>}
+          {s.section_schedule !== "false" && <Link href="/schedule" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">الجدول</Link>}
           {s.section_news !== "false" && <Link href="/news" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">الأخبار</Link>}
           {s.section_satellite !== "false" && <Link href="/#satellite" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">عبر القمر</Link>}
           <Link href="/about" className="px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium">عن الإذاعة</Link>
