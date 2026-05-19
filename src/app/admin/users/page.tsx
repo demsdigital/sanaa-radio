@@ -29,6 +29,7 @@ export default function UsersPage() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<User | null>(null);
   const [showPwd, setShowPwd]   = useState(false);
+  const [pwdReady, setPwdReady] = useState(false);
   const [form, setForm]       = useState({
     name: "", email: "", password: "", role: "team", active: true,
     permissions: [] as Permission[],
@@ -43,14 +44,17 @@ export default function UsersPage() {
 
   function openAdd() {
     setEditing(null);
+    setPwdReady(true);
     setForm({ name: "", email: "", password: "", role: "team", active: true, permissions: [] });
     setShowForm(true);
   }
 
   function openEdit(u: User) {
     setEditing(u);
+    setPwdReady(false);
     setForm({ name: u.name, email: u.email, password: "", role: u.role, active: u.active, permissions: u.permissions || [] });
     setShowForm(true);
+    setTimeout(() => setPwdReady(true), 100);
   }
 
   function togglePerm(key: Permission) {
