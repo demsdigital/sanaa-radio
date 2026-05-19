@@ -1,6 +1,7 @@
 "use client";
 import { usePermission } from "@/lib/usePermission";
 import { useState, useEffect } from "react";
+import MediaPicker from "@/components/MediaPicker";
 
 type SectionProps = { id: string; icon: string; title: string; desc?: string; children: React.ReactNode; open: string; setOpen: (id: string) => void };
 
@@ -32,6 +33,8 @@ function Section({ id, icon, title, desc, children, open, setOpen }: SectionProp
 export default function SettingsPage() {
     usePermission("admin");
   const [loading, setLoading] = useState(true);
+  const [showPicker, setShowPicker] = useState(false);
+  const [pickerTarget, setPickerTarget] = useState<string>("");
   const [saving, setSaving]   = useState(false);
   const [saved,  setSaved]    = useState(false);
   const [open,   setOpen]     = useState<string>("player");
@@ -40,7 +43,7 @@ export default function SettingsPage() {
     satellite_freq: "12182", satellite_name: "عرب سات بدر 4",
     satellite_position: "16° شرقاً", satellite_polarization: "أفقي (H)", shortwave: "11860",
     section_programs: "true", section_schedule: "true", section_news: "true",
-    section_satellite: "true", section_contact: "true", show_listen_btn: "true",
+    section_articles: "true", section_satellite: "true", section_contact: "true", show_listen_btn: "true",
     on_air_label: "نشرة الأخبار الرئيسية",
     show_player: "false", stream_url: "", player_opacity: "82",
     hero_title: "إذاعة الجمهورية اليمنية", hero_subtitle: "البرنامج العام",
@@ -184,12 +187,14 @@ export default function SettingsPage() {
                 ))}
               </div>
               {form.hero_media_type!=="none"&&(<div className="space-y-3">
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2">
                   <input type="url" value={form.hero_media_url} onChange={e=>f("hero_media_url",e.target.value)}
                     placeholder={form.hero_media_type==="video"?"https://.../video.mp4":"https://.../image.jpg"} dir="ltr"
                     className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 font-mono"/>
                   {form.hero_media_type!=="video"&&(<button type="button" onClick={()=>uploadFile(form.hero_media_type==="gif"?"image/gif":"image/*","hero_media_url")}
                     className="px-4 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700">رفع ↑</button>)}
+                  {form.hero_media_type!=="video"&&(<button type="button" onClick={()=>{setPickerTarget("hero_media_url");setShowPicker(true);}}
+                    className="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-bold rounded-lg hover:bg-slate-200">🖼 مكتبة</button>)}
                 </div>
                 {form.hero_media_url&&form.hero_media_type!=="video"&&(<div className="h-28 rounded-xl overflow-hidden border border-slate-200"><img src={form.hero_media_url} alt="معاينة" className="w-full h-full object-cover"/></div>)}
                 <div>
@@ -211,12 +216,14 @@ export default function SettingsPage() {
               </div>
               {form.hero_mobile_media_type==="image"&&(
                 <div className="space-y-3">
-                  <div className="flex gap-2">
+                  <div className="flex flex-col gap-2">
                     <input type="url" value={form.hero_mobile_media_url} onChange={e=>f("hero_mobile_media_url",e.target.value)}
                       placeholder="https://..." dir="ltr"
                       className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 font-mono"/>
                     <button type="button" onClick={()=>uploadFile("image/*","hero_mobile_media_url")}
                       className="px-4 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700">رفع ↑</button>
+                    <button type="button" onClick={()=>{setPickerTarget("hero_mobile_media_url");setShowPicker(true);}}
+                      className="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-bold rounded-lg hover:bg-slate-200">🖼 مكتبة</button>
                   </div>
                   {form.hero_mobile_media_url&&(
                     <div className="h-28 rounded-xl overflow-hidden border border-slate-200">
@@ -262,9 +269,11 @@ export default function SettingsPage() {
                 ))}
               </div>
               {form.programs_hero_media_type!=="none"&&(<div className="space-y-3">
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2">
                   <input type="url" value={form.programs_hero_media_url} onChange={e=>f("programs_hero_media_url",e.target.value)} placeholder="https://..." dir="ltr" className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 font-mono"/>
                   {form.programs_hero_media_type!=="video"&&(<button type="button" onClick={()=>uploadFile(form.programs_hero_media_type==="gif"?"image/gif":"image/*","programs_hero_media_url")} className="px-4 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700">رفع ↑</button>)}
+                  {form.programs_hero_media_type!=="video"&&(<button type="button" onClick={()=>{setPickerTarget("programs_hero_media_url");setShowPicker(true);}}
+                    className="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-bold rounded-lg hover:bg-slate-200">🖼 مكتبة</button>)}
                 </div>
                 {form.programs_hero_media_url&&form.programs_hero_media_type!=="video"&&(<div className="h-28 rounded-xl overflow-hidden border border-slate-200"><img src={form.programs_hero_media_url} alt="معاينة" className="w-full h-full object-cover"/></div>)}
                 <div>
@@ -300,6 +309,7 @@ export default function SettingsPage() {
             <Toggle label="قسم البرامج" field="section_programs" />
             <Toggle label="قسم الجدول" field="section_schedule" />
             <Toggle label="قسم الأخبار" field="section_news" />
+            <Toggle label="قسم الكتابات" field="section_articles" />
             <Toggle label="قسم عبر القمر" field="section_satellite" />
             <Toggle label="قسم التواصل / واتساب" field="section_contact" />
             <Toggle label="زر الاستماع للأرشيف" field="show_listen_btn" />
@@ -350,9 +360,11 @@ export default function SettingsPage() {
             <div><label className="block text-slate-700 text-sm font-medium mb-1.5">المسمى الوظيفي</label><input value={form.director_title} onChange={e=>f("director_title",e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400"/></div>
             <div>
               <label className="block text-slate-700 text-sm font-medium mb-1.5">الصورة الشخصية</label>
-              <div className="flex gap-2">
+              <div className="flex flex-col gap-2">
                 <input type="url" value={form.director_photo} onChange={e=>f("director_photo",e.target.value)} dir="ltr" placeholder="https://..." className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400"/>
                 <button type="button" onClick={()=>uploadFile("image/*","director_photo")} className="px-4 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700">رفع ↑</button>
+                <button type="button" onClick={()=>{setPickerTarget("director_photo");setShowPicker(true);}}
+                  className="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-bold rounded-lg hover:bg-slate-200">🖼 مكتبة</button>
               </div>
               {form.director_photo&&(<div className="mt-2 h-24 w-24 rounded-full overflow-hidden border-2 border-blue-200"><img src={form.director_photo} alt="صورة" className="w-full h-full object-cover"/></div>)}
             </div>
@@ -372,6 +384,12 @@ export default function SettingsPage() {
         </button>
 
       </form>
+      {showPicker && (
+        <MediaPicker
+          onSelect={url => { setForm(p => ({ ...p, [pickerTarget]: url })); setShowPicker(false); }}
+          onClose={() => setShowPicker(false)}
+        />
+      )}
     </div>
   );
 }

@@ -140,7 +140,7 @@ export default function AdminClientLayout({ children }: { children: React.ReactN
       </aside>
 
       {/* ── Main ── */}
-      <main className="md:mr-64 p-4 md:p-8 pt-16 md:pt-8">
+      <main className="md:mr-64 p-4 md:p-8 pt-16 md:pt-8 min-h-screen">
         {children}
       </main>
 
