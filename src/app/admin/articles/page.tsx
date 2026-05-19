@@ -102,34 +102,38 @@ export default function ArticlesAdminPage() {
       ) : (
         <div className="space-y-3">
           {articles.map(a => (
-            <div key={a.id} className="bg-white border border-slate-200 rounded-xl p-3 flex items-start gap-3">
-              {a.imageUrl ? (
-                <img src={a.imageUrl} alt={a.title} className="w-12 h-12 rounded-lg object-cover border border-slate-100 flex-shrink-0" />
-              ) : (
-                <div className="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0 text-xl">✍️</div>
-              )}
-              <div className="flex-1 min-w-0">
-                <div className="text-slate-900 font-bold text-sm line-clamp-2 mb-1 leading-snug">{a.title}</div>
-                <div className="flex items-center gap-2 mt-1 flex-wrap">
-                  <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{a.category}</span>
-                  {a.authorName && <span className="text-slate-400 text-xs">✍️ {a.authorName}</span>}
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${a.published ? "bg-green-50 text-green-600" : "bg-slate-100 text-slate-400"}`}>
-                    {a.published ? "منشور" : "مسودة"}
-                  </span>
-                  <span className="text-slate-400 text-xs">{new Date(a.publishedAt).toLocaleDateString("ar-YE")}</span>
+            <div key={a.id} className="bg-white border border-slate-200 rounded-xl p-3">
+              {/* صف أول: صورة + عنوان */}
+              <div className="flex items-start gap-3 mb-2">
+                {a.imageUrl ? (
+                  <img src={a.imageUrl} alt={a.title} className="w-12 h-12 rounded-lg object-cover border border-slate-100 flex-shrink-0" />
+                ) : (
+                  <div className="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0 text-xl">✍️</div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="text-slate-900 font-bold text-sm line-clamp-2 leading-snug">{a.title}</div>
+                  <div className="flex items-center gap-2 mt-1 flex-wrap">
+                    <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{a.category}</span>
+                    {a.authorName && <span className="text-slate-400 text-xs">✍️ {a.authorName}</span>}
+                    <span className={"text-xs px-2 py-0.5 rounded-full " + (a.published ? "bg-green-50 text-green-600" : "bg-slate-100 text-slate-400")}>
+                      {a.published ? "منشور" : "مسودة"}
+                    </span>
+                    <span className="text-slate-400 text-xs">{new Date(a.publishedAt).toLocaleDateString("ar-YE")}</span>
+                  </div>
                 </div>
               </div>
-              <div className="flex gap-2 flex-shrink-0">
+              {/* صف ثاني: أزرار */}
+              <div className="flex gap-2 border-t border-slate-100 pt-2">
                 <a href={`/articles/${a.id}`} target="_blank"
-                  className="text-slate-400 text-xs px-3 py-1.5 border border-slate-200 rounded-lg hover:border-slate-300 transition-colors">
+                  className="flex-1 text-center text-slate-500 text-xs py-1.5 border border-slate-200 rounded-lg hover:border-slate-300 transition-colors">
                   عرض
                 </a>
                 <button onClick={() => openEdit(a)}
-                  className="text-slate-600 text-xs px-3 py-1.5 border border-slate-200 rounded-lg hover:border-blue-300 hover:text-blue-600 transition-colors">
+                  className="flex-1 text-slate-600 text-xs py-1.5 border border-slate-200 rounded-lg hover:border-blue-300 hover:text-blue-600 transition-colors">
                   تعديل
                 </button>
                 <button onClick={() => setDelId(a.id)}
-                  className="text-red-500 text-xs px-3 py-1.5 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">
+                  className="flex-1 text-red-500 text-xs py-1.5 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">
                   حذف
                 </button>
               </div>
