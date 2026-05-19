@@ -21,7 +21,18 @@ export default function MediaPage() {
   const [previewUrl, setPreviewUrl] = useState("");
   const [showUpload, setShowUpload] = useState(false);
   const [copied, setCopied]     = useState<number | null>(null);
+  const [importing, setImporting] = useState(false);
   const fileRef                 = useRef<HTMLInputElement>(null);
+
+  async function handleImport() {
+    if (!confirm("استيراد كل الصور الموجودة في البرامج والأخبار والفريق والمقالات؟")) return;
+    setImporting(true);
+    const res = await fetch("/api/media/import", { method: "POST" });
+    const data = await res.json();
+    setImporting(false);
+    alert(`✅ تم استيراد ${data.imported} صورة`);
+    load();
+  }
 
   async function load() {
     const [itemsRes, meRes] = await Promise.all([
@@ -83,10 +94,18 @@ export default function MediaPage() {
           <h1 className="text-slate-900 text-2xl font-bold">مكتبة الصور</h1>
           <p className="text-slate-500 text-sm mt-1">{items.length} صورة</p>
         </div>
-        <button onClick={() => setShowUpload(!showUpload)}
+        <div className="flex gap-2">
+          {me?.role === "admin" && (
+            <button onClick={handleImport} disabled={importing}
+              className="bg-slate-100 text-slate-700 px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-slate-200 transition-colors disabled:opacity-50">
+              {importing ? "جاري الاستيراد..." : "📥 استيراد الموجودة"}
+            </button>
+          )}
+          <button onClick={() => setShowUpload(!showUpload)}
           className="bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors">
-          + رفع صورة جديدة
-        </button>
+            + رفع صورة جديدة
+          </button>
+        </div>
       </div>
 
       {/* نموذج الرفع */}
