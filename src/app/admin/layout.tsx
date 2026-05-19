@@ -52,7 +52,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen bg-slate-50 flex" dir="rtl">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-l border-slate-200 flex flex-col fixed h-full shadow-sm">
+      <aside className="w-64 bg-white border-l border-slate-200 flex flex-col fixed inset-y-0 right-0 shadow-sm">
         {/* Logo */}
         <div className="p-5 border-b border-slate-200">
           <div className="flex items-center gap-3">
@@ -86,7 +86,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         {/* User info + Logout */}
-        <div className="p-3 border-t border-slate-200">
+        <div className="p-3 border-t border-slate-200 mb-2">
           {me && (
             <div className="px-4 py-2 mb-1">
               <div className="text-slate-800 text-sm font-medium truncate">{me.name}</div>
