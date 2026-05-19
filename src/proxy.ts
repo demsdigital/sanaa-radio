@@ -15,9 +15,12 @@ const PROTECTED_API = [
   "/api/dashboard",
 ];
 
-// صفحات يُسمح بها قبل تفعيل 2FA
 const TOTP_WHITELIST = [
   "/admin/security",
+  "/api/auth/totp-setup",
+  "/api/auth/totp-verify",
+  "/api/auth/me",
+  "/api/auth/logout",
 ];
 
 export default function proxy(request: NextRequest) {
@@ -31,12 +34,23 @@ export default function proxy(request: NextRequest) {
     const payload = verifyToken(token);
     if (!payload) return NextResponse.redirect(new URL("/login", request.url));
 
-    // إجبار غير الأدمن على تفعيل 2FA
-    const isAdmin = payload.role === "admin";
-    const hasTOTP = !!payload.totpEnabled;
     const onWhitelist = TOTP_WHITELIST.some(p => pathname.startsWith(p));
 
-    if (!isAdmin && !hasTOTP && !onWhitelist) {
+    // إذا token مؤقت لإعداد 2FA — فقط صفحة الأمان مسموحة
+    if (payload.requiresSetup) {
+      if (!onWhitelist) {
+        const url = new URL("/admin/security", request.url);
+        url.searchParams.set("required", "1");
+        return NextResponse.redirect(url);
+      }
+      return NextResponse.next();
+    }
+
+    // admin معفى دائماً
+    if (payload.role === "admin") return NextResponse.next();
+
+    // team — يجب أن يكون فعّل 2FA
+    if (!payload.totpEnabled && !onWhitelist) {
       const url = new URL("/admin/security", request.url);
       url.searchParams.set("required", "1");
       return NextResponse.redirect(url);
@@ -45,7 +59,7 @@ export default function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // حماية API — فقط POST/PUT/DELETE/PATCH
+  // حماية API
   if (
     pathname.startsWith("/api/") &&
     ["POST", "PUT", "DELETE", "PATCH"].includes(method) &&
@@ -63,8 +77,11 @@ export default function proxy(request: NextRequest) {
   // إعادة توجيه من login إذا مسجل دخول
   if (pathname === "/login") {
     const token = request.cookies.get("token")?.value;
-    if (token && verifyToken(token)) {
-      return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    if (token) {
+      const payload = verifyToken(token);
+      if (payload && !payload.requiresSetup && !payload.requires2FA) {
+        return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+      }
     }
   }
 

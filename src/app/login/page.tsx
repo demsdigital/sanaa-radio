@@ -25,7 +25,9 @@ export default function LoginPage() {
     const data = await res.json();
     setLoading(false);
     if (!res.ok) { setError(data.error || "خطأ في تسجيل الدخول"); return; }
-    if (data.requires2FA) {
+    if (data.requiresSetup) {
+      router.push("/admin/security?required=1");
+    } else if (data.requires2FA) {
       setUserId(data.userId);
       setTempToken(data.tempToken);
       setStep("2fa");

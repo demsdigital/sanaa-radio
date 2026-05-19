@@ -10,20 +10,22 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
   return bcrypt.compare(password, hash);
 }
 
-export function signToken(
-  payload: { id: number; email: string; role: string; requires2FA?: boolean; totpEnabled?: boolean },
-  expiresIn: string = "7d"
-): string {
+type TokenPayload = {
+  id: number;
+  email: string;
+  role: string;
+  requires2FA?: boolean;
+  totpEnabled?: boolean;
+  requiresSetup?: boolean;
+};
+
+export function signToken(payload: TokenPayload, expiresIn: string = "7d"): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn } as jwt.SignOptions);
 }
 
-export function verifyToken(
-  token: string
-): { id: number; email: string; role: string; requires2FA?: boolean; totpEnabled?: boolean } | null {
+export function verifyToken(token: string): TokenPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as {
-      id: number; email: string; role: string; requires2FA?: boolean; totpEnabled?: boolean;
-    };
+    return jwt.verify(token, JWT_SECRET) as TokenPayload;
   } catch {
     return null;
   }

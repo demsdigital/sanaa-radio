@@ -52,13 +52,27 @@ export async function POST(request: NextRequest) {
 
     resetAttempts(ip);
 
-    // إذا فعّل 2FA — أرسل tempToken
+    // حالة 1: فعّل 2FA — يحتاج كود التحقق
     if (user.totpEnabled && user.totpSecret) {
       const tempToken = signToken({ id: user.id, email: user.email, role: user.role, requires2FA: true }, "5m");
       return NextResponse.json({ requires2FA: true, userId: user.id, tempToken });
     }
 
-    // دخول عادي
+    // حالة 2: team ولم يفعّل 2FA — إجبار على التفعيل
+    if (user.role !== "admin" && !user.totpEnabled) {
+      const setupToken = signToken({ id: user.id, email: user.email, role: user.role, requiresSetup: true }, "30m");
+      const response = NextResponse.json({ requiresSetup: true });
+      response.cookies.set("token", setupToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 30,
+        path: "/",
+      });
+      return response;
+    }
+
+    // حالة 3: دخول عادي (admin أو من فعّل 2FA)
     const token = signToken({ id: user.id, email: user.email, role: user.role, totpEnabled: user.totpEnabled ?? false });
     const response = NextResponse.json({
       success: true,
