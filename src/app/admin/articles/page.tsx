@@ -80,7 +80,7 @@ export default function ArticlesAdminPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
         <div>
           <h1 className="text-slate-900 text-2xl font-bold">الكتابات والمقالات</h1>
           <p className="text-slate-500 text-sm mt-1">{articles.length} مقال</p>
@@ -102,11 +102,11 @@ export default function ArticlesAdminPage() {
       ) : (
         <div className="space-y-3">
           {articles.map(a => (
-            <div key={a.id} className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-4">
+            <div key={a.id} className="bg-white border border-slate-200 rounded-xl p-3 flex items-start gap-3">
               {a.imageUrl ? (
-                <img src={a.imageUrl} alt={a.title} className="w-16 h-16 rounded-lg object-cover border border-slate-100 flex-shrink-0" />
+                <img src={a.imageUrl} alt={a.title} className="w-12 h-12 rounded-lg object-cover border border-slate-100 flex-shrink-0" />
               ) : (
-                <div className="w-16 h-16 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0 text-2xl">✍️</div>
+                <div className="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0 text-xl">✍️</div>
               )}
               <div className="flex-1 min-w-0">
                 <div className="text-slate-900 font-semibold line-clamp-1">{a.title}</div>
