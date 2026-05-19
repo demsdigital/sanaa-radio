@@ -58,7 +58,7 @@ export default function LoginPage() {
               required
               dir="ltr"
               className="w-full bg-[#14141f] border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-[#1a4fd6] transition-colors"
-              placeholder="admin@sanaaradio.ye"
+              placeholder=""
             />
           </div>
 
