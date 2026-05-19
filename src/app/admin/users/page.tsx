@@ -28,6 +28,7 @@ export default function UsersPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<User | null>(null);
+  const [showPwd, setShowPwd]   = useState(false);
   const [form, setForm]       = useState({
     name: "", email: "", password: "", role: "team", active: true,
     permissions: [] as Permission[],
