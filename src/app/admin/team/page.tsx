@@ -93,7 +93,7 @@ export default function AdminTeamPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
         <div>
           <h1 className="text-slate-900 text-2xl font-bold">فريق الإذاعة</h1>
           <p className="text-slate-500 text-sm mt-1">{members.length} عضو</p>
@@ -148,9 +148,9 @@ export default function AdminTeamPage() {
               </div>
               {/* صورة */}
               {m.imageUrl ? (
-                <img src={m.imageUrl} alt={m.name} className="w-14 h-14 rounded-full object-cover border-2 border-slate-100 flex-shrink-0" />
+                <img src={m.imageUrl} alt={m.name} className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover border-2 border-slate-100 flex-shrink-0" />
               ) : (
-                <div className="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 text-2xl border-2 border-slate-100">👤</div>
+                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 text-xl border-2 border-slate-100">👤</div>
               )}
               {/* معلومات */}
               <div className="flex-1 min-w-0">
