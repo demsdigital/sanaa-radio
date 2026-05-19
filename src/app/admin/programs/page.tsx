@@ -107,7 +107,7 @@ export default function ProgramsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4 md:mb-8 flex-wrap gap-2">
+      <div className="flex items-center justify-between mb-4 md:mb-8 gap-2 flex-wrap">
         <div>
           <h1 className="text-slate-900 text-2xl font-bold">البرامج</h1>
           <p className="text-slate-500 text-sm mt-1">{programs.length} برنامج</p>
@@ -117,7 +117,7 @@ export default function ProgramsPage() {
             <span className="text-green-600 text-sm font-medium bg-green-50 border border-green-200 px-3 py-1.5 rounded-lg">✓ تم حفظ الترتيب</span>
           )}
           <button onClick={saveOrder} disabled={savingOrder}
-            className="flex items-center gap-2 bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-800 transition-colors disabled:opacity-50">
+            className="flex items-center gap-1 bg-slate-700 text-white px-2 md:px-4 py-2 rounded-lg text-xs md:text-sm font-bold hover:bg-slate-800 transition-colors disabled:opacity-50">
             {savingOrder ? "جاري الحفظ..." : "💾 حفظ الترتيب"}
           </button>
           <button onClick={openAdd}
