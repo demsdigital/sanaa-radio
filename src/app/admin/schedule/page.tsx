@@ -116,10 +116,10 @@ export default function AdminSchedulePage() {
       </div>
 
       {/* فلتر الأيام */}
-      <div className="flex gap-2 flex-wrap mb-6">
+      <div className="flex gap-2 overflow-x-auto mb-6 pb-1 scrollbar-hide">
         {DAYS.map(d => (
           <button key={d.value} onClick={() => setFilterDay(d.value)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors border flex-shrink-0 ${`
               filterDay === d.value
                 ? "bg-blue-600 text-white border-blue-600"
                 : "bg-white text-slate-600 border-slate-200 hover:border-blue-300"
@@ -146,9 +146,9 @@ export default function AdminSchedulePage() {
           {filtered.map(item => {
             const cls = colorBg[item.color] || colorBg.slate;
             return (
-              <div key={item.id} className={`flex items-center gap-4 p-4 rounded-xl border ${cls}`}>
+              <div key={item.id} className={`flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 rounded-xl border ${cls}`}>
                 {/* وقت */}
-                <div className="flex-shrink-0 text-center w-24">
+                <div className="flex-shrink-0 text-center w-full sm:w-24 flex sm:block items-center gap-2">
                   <div className="font-black text-sm" dir="ltr">{item.timeStart}</div>
                   <div className="text-xs opacity-60" dir="ltr">— {item.timeEnd}</div>
                 </div>
