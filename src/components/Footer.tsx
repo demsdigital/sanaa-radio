@@ -91,6 +91,7 @@ export default async function Footer() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-600">
           <span>© {new Date().getFullYear()} إذاعة الجمهورية اليمنية — جميع الحقوق محفوظة</span>
           <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" /> Yemen Radio — Broadcasting Since 1947</span>
+          <span className="text-slate-700 text-xs">صُنع بواسطة <a href="https://dmes.digital" target="_blank" rel="noopener noreferrer" className="hover:text-slate-500 transition-colors">DMES</a></span>
         </div>
       </div>
     </footer>
