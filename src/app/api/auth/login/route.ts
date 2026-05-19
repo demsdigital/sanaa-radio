@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     }
 
     // دخول عادي
-    const token = signToken({ id: user.id, email: user.email, role: user.role, totpEnabled: user.totpEnabled });
+    const token = signToken({ id: user.id, email: user.email, role: user.role, totpEnabled: user.totpEnabled ?? false });
     const response = NextResponse.json({
       success: true,
       user: { id: user.id, name: user.name, email: user.email, role: user.role },

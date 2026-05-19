@@ -33,7 +33,7 @@ export default function proxy(request: NextRequest) {
 
     // إجبار غير الأدمن على تفعيل 2FA
     const isAdmin = payload.role === "admin";
-    const hasTOTP = payload.totpEnabled === true;
+    const hasTOTP = !!payload.totpEnabled;
     const onWhitelist = TOTP_WHITELIST.some(p => pathname.startsWith(p));
 
     if (!isAdmin && !hasTOTP && !onWhitelist) {
