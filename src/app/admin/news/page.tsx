@@ -44,10 +44,6 @@ export default function NewsPage() {
     setPickerTarget(field);
     setShowPicker(true);
   }
-
-  function openPicker(field: keyof typeof form) {
-    setPickerTarget(field);
-    setShowPicker(true);
   }
 
   async function load() {
