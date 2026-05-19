@@ -146,9 +146,9 @@ export default function AdminSchedulePage() {
           {filtered.map(item => {
             const cls = colorBg[item.color] || colorBg.slate;
             return (
-              <div key={item.id} className={`flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 rounded-xl border ${cls}`}>
+              <div key={item.id} className={`flex items-center gap-4 p-4 rounded-xl border ${cls}`}>
                 {/* وقت */}
-                <div className="flex-shrink-0 text-center w-full sm:w-24 flex sm:block items-center gap-2">
+                <div className="flex-shrink-0 text-center w-24">
                   <div className="font-black text-sm" dir="ltr">{item.timeStart}</div>
                   <div className="text-xs opacity-60" dir="ltr">— {item.timeEnd}</div>
                 </div>
