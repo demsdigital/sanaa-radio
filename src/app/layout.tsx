@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "إذاعة الجمهورية اليمنية — البرنامج العام",
@@ -13,6 +15,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
       </head>
       <body className="pt-9">
+        <Analytics />
+        <SpeedInsights />
         {children}
       </body>
     </html>
