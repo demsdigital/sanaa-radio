@@ -43,7 +43,6 @@ export default function NewsPage() {
     setPickerTarget(field);
     setShowPicker(true);
   }
-  }
 
   async function load() {
     const res = await fetch("/api/news");
