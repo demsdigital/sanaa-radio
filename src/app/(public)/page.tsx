@@ -29,7 +29,7 @@ export default async function HomePage() {
   allSettings.forEach((item) => (s[item.key] = item.value));
 
   const todayMap: Record<number, string> = { 0: "sun", 1: "mon", 2: "tue", 3: "wed", 4: "thu", 5: "fri", 6: "sat" };
-  const todayKey = todayMap[new Date().getDay()];
+  const todayKey = todayMap[new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Aden" })).getDay()];
   const todaySchedule = allSchedule
     .filter((i) => i.day === todayKey || i.day === "daily")
     .sort((a, b) => a.timeStart.localeCompare(b.timeStart))
