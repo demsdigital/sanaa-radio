@@ -200,17 +200,17 @@ export default function ArticlesAdminPage() {
                 <label className="block text-slate-700 text-sm font-medium mb-1.5">الصورة الرئيسية</label>
                 <input ref={fileRef} type="file" accept="image/*" className="hidden"
                   onChange={e => { const f = e.target.files?.[0]; if (f) uploadImage(f); }} />
-                <div className="flex gap-2">
-                  <input type="url" value={form.imageUrl} onChange={e => setForm({ ...form, imageUrl: e.target.value })}
+                <input type="url" value={form.imageUrl} onChange={e => setForm({ ...form, imageUrl: e.target.value })}
                     placeholder="https://..." dir="ltr"
-                    className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 font-mono" />
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 font-mono mb-2" />
+                <div className="flex gap-2">
                   <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading}
-                    className="px-4 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 disabled:opacity-50">
-                    {uploading ? "..." : "رفع ↑"}
+                    className="flex-1 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                    {uploading ? "جاري الرفع..." : "📤 رفع صورة"}
                   </button>
                   <button type="button" onClick={openPicker}
-                    className="px-3 py-2.5 bg-slate-100 text-slate-700 text-sm font-bold rounded-lg hover:bg-slate-200">
-                    🖼️
+                    className="flex-1 py-2 bg-slate-100 text-slate-700 text-sm font-bold rounded-lg hover:bg-slate-200">
+                    🖼️ من المكتبة
                   </button>
                 </div>
                 {form.imageUrl && (
