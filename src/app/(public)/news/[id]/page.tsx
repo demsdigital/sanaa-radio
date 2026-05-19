@@ -28,12 +28,34 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${item.title} | إذاعة الجمهورية اليمنية`,
     description: item.body?.slice(0, 160),
+
+    alternates: {
+      canonical: `https://www.sanaaradio.org/news/${id}`,
+    },
+
+    authors: [{ name: "إذاعة الجمهورية اليمنية" }],
+
+    robots: {
+      index: true,
+      follow: true,
+    },
+
     openGraph: {
       title: item.title,
       description: item.body?.slice(0, 160),
+      url: `https://www.sanaaradio.org/news/${id}`,
+      siteName: "إذاعة الجمهورية اليمنية",
+      locale: "ar_YE",
       type: "article",
       publishedTime: item.publishedAt?.toISOString(),
       ...(item.imageUrl ? { images: [{ url: item.imageUrl }] } : {}),
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: item.title,
+      description: item.body?.slice(0, 160),
+      ...(item.imageUrl ? { images: [item.imageUrl] } : {}),
     },
   };
 }

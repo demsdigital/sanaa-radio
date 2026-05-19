@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { programs, episodes } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
+import type { Metadata } from "next";
 
 function formatDuration(seconds: number) {
   if (!seconds) return "";
@@ -13,6 +14,68 @@ function formatDuration(seconds: number) {
 type Props = {
   params: Promise<{ slug: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+
+  const [program] = await db
+    .select()
+    .from(programs)
+    .where(eq(programs.slug, slug));
+
+  if (!program) {
+    return {
+      title: "برنامج غير موجود | إذاعة الجمهورية اليمنية",
+    };
+  }
+
+  const description =
+    program.description ||
+    `استمع إلى حلقات برنامج ${program.name} على إذاعة الجمهورية اليمنية — البرنامج العام.`;
+
+  return {
+    title: `${program.name} | إذاعة الجمهورية اليمنية`,
+    description,
+
+    alternates: {
+      canonical: `https://www.sanaaradio.org/programs/${slug}`,
+    },
+
+    robots: {
+      index: true,
+      follow: true,
+    },
+
+    openGraph: {
+      type: "website",
+      locale: "ar_YE",
+      url: `https://www.sanaaradio.org/programs/${slug}`,
+      siteName: "إذاعة الجمهورية اليمنية",
+      title: program.name,
+      description,
+      ...(program.imageUrl
+        ? {
+            images: [
+              {
+                url: program.imageUrl,
+              },
+            ],
+          }
+        : {}),
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: program.name,
+      description,
+      ...(program.imageUrl
+        ? {
+            images: [program.imageUrl],
+          }
+        : {}),
+    },
+  };
+}
 
 export default async function ProgramPage({ params }: Props) {
   const { slug } = await params;

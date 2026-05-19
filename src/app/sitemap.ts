@@ -6,7 +6,7 @@ export default async function sitemap() {
   const baseUrl = "https://www.sanaaradio.org";
 
   const allNews = await db.select({ id: news.id, publishedAt: news.publishedAt }).from(news);
-  const allArticles = await db.select({ id: articles.id, publishedAt: articles.publishedAt }).from(articles).where(eq(articles.published, true));
+  const allArticles = await db.select({ slug: articles.slug, publishedAt: articles.publishedAt }).from(articles).where(eq(articles.published, true));
   const allPrograms = await db.select({ slug: programs.slug }).from(programs).where(eq(programs.active, true));
 
   return [
@@ -24,7 +24,7 @@ export default async function sitemap() {
       priority: 0.7,
     })),
     ...allArticles.map(a => ({
-      url: `${baseUrl}/articles/${a.id}`,
+      url: `${baseUrl}/articles/${a.slug}`,
       lastModified: a.publishedAt,
       changeFrequency: "never" as const,
       priority: 0.7,

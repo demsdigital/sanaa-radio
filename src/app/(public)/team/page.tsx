@@ -17,12 +17,8 @@ export default async function TeamPage() {
     .where(eq(team.active, true))
     .orderBy(asc(team.sortOrder), asc(team.createdAt));
 
-  // تجميع حسب القسم
-  const departments: Record<string, typeof members> = {};
-  members.forEach(m => {
-    if (!departments[m.department]) departments[m.department] = [];
-    departments[m.department].push(m);
-  });
+  const leader = members[0];
+  const restMembers = members.slice(1);
 
   return (
     <div className="min-h-screen bg-slate-50" dir="rtl">
@@ -42,31 +38,51 @@ export default async function TeamPage() {
             <div className="text-4xl mb-3">👥</div>
             <div className="text-slate-400">لا يوجد أعضاء بعد</div>
           </div>
-        ) : Object.keys(departments).length === 1 ? (
-          /* إذا قسم واحد فقط — شبكة مباشرة */
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {members.map(m => <MemberCard key={m.id} member={m} />)}
-          </div>
         ) : (
-          /* أقسام متعددة */
           <div className="space-y-12">
-            {Object.entries(departments).map(([dept, deptMembers]) => (
-              <div key={dept}>
-                <div className="flex items-center gap-3 mb-6">
-                  <h2 className="text-slate-900 text-xl font-black">{dept}</h2>
-                  <span className="text-xs bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1 rounded-full font-medium">
-                    {deptMembers.length} عضو
-                  </span>
-                  <div className="flex-1 h-px bg-slate-200" />
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {deptMembers.map(m => <MemberCard key={m.id} member={m} />)}
-                </div>
+            {leader && (
+              <div className="max-w-xl mx-auto">
+                <LeaderCard member={leader} />
               </div>
-            ))}
+            )}
+
+            {restMembers.length > 0 && (
+              <section>
+                <div className="text-center mb-8">
+                  <h2 className="text-slate-900 text-2xl font-black">فريق الإذاعة</h2>
+                  <p className="text-slate-500 text-sm mt-2">
+                    كوادر إذاعة الجمهورية اليمنية — البرنامج العام
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {restMembers.map(m => <MemberCard key={m.id} member={m} />)}
+                </div>
+              </section>
+            )}
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+
+function LeaderCard({ member }: { member: { name: string; jobTitle: string; department: string; imageUrl: string | null } }) {
+  return (
+    <div className="bg-white border border-blue-200 rounded-3xl p-8 text-center shadow-sm">
+      <div className="mb-5 flex justify-center">
+        {member.imageUrl ? (
+          <img src={member.imageUrl} alt={member.name}
+            className="w-32 h-32 rounded-full object-cover border-4 border-blue-100 shadow-md" />
+        ) : (
+          <div className="w-32 h-32 rounded-full bg-blue-50 border-4 border-blue-100 flex items-center justify-center text-4xl">
+            👤
+          </div>
+        )}
+      </div>
+      <h2 className="text-slate-900 font-black text-2xl mb-2">{member.name}</h2>
+      <div className="text-blue-600 text-sm font-bold mb-1">{member.jobTitle}</div>
     </div>
   );
 }
@@ -88,7 +104,6 @@ function MemberCard({ member }: { member: { name: string; jobTitle: string; depa
       {/* معلومات */}
       <div className="text-slate-900 font-bold text-sm mb-1 leading-snug">{member.name}</div>
       <div className="text-blue-600 text-xs font-medium mb-1">{member.jobTitle}</div>
-      <div className="text-slate-400 text-xs">{member.department}</div>
     </div>
   );
 }

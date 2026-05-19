@@ -25,12 +25,12 @@ export default async function PageHero({ badge, title, subtitle }: Props) {
   const op = Number(s.programs_hero_overlay_opacity ?? s.hero_overlay_opacity ?? 55) / 100;
 
   return (
-    <div className="relative py-14 px-6 text-white text-center overflow-hidden"
-      style={{ background: heroBg, minHeight: "200px" }}>
+    <div className="relative py-6 md:py-10 px-4 md:px-6 text-white text-center overflow-hidden"
+      style={{ background: heroBg, minHeight: "150px" }}>
       {(mt === "image" || mt === "gif") && mu && (
         <>
-          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${mu})` }} />
-          <div className="absolute inset-0" style={{ background: `rgba(0,0,0,${op})` }} />
+          <div className="absolute inset-0 hidden md:block bg-cover bg-center" style={{ backgroundImage: `url(${mu})` }} />
+          <div className="absolute inset-0 hidden md:block" style={{ background: `rgba(0,0,0,${op})` }} />
         </>
       )}
       {mt === "video" && mu && (
@@ -47,14 +47,14 @@ export default async function PageHero({ badge, title, subtitle }: Props) {
           <div className="absolute bottom-0 left-10 w-64 h-64 rounded-full border border-white" />
         </div>
       )}
-      <div className="relative z-10">
+      <div className="relative z-10 inline-block max-w-[88vw] md:max-w-3xl rounded-xl md:rounded-2xl bg-black/10 md:bg-black/25 px-4 md:px-6 py-3 md:py-4 backdrop-blur-[1px] md:backdrop-blur-[2px]">
         {badge && (
-          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-blue-200 text-xs font-bold px-4 py-1.5 rounded-full mb-4">
+          <div className="hidden sm:inline-flex items-center gap-2 bg-white/10 border border-white/20 text-blue-200 text-xs font-bold px-4 py-1.5 rounded-full mb-3 md:mb-4">
             {badge}
           </div>
         )}
-        <h1 className="text-3xl md:text-4xl font-black mb-2">{title}</h1>
-        {subtitle && <p className="text-blue-200 text-sm">{subtitle}</p>}
+        <h1 className="text-2xl md:text-4xl font-black mb-1 md:mb-2 drop-shadow-lg">{title}</h1>
+        {subtitle && <p className="text-white/90 text-xs md:text-sm drop-shadow">{subtitle}</p>}
       </div>
     </div>
   );

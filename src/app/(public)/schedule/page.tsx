@@ -3,6 +3,7 @@ import { schedule } from "@/db/schema";
 import { Suspense } from "react";
 import DayTabs from "./DayTabs";
 import type { Metadata } from "next";
+import PageHero from "@/components/PageHero";
 
 export const metadata: Metadata = {
   title: "الخارطة البرامجية | إذاعة الجمهورية اليمنية",
@@ -42,18 +43,11 @@ export default async function SchedulePage({ searchParams }: Props) {
 
   return (
     <div className="min-h-screen bg-slate-50" dir="rtl">
-      <div className="py-14 px-6 text-white text-center relative overflow-hidden"
-        style={{background:"linear-gradient(135deg,#0a1628 0%,#1a3a7c 50%,#2563eb 100%)"}}>
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-5 right-10 w-48 h-48 rounded-full border border-white"/>
-          <div className="absolute bottom-0 left-10 w-64 h-64 rounded-full border border-white"/>
-        </div>
-        <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-blue-200 text-xs font-bold px-4 py-1.5 rounded-full mb-4">📅 الخارطة البرامجية</div>
-          <h1 className="text-3xl md:text-4xl font-black mb-2">جدول البرامج</h1>
-          <p className="text-blue-200 text-sm">إذاعة الجمهورية اليمنية — البرنامج العام</p>
-        </div>
-      </div>
+      <PageHero
+        badge="📅 الخارطة البرامجية"
+        title="جدول البرامج"
+        subtitle="إذاعة الجمهورية اليمنية — البرنامج العام"
+      />
 
       <div className="max-w-4xl mx-auto px-4 py-8">
         <Suspense><DayTabs counts={counts} today={todayKey} /></Suspense>

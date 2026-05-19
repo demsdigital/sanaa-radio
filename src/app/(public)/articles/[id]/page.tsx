@@ -3,10 +3,83 @@ import { articles } from "@/db/schema";
 import { eq, desc, ne } from "drizzle-orm";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ id: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+
+  const [article] = await db
+    .select()
+    .from(articles)
+    .where(eq(articles.id, Number(id)));
+
+  if (!article) {
+    return {
+      title: "مقال غير موجود | إذاعة الجمهورية اليمنية",
+    };
+  }
+
+  return {
+    title: `${article.title} | إذاعة الجمهورية اليمنية`,
+
+    description:
+      article.excerpt ||
+      article.body?.slice(0, 160),
+
+    alternates: {
+      canonical: `https://www.sanaaradio.org/articles/${id}`,
+    },
+
+    authors: [
+      {
+        name: article.authorName || "إذاعة الجمهورية اليمنية",
+      },
+    ],
+
+    robots: {
+      index: true,
+      follow: true,
+    },
+
+    openGraph: {
+      type: "article",
+      locale: "ar_YE",
+      url: `https://www.sanaaradio.org/articles/${id}`,
+      siteName: "إذاعة الجمهورية اليمنية",
+      title: article.title,
+      description:
+        article.excerpt ||
+        article.body?.slice(0, 160),
+      ...(article.imageUrl
+        ? {
+            images: [
+              {
+                url: article.imageUrl,
+              },
+            ],
+          }
+        : {}),
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description:
+        article.excerpt ||
+        article.body?.slice(0, 160),
+      ...(article.imageUrl
+        ? {
+            images: [article.imageUrl],
+          }
+        : {}),
+    },
+  };
+}
+
 
 export default async function ArticlePage({ params }: Props) {
   const { id } = await params;
