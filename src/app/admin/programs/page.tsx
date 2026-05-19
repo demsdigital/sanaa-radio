@@ -1,4 +1,5 @@
 "use client";
+import MediaPicker from "@/components/MediaPicker";
 import { usePermission } from "@/lib/usePermission";
 import { useState, useEffect, useRef } from "react";
 
