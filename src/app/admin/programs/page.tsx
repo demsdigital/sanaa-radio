@@ -107,7 +107,7 @@ export default function ProgramsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-4 md:mb-8 flex-wrap gap-2">
         <div>
           <h1 className="text-slate-900 text-2xl font-bold">البرامج</h1>
           <p className="text-slate-500 text-sm mt-1">{programs.length} برنامج</p>
@@ -145,7 +145,7 @@ export default function ProgramsPage() {
               onDragEnter={() => onDragEnter(index)}
               onDragEnd={onDragEnd}
               onDragOver={e => e.preventDefault()}
-              className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-4 cursor-grab active:cursor-grabbing active:shadow-lg active:border-blue-300 transition-all select-none">
+              className="bg-white border border-slate-200 rounded-xl p-3 md:p-4 flex items-center gap-2 md:gap-4 cursor-grab active:cursor-grabbing active:shadow-lg active:border-blue-300 transition-all select-none">
               <div className="text-slate-300 hover:text-slate-500 flex-shrink-0">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                   <circle cx="5" cy="4" r="1.5"/><circle cx="11" cy="4" r="1.5"/>
@@ -157,7 +157,7 @@ export default function ProgramsPage() {
                 {index + 1}
               </div>
               {p.imageUrl ? (
-                <img src={p.imageUrl} alt={p.name} className="w-16 h-16 rounded-lg object-cover border border-slate-100 flex-shrink-0" />
+                <img src={p.imageUrl} alt={p.name} className="w-12 h-12 md:w-16 md:h-16 rounded-lg object-cover border border-slate-100 flex-shrink-0" />
               ) : (
                 <div className="w-16 h-16 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0 text-2xl">📻</div>
               )}
@@ -174,7 +174,7 @@ export default function ProgramsPage() {
               </div>
               <div className="flex gap-2 flex-shrink-0">
                 <button onClick={() => openEdit(p)}
-                  className="text-slate-600 text-xs px-3 py-1.5 border border-slate-200 rounded-lg hover:border-blue-300 hover:text-blue-600 transition-colors">
+                  className="text-slate-600 text-xs px-2 md:px-3 py-1.5 border border-slate-200 rounded-lg hover:border-blue-300 hover:text-blue-600 transition-colors">
                   تعديل
                 </button>
                 <button onClick={() => handleDelete(p.id)}
