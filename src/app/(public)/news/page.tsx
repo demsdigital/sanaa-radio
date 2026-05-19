@@ -4,6 +4,8 @@ import { desc } from "drizzle-orm";
 import Link from "next/link";
 import type { Metadata } from "next";
 
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "أرشيف الأخبار | إذاعة الجمهورية اليمنية",
   description: "أرشيف أخبار إذاعة الجمهورية اليمنية — البرنامج العام",

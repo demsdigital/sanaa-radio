@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-
 type MediaItem = {
   id: number;
   filename: string;
@@ -8,21 +7,73 @@ type MediaItem = {
   uploadedBy: number;
   createdAt: string;
 };
-
 type Me = { id: number; role: string };
-
 export default function MediaPage() {
-  const [items, setItems]       = useState<MediaItem[]>([]);
-  const [me, setMe]             = useState<Me | null>(null);
-  const [loading, setLoading]   = useState(true);
-  const [search, setSearch]     = useState("");
+  const [items, setItems]         = useState<MediaItem[]>([]);
+  const [me, setMe]               = useState<Me | null>(null);
+  const [loading, setLoading]     = useState(true);
+  const [search, setSearch]       = useState("");
   const [uploading, setUploading] = useState(false);
-  const [filename, setFilename] = useState("");
+  const [filename, setFilename]   = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
   const [showUpload, setShowUpload] = useState(false);
-  const [copied, setCopied]     = useState<number | null>(null);
+  const [copied, setCopied]       = useState<number | null>(null);
   const [importing, setImporting] = useState(false);
-  const fileRef                 = useRef<HTMLInputElement>(null);
+  const fileRef                   = useRef<HTMLInputElement>(null);
+
+  // ===== تحديد متعدد =====
+  const [selected, setSelected]   = useState<Set<number>>(new Set());
+  const [selectMode, setSelectMode] = useState(false);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [bulkCopied, setBulkCopied] = useState(false);
+
+  function toggleSelect(id: number) {
+    setSelected(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }
+
+  function toggleSelectAll() {
+    if (selected.size === filtered.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(filtered.map(i => i.id)));
+    }
+  }
+
+  function exitSelectMode() {
+    setSelectMode(false);
+    setSelected(new Set());
+  }
+
+  async function bulkDelete() {
+    if (!confirm(`حذف ${selected.size} صورة؟ لا يمكن التراجع.`)) return;
+    setBulkDeleting(true);
+    await Promise.all(
+      Array.from(selected).map(id =>
+        fetch("/api/media", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id }),
+        })
+      )
+    );
+    setBulkDeleting(false);
+    exitSelectMode();
+    load();
+  }
+
+  function bulkCopyUrls() {
+    const urls = items
+      .filter(i => selected.has(i.id))
+      .map(i => i.url)
+      .join("\n");
+    navigator.clipboard.writeText(urls);
+    setBulkCopied(true);
+    setTimeout(() => setBulkCopied(false), 2000);
+  }
 
   async function handleImport() {
     if (!confirm("استيراد كل الصور الموجودة في البرامج والأخبار والفريق والمقالات؟")) return;
@@ -45,6 +96,7 @@ export default function MediaPage() {
     } catch {}
     setLoading(false);
   }
+
   useEffect(() => { load(); }, []);
 
   async function handleUpload() {
@@ -90,32 +142,70 @@ export default function MediaPage() {
 
   return (
     <div>
-      {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-slate-900 text-2xl font-bold">مكتبة الصور</h1>
           <p className="text-slate-500 text-sm mt-1">{items.length} صورة</p>
         </div>
         <div className="flex gap-2">
-          {me?.role === "admin" && (
-            <button onClick={handleImport} disabled={importing}
-              className="bg-slate-100 text-slate-700 px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-slate-200 transition-colors disabled:opacity-50">
-              {importing ? "جاري الاستيراد..." : "📥 استيراد الموجودة"}
+          {!selectMode ? (
+            <>
+              {me?.role === "admin" && (
+                <button onClick={handleImport} disabled={importing}
+                  className="bg-slate-100 text-slate-700 px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-slate-200 transition-colors disabled:opacity-50">
+                  {importing ? "جاري الاستيراد..." : "📥 استيراد الموجودة"}
+                </button>
+              )}
+              <button onClick={() => setSelectMode(true)}
+                className="bg-slate-100 text-slate-700 px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-slate-200 transition-colors">
+                ☑️ تحديد
+              </button>
+              <button onClick={() => setShowUpload(!showUpload)}
+                className="bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors">
+                + رفع صورة جديدة
+              </button>
+            </>
+          ) : (
+            <button onClick={exitSelectMode}
+              className="bg-slate-100 text-slate-700 px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-slate-200 transition-colors">
+              إلغاء التحديد
             </button>
           )}
-          <button onClick={() => setShowUpload(!showUpload)}
-          className="bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors">
-            + رفع صورة جديدة
-          </button>
         </div>
       </div>
 
-      {/* نموذج الرفع */}
+      {selectMode && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mb-6 flex items-center gap-4 flex-wrap">
+          <button onClick={toggleSelectAll}
+            className="text-blue-700 text-sm font-medium hover:text-blue-900 transition-colors">
+            {selected.size === filtered.length && filtered.length > 0 ? "إلغاء تحديد الكل" : "تحديد الكل"}
+          </button>
+          <span className="text-slate-400 text-sm">|</span>
+          <span className="text-slate-600 text-sm font-medium">
+            {selected.size > 0 ? `${selected.size} صورة محددة` : "لم يتم تحديد شيء"}
+          </span>
+          {selected.size > 0 && (
+            <>
+              <span className="text-slate-300">|</span>
+              <button onClick={bulkCopyUrls}
+                className="text-blue-600 text-sm font-medium hover:text-blue-800 transition-colors flex items-center gap-1">
+                {bulkCopied ? "✓ تم النسخ" : "📋 نسخ الروابط"}
+              </button>
+              {me?.role === "admin" && (
+                <button onClick={bulkDelete} disabled={bulkDeleting}
+                  className="text-red-600 text-sm font-medium hover:text-red-800 transition-colors disabled:opacity-50 flex items-center gap-1">
+                  {bulkDeleting ? "جاري الحذف..." : "🗑 حذف المحددة"}
+                </button>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
       {showUpload && (
         <div className="bg-white border border-blue-200 rounded-2xl p-6 mb-6">
           <h2 className="text-slate-900 font-bold mb-4">رفع صورة جديدة</h2>
           <div className="space-y-4">
-            {/* اسم الصورة — إجباري */}
             <div>
               <label className="block text-slate-700 text-sm font-medium mb-1.5">
                 اسم الصورة <span className="text-red-500">*</span>
@@ -125,8 +215,6 @@ export default function MediaPage() {
                 placeholder="مثال: الرئيس العليمي خلال اجتماع مجلس القيادة"
                 className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400" />
             </div>
-
-            {/* رفع الملف */}
             <div>
               <label className="block text-slate-700 text-sm font-medium mb-1.5">الصورة <span className="text-red-500">*</span></label>
               <input ref={fileRef} type="file" accept="image/*" className="hidden"
@@ -151,7 +239,6 @@ export default function MediaPage() {
                 )}
               </div>
             </div>
-
             <div className="flex gap-3">
               <button onClick={handleUpload} disabled={uploading || !previewUrl || !filename.trim()}
                 className="flex-1 bg-blue-600 text-white py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 disabled:opacity-50 transition-colors">
@@ -166,14 +253,12 @@ export default function MediaPage() {
         </div>
       )}
 
-      {/* بحث */}
       <div className="mb-6">
         <input value={search} onChange={e => setSearch(e.target.value)}
           placeholder="ابحث باسم الصورة..."
           className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400" />
       </div>
 
-      {/* الشبكة */}
       {loading ? (
         <div className="text-slate-400 text-center py-20">جاري التحميل...</div>
       ) : filtered.length === 0 ? (
@@ -183,35 +268,54 @@ export default function MediaPage() {
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filtered.map(item => (
-            <div key={item.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden group hover:border-blue-300 hover:shadow-md transition-all">
-              {/* الصورة */}
-              <div className="h-40 overflow-hidden bg-slate-50 relative">
-                <img src={item.url} alt={item.filename}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                {/* أزرار على hover */}
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                  <button onClick={() => copyUrl(item.id, item.url)}
-                    className="bg-white text-slate-800 text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-blue-600 hover:text-white transition-colors">
-                    {copied === item.id ? "✓ تم النسخ" : "نسخ الرابط"}
-                  </button>
-                  {(me?.role === "admin" || me?.id === item.uploadedBy) && (
-                    <button onClick={() => handleDelete(item.id)}
-                      className="bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-red-700 transition-colors">
-                      حذف
-                    </button>
+          {filtered.map(item => {
+            const isSelected = selected.has(item.id);
+            return (
+              <div
+                key={item.id}
+                onClick={() => selectMode && toggleSelect(item.id)}
+                className={`bg-white border rounded-xl overflow-hidden transition-all ${
+                  selectMode ? "cursor-pointer" : "group hover:border-blue-300 hover:shadow-md"
+                } ${isSelected ? "border-blue-500 ring-2 ring-blue-400 shadow-md" : "border-slate-200"}`}
+              >
+                <div className="h-40 overflow-hidden bg-slate-50 relative">
+                  <img src={item.url} alt={item.filename}
+                    className={`w-full h-full object-cover transition-transform duration-300 ${!selectMode ? "group-hover:scale-105" : ""}`} />
+                  {selectMode && (
+                    <div className={`absolute top-2 right-2 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
+                      isSelected ? "bg-blue-600 border-blue-600" : "bg-white/80 border-slate-400"
+                    }`}>
+                      {isSelected && (
+                        <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </div>
+                  )}
+                  {!selectMode && (
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <button onClick={() => copyUrl(item.id, item.url)}
+                        className="bg-white text-slate-800 text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-blue-600 hover:text-white transition-colors">
+                        {copied === item.id ? "✓ تم النسخ" : "نسخ الرابط"}
+                      </button>
+                      {(me?.role === "admin" || me?.id === item.uploadedBy) && (
+                        <button onClick={() => handleDelete(item.id)}
+                          className="bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-red-700 transition-colors">
+                          حذف
+                        </button>
+                      )}
+                    </div>
                   )}
                 </div>
-              </div>
-              {/* المعلومات */}
-              <div className="p-3">
-                <div className="text-slate-800 text-xs font-medium line-clamp-2 leading-snug">{item.filename}</div>
-                <div className="text-slate-400 text-xs mt-1">
-                  {new Date(item.createdAt).toLocaleDateString("ar-YE")}
+                <div className="p-3">
+                  <div className="text-slate-800 text-xs font-medium line-clamp-2 leading-snug">{item.filename}</div>
+                  <div className="text-slate-400 text-xs mt-1">
+                    {new Date(item.createdAt).toLocaleDateString("ar-YE")}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

@@ -1,5 +1,4 @@
 import { pgTable, serial, text, boolean, timestamp, integer, json } from "drizzle-orm/pg-core";
-
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -9,9 +8,10 @@ export const users = pgTable("users", {
   permissions: json("permissions").$type<string[]>().default([]),
   active: boolean("active").notNull().default(true),
   sortOrder: integer("sort_order").notNull().default(0),
+  totpSecret: text("totp_secret"),
+  totpEnabled: boolean("totp_enabled").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
-
 export const programs = pgTable("programs", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -22,7 +22,6 @@ export const programs = pgTable("programs", {
   active: boolean("active").notNull().default(true),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
-
 export const episodes = pgTable("episodes", {
   id: serial("id").primaryKey(),
   programId: integer("program_id").notNull().references(() => programs.id, { onDelete: "cascade" }),
@@ -33,7 +32,6 @@ export const episodes = pgTable("episodes", {
   publishedAt: timestamp("published_at").notNull().defaultNow(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
-
 export const schedule = pgTable("schedule", {
   id: serial("id").primaryKey(),
   programId: integer("program_id").references(() => programs.id, { onDelete: "set null" }),
@@ -44,25 +42,22 @@ export const schedule = pgTable("schedule", {
   type: text("type").notNull().default("recorded"),
   color: text("color").default("blue"),
 });
-
 export const news = pgTable("news", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   body: text("body").notNull(),
   imageUrl: text("image_url"),
-  tweetUrl: text("tweet_url"),       // رابط تغريدة X
-  youtubeUrl: text("youtube_url"),   // رابط يوتيوب
-  sourceLabel: text("source_label"), // اسم المصدر (سبأ، رويترز...)
-  sourceUrl: text("source_url"),     // رابط المصدر الأصلي
+  tweetUrl: text("tweet_url"),
+  youtubeUrl: text("youtube_url"),
+  sourceLabel: text("source_label"),
+  sourceUrl: text("source_url"),
   publishedAt: timestamp("published_at").notNull().defaultNow(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
-
 export const settings = pgTable("settings", {
   key: text("key").primaryKey(),
   value: text("value").notNull(),
 });
-
 export const articles = pgTable("articles", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
@@ -76,7 +71,6 @@ export const articles = pgTable("articles", {
   publishedAt: timestamp("published_at").notNull().defaultNow(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
-
 export const team = pgTable("team", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -87,7 +81,6 @@ export const team = pgTable("team", {
   active: boolean("active").notNull().default(true),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
-
 export const mediaLibrary = pgTable("media_library", {
   id: serial("id").primaryKey(),
   filename: text("filename").notNull(),

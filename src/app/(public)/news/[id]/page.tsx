@@ -69,22 +69,6 @@ export default async function NewsDetailPage({ params }: Props) {
       )}
 
       {/* Nav */}
-      <nav className="sticky top-0 z-50 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <img src="/logo.png" alt="إذاعة الجمهورية اليمنية" className="w-8 h-8 object-contain" />
-            <div className="hidden sm:block">
-              <div className="text-slate-900 text-sm font-black leading-tight">إذاعة الجمهورية اليمنية</div>
-              <div className="text-blue-600 text-xs">البرنامج العام</div>
-            </div>
-          </Link>
-          <div className="flex items-center gap-1 text-sm text-slate-500">
-            <Link href="/" className="hover:text-blue-600 transition-colors">الرئيسية</Link>
-            <span className="mx-1 text-slate-300">/</span>
-            <span>الأخبار</span>
-          </div>
-        </div>
-      </nav>
 
       {/* Layout رئيسي: مقال + sidebar */}
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -249,18 +233,6 @@ export default async function NewsDetailPage({ params }: Props) {
       </div>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white px-6 py-10 mt-8">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="شعار" className="w-10 h-10 object-contain opacity-80" />
-            <div>
-              <div className="text-white font-black">إذاعة الجمهورية اليمنية</div>
-              <div className="text-slate-400 text-sm">البرنامج العام • Yemen Radio</div>
-            </div>
-          </div>
-          <div className="text-slate-500 text-xs">© {new Date().getFullYear()} جميع الحقوق محفوظة</div>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -43,7 +43,7 @@ export default async function ArticlePage({ params }: Props) {
             <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
               {article.imageUrl && (
                 <div className="w-full h-72 overflow-hidden">
-                  <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover" />
+                  <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover object-top" />
                 </div>
               )}
               <div className="p-8">
@@ -90,7 +90,7 @@ export default async function ArticlePage({ params }: Props) {
                       className="bg-white border border-slate-200 rounded-xl p-4 hover:border-slate-300 hover:shadow-sm transition-all">
                       {a.imageUrl && (
                         <div className="h-32 rounded-lg overflow-hidden mb-3">
-                          <img src={a.imageUrl} alt={a.title} className="w-full h-full object-cover" />
+                          <img src={a.imageUrl} alt={a.title} className="w-full h-full object-cover object-top" />
                         </div>
                       )}
                       <div className="text-xs text-slate-400 mb-1">{a.category}</div>

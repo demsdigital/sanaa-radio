@@ -4,32 +4,66 @@ import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { verifyPassword, signToken } from "@/lib/auth";
 
+const attempts = new Map<string, { count: number; resetAt: number }>();
+
+function getIP(req: NextRequest) {
+  return (
+    req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+    req.headers.get("x-real-ip") ||
+    "unknown"
+  );
+}
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const record = attempts.get(ip);
+  if (!record || now > record.resetAt) {
+    attempts.set(ip, { count: 1, resetAt: now + 15 * 60 * 1000 });
+    return true;
+  }
+  if (record.count >= 5) return false;
+  record.count++;
+  return true;
+}
+
+function resetAttempts(ip: string) { attempts.delete(ip); }
+
 export async function POST(request: NextRequest) {
+  const ip = getIP(request);
+  if (!checkRateLimit(ip)) {
+    return NextResponse.json(
+      { error: "تم تجاوز الحد المسموح به، حاول بعد 15 دقيقة" },
+      { status: 429 }
+    );
+  }
+
   try {
     const { email, password } = await request.json();
-
-    if (!email || !password) {
+    if (!email || !password)
       return NextResponse.json({ error: "البريد وكلمة المرور مطلوبان" }, { status: 400 });
-    }
 
     const [user] = await db.select().from(users).where(eq(users.email, email));
-
-    if (!user || !user.active) {
+    if (!user || !user.active)
       return NextResponse.json({ error: "بيانات غير صحيحة" }, { status: 401 });
-    }
 
     const valid = await verifyPassword(password, user.password);
-    if (!valid) {
+    if (!valid)
       return NextResponse.json({ error: "بيانات غير صحيحة" }, { status: 401 });
+
+    resetAttempts(ip);
+
+    // إذا فعّل 2FA — أرسل tempToken
+    if (user.totpEnabled && user.totpSecret) {
+      const tempToken = signToken({ id: user.id, email: user.email, role: user.role, requires2FA: true }, "5m");
+      return NextResponse.json({ requires2FA: true, userId: user.id, tempToken });
     }
 
-    const token = signToken({ id: user.id, email: user.email, role: user.role });
-
+    // دخول عادي
+    const token = signToken({ id: user.id, email: user.email, role: user.role, totpEnabled: user.totpEnabled });
     const response = NextResponse.json({
       success: true,
       user: { id: user.id, name: user.name, email: user.email, role: user.role },
     });
-
     response.cookies.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -37,7 +71,6 @@ export async function POST(request: NextRequest) {
       maxAge: 60 * 60 * 24 * 7,
       path: "/",
     });
-
     return response;
   } catch (error) {
     console.error(error);
