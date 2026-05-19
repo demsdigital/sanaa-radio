@@ -2,13 +2,13 @@
 import { useRouter, useSearchParams } from "next/navigation";
 
 const days = [
-  { value: "sat", label: "السبت",    en: "SAT" },
-  { value: "sun", label: "الأحد",    en: "SUN" },
-  { value: "mon", label: "الاثنين",  en: "MON" },
-  { value: "tue", label: "الثلاثاء", en: "TUE" },
-  { value: "wed", label: "الأربعاء", en: "WED" },
-  { value: "thu", label: "الخميس",   en: "THU" },
-  { value: "fri", label: "الجمعة",   en: "FRI" },
+  { value: "sat", label: "السبت",    short: "سبت", en: "SAT" },
+  { value: "sun", label: "الأحد",    short: "أحد", en: "SUN" },
+  { value: "mon", label: "الاثنين",  short: "اثن", en: "MON" },
+  { value: "tue", label: "الثلاثاء", short: "ثلا", en: "TUE" },
+  { value: "wed", label: "الأربعاء", short: "أرب", en: "WED" },
+  { value: "thu", label: "الخميس",   short: "خمس", en: "THU" },
+  { value: "fri", label: "الجمعة",   short: "جمع", en: "FRI" },
 ];
 
 export default function DayTabs({ counts, today }: { counts: Record<string,number>; today: string }) {
@@ -24,7 +24,8 @@ export default function DayTabs({ counts, today }: { counts: Record<string,numbe
           <button key={d.value} onClick={() => router.push(`/schedule?day=${d.value}`)}
             className={`rounded-xl p-3 text-center border transition-all ${isSelected ? "bg-blue-600 border-blue-500 text-white shadow-lg" : isToday ? "bg-blue-50 border-blue-200 text-blue-700" : "bg-white border-slate-200 text-slate-700 hover:border-blue-200"}`}>
             <div className={`text-xs font-bold mb-1 ${isSelected ? "text-blue-100" : "text-slate-400"}`}>{d.en}</div>
-            <div className="font-black text-sm">{d.label}</div>
+            <div className="font-black text-sm hidden sm:block">{d.label}</div>
+            <div className="font-black text-sm sm:hidden">{d.short}</div>
             <div className={`text-xs mt-1 ${isSelected ? "text-blue-100" : "text-slate-400"}`}>{counts[d.value] || 0}</div>
             {isToday && <div className={`w-1.5 h-1.5 rounded-full mx-auto mt-1 ${isSelected ? "bg-white animate-pulse" : "bg-blue-500"}`} />}
           </button>
