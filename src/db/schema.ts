@@ -87,3 +87,11 @@ export const team = pgTable("team", {
   active: boolean("active").notNull().default(true),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const mediaLibrary = pgTable("media_library", {
+  id: serial("id").primaryKey(),
+  filename: text("filename").notNull(),
+  url: text("url").notNull(),
+  uploadedBy: integer("uploaded_by").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});

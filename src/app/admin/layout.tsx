@@ -17,6 +17,7 @@ const allNavItems = [
   { href: "/admin/schedule",  label: "الجدول",             icon: "📅", perm: "schedule" },
   { href: "/admin/news",      label: "الأخبار",            icon: "📰", perm: "news" },
   { href: "/admin/team",      label: "الفريق",             icon: "👥", perm: "admin" },
+  { href: "/admin/media",     label: "مكتبة الصور",        icon: "🖼️", perm: null },
   { href: "/admin/articles",  label: "الكتابات",            icon: "✍️", perm: "articles" },
   { href: "/admin/users",     label: "المستخدمون",         icon: "👥", perm: "admin" },
   { href: "/admin/settings",  label: "الإعدادات",          icon: "⚙️", perm: "admin" },
