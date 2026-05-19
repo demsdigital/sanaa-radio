@@ -133,46 +133,41 @@ export default function AdminTeamPage() {
               onDragEnter={() => onDragEnter(index)}
               onDragEnd={onDragEnd}
               onDragOver={e => e.preventDefault()}
-              className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-4 cursor-grab active:cursor-grabbing active:shadow-lg active:border-blue-300 transition-all select-none">
-              {/* مقبض */}
-              <div className="text-slate-300 hover:text-slate-500 flex-shrink-0">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                  <circle cx="5" cy="4" r="1.5"/><circle cx="11" cy="4" r="1.5"/>
-                  <circle cx="5" cy="8" r="1.5"/><circle cx="11" cy="8" r="1.5"/>
-                  <circle cx="5" cy="12" r="1.5"/><circle cx="11" cy="12" r="1.5"/>
-                </svg>
-              </div>
-              {/* رقم */}
-              <div className="w-6 h-6 rounded-full bg-slate-100 text-slate-500 text-xs font-bold flex items-center justify-center flex-shrink-0">
-                {index + 1}
-              </div>
-              {/* صورة */}
-              {m.imageUrl ? (
-                <img src={m.imageUrl} alt={m.name} className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover border-2 border-slate-100 flex-shrink-0" />
-              ) : (
-                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 text-xl border-2 border-slate-100">👤</div>
-              )}
-              {/* معلومات */}
-              <div className="flex-1 min-w-0">
-                <div className="text-slate-900 font-semibold">{m.name}</div>
-                <div className="text-blue-600 text-xs font-medium mt-0.5">{m.jobTitle}</div>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{m.department}</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${m.active ? "bg-green-50 text-green-600" : "bg-slate-100 text-slate-400"}`}>
-                    {m.active ? "نشط" : "مخفي"}
-                  </span>
+              className="bg-white border border-slate-200 rounded-xl p-3 cursor-grab active:cursor-grabbing active:shadow-lg active:border-blue-300 transition-all select-none">
+              <div className="flex items-center gap-3">
+                {/* مقبض + رقم */}
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  <div className="text-slate-300">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                      <circle cx="5" cy="4" r="1.5"/><circle cx="11" cy="4" r="1.5"/>
+                      <circle cx="5" cy="8" r="1.5"/><circle cx="11" cy="8" r="1.5"/>
+                      <circle cx="5" cy="12" r="1.5"/><circle cx="11" cy="12" r="1.5"/>
+                    </svg>
+                  </div>
+                  <div className="w-5 h-5 rounded-full bg-slate-100 text-slate-500 text-xs font-bold flex items-center justify-center">{index + 1}</div>
                 </div>
-              </div>
-              {/* أزرار */}
-              <div className="flex gap-2 flex-shrink-0">
-                <button onClick={() => openEdit(m)}
-                  className="text-slate-600 text-xs px-3 py-1.5 border border-slate-200 rounded-lg hover:border-blue-300 hover:text-blue-600 transition-colors">
-                  تعديل
-                </button>
-                <button onClick={() => setDelId(m.id)}
-                  className="text-red-500 text-xs px-3 py-1.5 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">
-                  حذف
-                </button>
+                {/* صورة */}
+                {m.imageUrl ? (
+                  <img src={m.imageUrl} alt={m.name} className="w-10 h-10 rounded-full object-cover border-2 border-slate-100 flex-shrink-0" />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 text-lg border-2 border-slate-100">👤</div>
+                )}
+                {/* معلومات */}
+                <div className="flex-1 min-w-0">
+                  <div className="text-slate-900 font-semibold text-sm">{m.name}</div>
+                  <div className="text-blue-600 text-xs mt-0.5">{m.jobTitle}</div>
+                  <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                    <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{m.department}</span>
+                    <span className={"text-xs px-2 py-0.5 rounded-full " + (m.active ? "bg-green-50 text-green-600" : "bg-slate-100 text-slate-400")}>
+                      {m.active ? "نشط" : "مخفي"}
+                    </span>
+                  </div>
+                </div>
+                {/* أزرار */}
+                <div className="flex gap-1.5 flex-shrink-0">
+                  <button onClick={() => openEdit(m)} className="text-slate-600 text-xs px-2 py-1.5 border border-slate-200 rounded-lg hover:border-blue-300 hover:text-blue-600 transition-colors">تعديل</button>
+                  <button onClick={() => setDelId(m.id)} className="text-red-500 text-xs px-2 py-1.5 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">حذف</button>
+                </div>
               </div>
             </div>
           ))}
