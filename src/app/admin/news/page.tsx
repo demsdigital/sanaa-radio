@@ -37,6 +37,11 @@ export default function NewsPage() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  function openPicker(field: keyof typeof form) {
+    setPickerTarget(field);
+    setShowPicker(true);
+  }
+
   async function load() {
     const res = await fetch("/api/news");
     setItems(await res.json());
@@ -294,14 +299,20 @@ export default function NewsPage() {
                   )}
                 </div>
 
-                {/* زر حذف الصورة */}
-                {form.imageUrl && !uploading && (
-                  <button type="button"
-                    onClick={() => { setForm((p) => ({ ...p, imageUrl: "" })); if (fileInputRef.current) fileInputRef.current.value = ""; }}
-                    className="mt-2 text-red-500 text-xs hover:text-red-700 transition-colors">
-                    × حذف الصورة
+                {/* أزرار إضافية */}
+                <div className="flex items-center gap-3 mt-2">
+                  <button type="button" onClick={() => openPicker("imageUrl")}
+                    className="text-blue-600 text-xs font-medium hover:text-blue-700 flex items-center gap-1">
+                    🖼️ اختر من المكتبة
                   </button>
-                )}
+                  {form.imageUrl && !uploading && (
+                    <button type="button"
+                      onClick={() => { setForm((p) => ({ ...p, imageUrl: "" })); if (fileInputRef.current) fileInputRef.current.value = ""; }}
+                      className="text-red-500 text-xs hover:text-red-700 transition-colors">
+                      × حذف الصورة
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* يوتيوب */}
@@ -334,6 +345,12 @@ export default function NewsPage() {
             </form>
           </div>
         </div>
+      )}
+      {showPicker && pickerTarget && (
+        <MediaPicker
+          onSelect={url => setForm(f => ({ ...f, [pickerTarget]: url }))}
+          onClose={() => setShowPicker(false)}
+        />
       )}
     </div>
   );
