@@ -109,7 +109,7 @@ export default function ArticlesAdminPage() {
                 <div className="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0 text-xl">✍️</div>
               )}
               <div className="flex-1 min-w-0">
-                <div className="text-slate-900 font-semibold line-clamp-1">{a.title}</div>
+                <div className="text-slate-900 font-bold text-sm line-clamp-2 mb-1 leading-snug">{a.title}</div>
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
                   <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{a.category}</span>
                   {a.authorName && <span className="text-slate-400 text-xs">✍️ {a.authorName}</span>}

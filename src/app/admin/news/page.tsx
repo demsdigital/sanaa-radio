@@ -162,7 +162,7 @@ export default function NewsPage() {
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <div className="text-slate-900 font-semibold mb-1 truncate">{item.title}</div>
+                <div className="text-slate-900 font-bold text-sm mb-1 line-clamp-2 leading-snug">{item.title}</div>
                 <div className="text-slate-500 text-sm line-clamp-1 mb-2">{item.body}</div>
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-slate-400 text-xs">
