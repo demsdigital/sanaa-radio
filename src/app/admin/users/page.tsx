@@ -1,4 +1,5 @@
 "use client";
+import { usePermission } from "@/lib/usePermission";
 import { useState, useEffect } from "react";
 
 type Permission = "news" | "programs" | "schedule" | "episodes" | "articles";
@@ -23,6 +24,7 @@ const PERMISSIONS: { key: Permission; label: string; icon: string; desc: string 
 
 export default function UsersPage() {
   const [users, setUsers]     = useState<User[]>([]);
+    usePermission("admin");
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<User | null>(null);

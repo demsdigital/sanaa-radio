@@ -1,4 +1,5 @@
 "use client";
+import { usePermission } from "@/lib/usePermission";
 import { useState, useEffect } from "react";
 
 type SectionProps = { id: string; icon: string; title: string; desc?: string; children: React.ReactNode; open: string; setOpen: (id: string) => void };
@@ -29,6 +30,7 @@ function Section({ id, icon, title, desc, children, open, setOpen }: SectionProp
 
 
 export default function SettingsPage() {
+    usePermission("admin");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving]   = useState(false);
   const [saved,  setSaved]    = useState(false);

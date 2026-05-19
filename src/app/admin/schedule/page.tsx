@@ -1,4 +1,5 @@
 "use client";
+import { usePermission } from "@/lib/usePermission";
 import { useState, useEffect } from "react";
 
 const DAYS = [
@@ -46,6 +47,7 @@ const empty = { label:"", day:"daily", timeStart:"", timeEnd:"", type:"recorded"
 
 export default function AdminSchedulePage() {
   const [items,   setItems]   = useState<Item[]>([]);
+    usePermission("schedule");
   const [loading, setLoading] = useState(true);
   const [filterDay, setFilterDay] = useState("daily");
   const [modal,   setModal]   = useState(false);

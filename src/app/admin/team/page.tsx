@@ -1,4 +1,5 @@
 "use client";
+import { usePermission } from "@/lib/usePermission";
 import { useState, useEffect, useRef } from "react";
 
 type Member = {
@@ -17,6 +18,7 @@ const empty = { name: "", jobTitle: "", department: "عام", imageUrl: "", acti
 
 export default function AdminTeamPage() {
   const [members, setMembers]     = useState<Member[]>([]);
+    usePermission("admin");
   const [loading, setLoading]     = useState(true);
   const [showForm, setShowForm]   = useState(false);
   const [editing, setEditing]     = useState<Member | null>(null);

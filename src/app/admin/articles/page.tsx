@@ -1,4 +1,5 @@
 "use client";
+import { usePermission } from "@/lib/usePermission";
 import { useState, useEffect, useRef } from "react";
 
 type Article = {
@@ -20,6 +21,7 @@ const empty = { title: "", slug: "", body: "", excerpt: "", imageUrl: "", author
 
 export default function ArticlesAdminPage() {
   const [articles, setArticles]   = useState<Article[]>([]);
+    usePermission("articles");
   const [loading, setLoading]     = useState(true);
   const [showForm, setShowForm]   = useState(false);
   const [editing, setEditing]     = useState<Article | null>(null);

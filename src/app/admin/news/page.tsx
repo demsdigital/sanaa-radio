@@ -1,4 +1,5 @@
 "use client";
+import { usePermission } from "@/lib/usePermission";
 import { useState, useEffect, useRef } from "react";
 
 type News = {
@@ -25,6 +26,7 @@ const emptyForm = {
 
 export default function NewsPage() {
   const [items, setItems] = useState<News[]>([]);
+    usePermission("news");
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<News | null>(null);

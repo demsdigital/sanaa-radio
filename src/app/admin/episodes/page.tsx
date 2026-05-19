@@ -1,4 +1,5 @@
 "use client";
+import { usePermission } from "@/lib/usePermission";
 import { useState, useEffect } from "react";
 
 type Program = { id: number; name: string };
@@ -15,6 +16,7 @@ type Episode = {
 export default function EpisodesPage() {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [programs, setPrograms] = useState<Program[]>([]);
+    usePermission("episodes");
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Episode | null>(null);

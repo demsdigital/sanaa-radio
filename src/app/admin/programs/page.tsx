@@ -1,4 +1,5 @@
 "use client";
+import { usePermission } from "@/lib/usePermission";
 import { useState, useEffect, useRef } from "react";
 
 type Program = {
@@ -15,6 +16,7 @@ const categories = ["أخبار", "ديني", "ثقافي", "اجتماعي", "�
 
 export default function ProgramsPage() {
   const [programs, setPrograms]             = useState<Program[]>([]);
+    usePermission("programs");
   const [loading, setLoading]               = useState(true);
   const [showForm, setShowForm]             = useState(false);
   const [editing, setEditing]               = useState<Program | null>(null);
