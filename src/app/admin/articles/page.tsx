@@ -28,7 +28,10 @@ export default function ArticlesAdminPage() {
   const [form, setForm]           = useState(empty);
   const [uploading, setUploading] = useState(false);
   const [delId, setDelId]         = useState<number | null>(null);
+  const [showPicker, setShowPicker] = useState(false);
   const fileRef                   = useRef<HTMLInputElement>(null);
+
+  function openPicker() { setShowPicker(true); }
 
   async function load() {
     const res = await fetch("/api/articles");
@@ -204,6 +207,10 @@ export default function ArticlesAdminPage() {
                     className="px-4 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 disabled:opacity-50">
                     {uploading ? "..." : "رفع ↑"}
                   </button>
+                  <button type="button" onClick={openPicker}
+                    className="px-3 py-2.5 bg-slate-100 text-slate-700 text-sm font-bold rounded-lg hover:bg-slate-200">
+                    🖼️
+                  </button>
                 </div>
                 {form.imageUrl && (
                   <div className="mt-2 h-28 rounded-xl overflow-hidden border border-slate-200">
@@ -247,6 +254,12 @@ export default function ArticlesAdminPage() {
             </div>
           </div>
         </div>
+      )}
+      {showPicker && (
+        <MediaPicker
+          onSelect={url => setForm(f => ({ ...f, imageUrl: url }))}
+          onClose={() => setShowPicker(false)}
+        />
       )}
     </div>
   );
