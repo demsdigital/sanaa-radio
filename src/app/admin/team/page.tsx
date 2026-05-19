@@ -215,6 +215,8 @@ export default function AdminTeamPage() {
                     className="px-4 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 disabled:opacity-50">
                     {uploading ? "..." : "رفع ↑"}
                   </button>
+                  <button type="button" onClick={() => setShowPicker(true)}
+                    className="px-3 py-2.5 bg-slate-100 text-slate-700 text-sm rounded-lg hover:bg-slate-200">🖼️</button>
                 </div>
                 {form.imageUrl && (
                   <div className="mt-2 flex justify-center">
@@ -255,6 +257,12 @@ export default function AdminTeamPage() {
             </div>
           </div>
         </div>
+      )}
+      {showPicker && (
+        <MediaPicker
+          onSelect={url => setForm(f => ({ ...f, imageUrl: url }))}
+          onClose={() => setShowPicker(false)}
+        />
       )}
     </div>
   );

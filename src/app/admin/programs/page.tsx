@@ -25,6 +25,7 @@ export default function ProgramsPage() {
   const [uploading, setUploading]           = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [savingOrder, setSavingOrder]       = useState(false);
+  const [showPicker, setShowPicker]         = useState(false);
   const [orderSaved, setOrderSaved]         = useState(false);
   const fileInputRef                        = useRef<HTMLInputElement>(null);
   const dragItem                            = useRef<number | null>(null);
@@ -245,10 +246,14 @@ export default function ProgramsPage() {
                     </div>
                   )}
                 </div>
-                {form.imageUrl && !uploading && (
-                  <button type="button" onClick={() => { setForm(p => ({ ...p, imageUrl: "" })); if (fileInputRef.current) fileInputRef.current.value = ""; }}
-                    className="mt-1.5 text-red-500 text-xs hover:text-red-700">× حذف الصورة</button>
-                )}
+                <div className="flex items-center gap-3 mt-1.5">
+                  <button type="button" onClick={() => setShowPicker(true)}
+                    className="text-blue-600 text-xs font-medium hover:text-blue-700">🖼️ اختر من المكتبة</button>
+                  {form.imageUrl && !uploading && (
+                    <button type="button" onClick={() => { setForm(p => ({ ...p, imageUrl: "" })); if (fileInputRef.current) fileInputRef.current.value = ""; }}
+                      className="text-red-500 text-xs hover:text-red-700">× حذف الصورة</button>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="block text-slate-700 text-sm font-medium mb-1.5">التصنيف</label>
@@ -273,6 +278,12 @@ export default function ProgramsPage() {
             </form>
           </div>
         </div>
+      )}
+      {showPicker && (
+        <MediaPicker
+          onSelect={url => setForm(f => ({ ...f, imageUrl: url }))}
+          onClose={() => setShowPicker(false)}
+        />
       )}
     </div>
   );
