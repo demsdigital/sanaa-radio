@@ -155,9 +155,9 @@ export default function NewsPage() {
               {/* صورة مصغرة */}
               {item.imageUrl ? (
                 <img src={item.imageUrl} alt={item.title}
-                  className="w-20 h-16 object-cover rounded-lg border border-slate-100 flex-shrink-0" />
+                  className="w-16 h-16 md:w-20 md:h-16 object-cover rounded-lg border border-slate-100 flex-shrink-0" />
               ) : (
-                <div className="w-20 h-16 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+                <div className="w-16 h-16 md:w-20 md:h-16 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
                   <span className="text-2xl">📰</span>
                 </div>
               )}
