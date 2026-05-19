@@ -34,8 +34,15 @@ export default function NewsPage() {
 
   // حالة رفع الصورة
   const [uploading, setUploading] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
+  const [pickerTarget, setPickerTarget] = useState<keyof typeof form | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function openPicker(field: keyof typeof form) {
+    setPickerTarget(field);
+    setShowPicker(true);
+  }
 
   function openPicker(field: keyof typeof form) {
     setPickerTarget(field);
