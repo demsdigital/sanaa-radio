@@ -14,7 +14,7 @@ export default async function Ticker() {
         <span className="bg-white text-red-600 text-xs font-black px-3 py-0.5 rounded mr-3 flex-shrink-0 z-10">
           عاجل
         </span>
-        <div className="overflow-hidden flex-1">
+        <div className="overflow-hidden flex-1 max-w-full">
           <div className="whitespace-nowrap animate-marquee inline-block text-white text-sm font-medium">
             {s.ticker} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {s.ticker}
           </div>

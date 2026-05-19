@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { db } from "@/db";
+import PageHero from "@/components/PageHero";
 import { settings } from "@/db/schema";
 
 export const metadata: Metadata = {
@@ -25,13 +26,7 @@ export default async function DirectorPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 text-white py-16 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="text-blue-200 text-xs uppercase tracking-widest font-bold mb-3">القيادة</div>
-          <h1 className="text-3xl md:text-4xl font-black mb-2">رئيس القطاع</h1>
-          <p className="text-blue-200 text-base">إذاعة الجمهورية اليمنية — البرنامج العام</p>
-        </div>
-      </div>
+      <PageHero badge="🎙️ القيادة" title="رئيس القطاع" subtitle="إذاعة الجمهورية اليمنية — البرنامج العام" />
 
       {/* Content */}
       <div className="max-w-4xl mx-auto px-6 py-16">
@@ -61,7 +56,7 @@ export default async function DirectorPage() {
             </div>
 
             {/* السيرة */}
-            <div className="space-y-6 text-slate-700 text-base leading-relaxed text-right">
+            <div className="space-y-6 text-slate-700 text-base leading-relaxed text-justify">
               {bio1 && <p>{bio1}</p>}
               {bio2 && <p>{bio2}</p>}
               {bio3 && <p>{bio3}</p>}

@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
+export const revalidate = 0;
 import { db } from "@/db";
 import { settings, programs, episodes, news, schedule, articles } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
@@ -57,7 +58,7 @@ export default async function HomePage() {
                 {/* موبايل */}
                 {mmt==="none"&&(<div className="md:hidden absolute inset-0 opacity-10 pointer-events-none"/>)}
                 {mmt==="same"&&(mt==="image"||mt==="gif")&&mu&&(<><img src={mu} alt="" className="absolute inset-0 w-full h-full object-cover object-center"/><div className="absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
-                {mmt!=="same"&&mmt!=="none"&&mmu&&(<><img src={mmu} alt="" className="md:hidden absolute inset-0 w-full h-full object-cover object-center"/><div className="md:hidden absolute inset-0" style={{background:`rgba(0,0,0,${mop})`}}/></>)}
+                {mmt!=="same"&&mmt!=="none"&&mmu&&(<><img src={mmu} alt="" className="md:hidden absolute inset-0 w-full h-full object-cover" style={{objectPosition:"center 32%"}}/><div className="md:hidden absolute inset-0" style={{background:`rgba(0,0,0,${mop})`}}/></>)}
                 {/* ديسكتوب */}
                 {mmt!=="same"&&(mt==="image"||mt==="gif")&&mu&&(<><img src={mu} alt="" className="hidden md:block absolute inset-0 w-full h-full object-cover object-center"/><div className="hidden md:block absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
                 {mt==="video"&&mu&&(<><video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover"><source src={mu}/></video><div className="absolute inset-0" style={{background:`rgba(0,0,0,${op})`}}/></>)}
@@ -67,7 +68,7 @@ export default async function HomePage() {
             <div className="max-w-5xl mx-auto relative z-10">
               <div className="flex flex-col md:flex-row items-center gap-6 md:gap-12">
                 <div className="flex-1 text-center md:text-right w-full min-w-0">
-                  <div className="inline-flex items-center gap-2 bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-full mb-6 shadow-lg">
+                  <div className="inline-flex items-center gap-2 bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-full mb-3 md:mb-6 shadow-lg">
                     <span className="w-2 h-2 rounded-full bg-white animate-pulse"/>
                     {s.hero_badge||"على الهواء الآن"}
                   </div>
@@ -75,7 +76,7 @@ export default async function HomePage() {
                   <p className="text-blue-100 text-base md:text-xl font-semibold mb-1 drop-shadow">{s.hero_subtitle||"البرنامج العام"}</p>
                   <p className="text-blue-200 text-sm mb-4 md:mb-8 drop-shadow">Yemen Radio • {s.hero_tagline||"الصوت الحقيقي منذ عقود"}</p>
                   {s.on_air_label&&(
-                    <div className="backdrop-blur border border-white/20 rounded-xl p-4 w-full md:max-w-sm shadow-lg mx-auto md:mx-0" style={{background:`rgba(255,255,255,${Number(s.hero_card_opacity||"12")/100})`}}>
+                    <div className="hidden md:block backdrop-blur border border-white/20 rounded-xl p-4 w-full md:max-w-sm shadow-lg mx-auto md:mx-0" style={{background:`rgba(255,255,255,${Number(s.hero_card_opacity||"12")/100})`}}>
                       <div className="text-blue-100 text-xs uppercase tracking-widest mb-1 font-medium">البرنامج الحالي</div>
                       <div className="text-white font-bold text-base mb-2">{s.on_air_label}</div>
                       <div className="flex gap-1 mb-3 h-5 items-end">

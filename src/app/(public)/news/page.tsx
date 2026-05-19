@@ -3,6 +3,7 @@ import { news } from "@/db/schema";
 import { desc } from "drizzle-orm";
 import Link from "next/link";
 import type { Metadata } from "next";
+import PageHero from "@/components/PageHero";
 
 export const revalidate = 0;
 
@@ -17,16 +18,7 @@ export default async function NewsArchivePage() {
   return (
     <div className="min-h-screen bg-slate-50" dir="rtl">
 
-      {/* هيرو بسيط */}
-      <div
-        className="py-14 px-6 text-white text-center"
-        style={{ background: "linear-gradient(135deg,#0a1628 0%,#1a3a7c 50%,#2563eb 100%)" }}>
-        <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-blue-200 text-xs font-bold px-4 py-1.5 rounded-full mb-4">
-          📰 أرشيف
-        </div>
-        <h1 className="text-3xl md:text-4xl font-black mb-2">الأخبار</h1>
-        <p className="text-blue-200 text-sm">{allNews.length} خبر منشور</p>
-      </div>
+      <PageHero badge="📰 أرشيف" title="الأخبار" subtitle={allNews.length + " خبر منشور"} />
 
       {/* الأخبار */}
       <div className="max-w-6xl mx-auto px-4 py-10">

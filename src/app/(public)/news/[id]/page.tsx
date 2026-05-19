@@ -136,8 +136,8 @@ export default async function NewsDetailPage({ params }: Props) {
               </div>
 
               {/* نص الخبر */}
-              <div className="text-slate-700 text-[17px] leading-[2.1] mb-8"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+              <div className="text-slate-700 text-[17px] leading-[2.1] mb-8 text-justify"
+                >
                 {item.body.split("\n").filter(Boolean).map((para, i) => (
                   <p key={i} className="mb-5">{para}</p>
                 ))}

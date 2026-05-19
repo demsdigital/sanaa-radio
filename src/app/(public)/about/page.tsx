@@ -14,20 +14,20 @@ export default function AboutPage() {
     <div className="min-h-screen bg-white overflow-x-hidden" dir="rtl">
 
       {/* HERO */}
-      <section className="relative flex items-center justify-center overflow-hidden pt-24 pb-32 px-6"
-        style={{ background: "linear-gradient(135deg, #0a1628 0%, #1a3a7c 50%, #2563eb 100%)", minHeight: "70vh" }}>
+      <section className="relative flex items-center justify-center overflow-hidden pt-10 pb-10 md:pt-24 md:pb-32 px-6"
+        style={{ background: "linear-gradient(135deg, #0a1628 0%, #1a3a7c 50%, #2563eb 100%)" }}>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute rounded-full border border-white/5" style={{ width: 500, height: 500, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
           <div className="absolute rounded-full border border-white/5" style={{ width: 750, height: 750, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
         </div>
         <div className="relative z-10 flex flex-col md:flex-row items-center gap-12 max-w-5xl mx-auto w-full">
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 hidden md:block">
             <div className="relative">
               <div className="absolute inset-0 rounded-full blur-2xl bg-blue-400/30 scale-125" />
-              <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="relative w-36 h-36 object-contain rounded-full p-3 bg-white shadow-2xl" />
+              <img src="/logo.png" alt="شعار إذاعة الجمهورية اليمنية" className="relative w-20 h-20 md:w-36 md:h-36 object-contain rounded-full p-3 bg-white shadow-2xl" />
             </div>
           </div>
-          <div className="flex-1 text-right">
+          <div className="flex-1 text-center md:text-right">
             <div className="inline-flex items-center gap-2 bg-red-500 text-white text-sm font-bold px-4 py-2 rounded-full mb-5 shadow-lg">
               <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
               صوت الشرعية اليمنية
@@ -40,7 +40,7 @@ export default function AboutPage() {
       </section>
 
       {/* Stats */}
-      <section className="relative z-20 -mt-16 px-6">
+      <section className="relative z-20 -mt-8 md:-mt-16 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[

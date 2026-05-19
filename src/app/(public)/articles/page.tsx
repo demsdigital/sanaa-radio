@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PageHero from "@/components/PageHero";
 export const metadata: Metadata = {
   title: "الكتابات | إذاعة الجمهورية اليمنية",
   description: "مقالات وكتابات إذاعة الجمهورية اليمنية — رأي، تحليل، ثقافة وتراث.",
@@ -37,20 +38,10 @@ export default async function ArticlesPage({ searchParams }: Props) {
   return (
     <div className="min-h-screen bg-slate-50" dir="rtl">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 text-white py-14 px-6 text-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-5 right-10 w-48 h-48 rounded-full border border-white" />
-          <div className="absolute bottom-0 left-10 w-64 h-64 rounded-full border border-white" />
-        </div>
-        <div className="relative z-10">
-          <div className="text-slate-300 text-xs uppercase tracking-widest font-bold mb-2">نافذة كتابات</div>
-          <h1 className="text-3xl md:text-4xl font-black mb-2">الكتابات والمقالات</h1>
-          <p className="text-slate-300 text-sm">رأي • تحليل • ثقافة • تراث</p>
-        </div>
-      </div>
+      <PageHero badge="✍️ نافذة كتابات" title="الكتابات والمقالات" subtitle="رأي • تحليل • ثقافة • تراث" />
 
       <div className="max-w-6xl mx-auto px-6 py-10">
-        <div className="flex gap-8 items-start">
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
 
           {/* المقالات — العمود الرئيسي */}
           <div className="flex-1 min-w-0">
@@ -123,7 +114,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
           </div>
 
           {/* السايدبار — العمود الأيسر */}
-          <aside className="w-64 flex-shrink-0 space-y-5 sticky top-20">
+          <aside className="w-full lg:w-64 flex-shrink-0 space-y-5 lg:sticky lg:top-20">
 
             {/* أحدث المقالات */}
             <div className="bg-white border border-slate-200 rounded-2xl p-5">

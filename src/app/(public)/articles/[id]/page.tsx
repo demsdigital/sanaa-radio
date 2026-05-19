@@ -36,7 +36,7 @@ export default async function ArticlePage({ params }: Props) {
       </nav>
 
       <div className="max-w-5xl mx-auto px-6 py-10">
-        <div className="flex gap-8 items-start">
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
 
           {/* المقال */}
           <article className="flex-1 min-w-0">
@@ -74,7 +74,7 @@ export default async function ArticlePage({ params }: Props) {
                 )}
 
                 {/* المحتوى */}
-                <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed text-base whitespace-pre-wrap">
+                <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed text-base whitespace-pre-wrap text-justify">
                   {article.body}
                 </div>
               </div>
@@ -103,7 +103,7 @@ export default async function ArticlePage({ params }: Props) {
           </article>
 
           {/* سايدبار */}
-          <aside className="w-56 flex-shrink-0 sticky top-20 space-y-4">
+          <aside className="w-full lg:w-56 flex-shrink-0 lg:sticky lg:top-20 space-y-4">
             <div className="bg-white border border-slate-200 rounded-2xl p-5">
               <h3 className="text-slate-900 font-black text-sm mb-3 pb-2 border-b border-slate-100">معلومات المقال</h3>
               <div className="space-y-2 text-sm">

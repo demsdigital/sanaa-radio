@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PageHero from "@/components/PageHero";
 import { db } from "@/db";
 import { team } from "@/db/schema";
 import { eq, asc } from "drizzle-orm";
@@ -26,18 +27,7 @@ export default async function TeamPage() {
   return (
     <div className="min-h-screen bg-slate-50" dir="rtl">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 text-white py-14 px-6 text-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-5 right-10 w-48 h-48 rounded-full border border-white" />
-          <div className="absolute bottom-0 left-10 w-64 h-64 rounded-full border border-white" />
-        </div>
-        <div className="relative z-10">
-          <div className="text-blue-200 text-xs uppercase tracking-widest font-bold mb-2">من نحن</div>
-          <h1 className="text-3xl md:text-4xl font-black mb-2">فريق الإذاعة</h1>
-          <p className="text-blue-200 text-sm">إذاعة الجمهورية اليمنية — البرنامج العام</p>
-          <p className="text-blue-300 text-xs mt-1">{members.length} عضو</p>
-        </div>
-      </div>
+      <PageHero badge="👥 من نحن" title="فريق الإذاعة" subtitle={"إذاعة الجمهورية اليمنية — " + members.length + " عضو"} />
 
       {/* Breadcrumb */}
       <nav className="border-b border-slate-200 px-6 py-3 flex items-center gap-3 bg-white">
