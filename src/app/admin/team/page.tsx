@@ -28,6 +28,7 @@ export default function AdminTeamPage() {
   const [savingOrder, setSavingOrder] = useState(false);
   const [orderSaved, setOrderSaved]   = useState(false);
   const [delId, setDelId]         = useState<number | null>(null);
+  const [showPicker, setShowPicker] = useState(false);
   const fileRef                   = useRef<HTMLInputElement>(null);
   const dragItem                  = useRef<number | null>(null);
   const dragOverItem              = useRef<number | null>(null);
