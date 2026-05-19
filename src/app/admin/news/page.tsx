@@ -39,7 +39,6 @@ export default function NewsPage() {
   const [pickerTarget, setPickerTarget] = useState<keyof typeof form | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   function openPicker(field: keyof typeof form) {
     setPickerTarget(field);
     setShowPicker(true);
