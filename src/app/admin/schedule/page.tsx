@@ -116,10 +116,10 @@ export default function AdminSchedulePage() {
       </div>
 
       {/* فلتر الأيام */}
-      <div className="flex gap-2 overflow-x-auto mb-6 pb-1 scrollbar-hide">
+      <div className="flex gap-2 flex-wrap mb-6">
         {DAYS.map(d => (
           <button key={d.value} onClick={() => setFilterDay(d.value)}
-            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors border flex-shrink-0 ${`
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${
               filterDay === d.value
                 ? "bg-blue-600 text-white border-blue-600"
                 : "bg-white text-slate-600 border-slate-200 hover:border-blue-300"
