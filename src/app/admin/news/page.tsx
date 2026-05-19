@@ -150,8 +150,8 @@ export default function NewsPage() {
       ) : (
         <div className="space-y-3">
           {items.map((item) => (
-            <div key={item.id} className="bg-white border border-slate-200 rounded-xl p-3">
-              <div className="flex items-start gap-3 mb-2">
+            <div key={item.id}
+              className="bg-white border border-slate-200 rounded-xl p-4 flex items-start gap-4">
               {/* صورة مصغرة */}
               {item.imageUrl ? (
                 <img src={item.imageUrl} alt={item.title}
