@@ -48,11 +48,11 @@ export default function LoginPage() {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-[#0e0e18] border border-white/10 rounded-xl p-6 space-y-4">
+        <form onSubmit={handleSubmit} autoComplete="off" className="bg-[#0e0e18] border border-white/10 rounded-xl p-6 space-y-4">
           <div>
             <label className="block text-gray-400 text-sm mb-2">البريد الإلكتروني</label>
             <input
-              type="email"
+              type="email" autoComplete="off"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -65,7 +65,7 @@ export default function LoginPage() {
           <div>
             <label className="block text-gray-400 text-sm mb-2">كلمة المرور</label>
             <input
-              type="password"
+              type="password" autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
