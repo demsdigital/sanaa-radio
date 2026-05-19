@@ -27,7 +27,8 @@ export default async function SchedulePage({ searchParams }: Props) {
   const { day } = await searchParams;
   const allItems = await db.select().from(schedule);
   const todayMap: Record<number,string> = {0:"sun",1:"mon",2:"tue",3:"wed",4:"thu",5:"fri",6:"sat"};
-  const todayKey = todayMap[new Date().getDay()];
+  const yemenTime = new Date(Date.now() + 3 * 60 * 60 * 1000);
+  const todayKey = todayMap[yemenTime.getUTCDay()];
   const selectedDay = day || todayKey;
 
   const counts: Record<string,number> = {};
