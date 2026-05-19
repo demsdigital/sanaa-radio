@@ -35,12 +35,14 @@ export default function MediaPage() {
   }
 
   async function load() {
-    const [itemsRes, meRes] = await Promise.all([
-      fetch("/api/media").then(r => r.json()),
-      fetch("/api/auth/me").then(r => r.json()),
-    ]);
-    setItems(itemsRes);
-    setMe(meRes);
+    try {
+      const meRes = await fetch("/api/auth/me").then(r => r.json());
+      setMe(meRes);
+    } catch {}
+    try {
+      const itemsRes = await fetch("/api/media").then(r => r.json());
+      setItems(itemsRes);
+    } catch {}
     setLoading(false);
   }
   useEffect(() => { load(); }, []);
