@@ -150,42 +150,32 @@ export default function NewsPage() {
       ) : (
         <div className="space-y-3">
           {items.map((item) => (
-            <div key={item.id}
-              className="bg-white border border-slate-200 rounded-xl p-4 flex items-start gap-4">
-              {/* صورة مصغرة */}
-              {item.imageUrl ? (
-                <img src={item.imageUrl} alt={item.title}
-                  className="w-16 h-16 md:w-20 md:h-16 object-cover rounded-lg border border-slate-100 flex-shrink-0" />
-              ) : (
-                <div className="w-16 h-16 md:w-20 md:h-16 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
-                  <span className="text-2xl">📰</span>
-                </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <div className="text-slate-900 font-bold text-sm mb-1 line-clamp-2 leading-snug">{item.title}</div>
-                <div className="text-slate-500 text-sm line-clamp-1 mb-2">{item.body}</div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-slate-400 text-xs">
-                    {new Date(item.publishedAt).toLocaleDateString("ar-YE")}
-                  </span>
-                  {item.sourceLabel && (
-                    <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{item.sourceLabel}</span>
-                  )}
-                  {item.youtubeUrl && (
-                    <span className="text-xs bg-red-50 text-red-500 px-2 py-0.5 rounded-full">▶ يوتيوب</span>
-                  )}
-                  {item.tweetUrl && (
-                    <span className="text-xs bg-blue-50 text-blue-500 px-2 py-0.5 rounded-full">𝕏</span>
-                  )}
+            <div key={item.id} className="bg-white border border-slate-200 rounded-xl p-3">
+              {/* صف أول: صورة + عنوان + معلومات */}
+              <div className="flex items-start gap-3 mb-2">
+                {item.imageUrl ? (
+                  <img src={item.imageUrl} alt={item.title} className="w-12 h-12 rounded-lg object-cover border border-slate-100 flex-shrink-0" />
+                ) : (
+                  <div className="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0 text-xl">📰</div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="text-slate-900 font-bold text-sm line-clamp-2 leading-snug mb-1">{item.title}</div>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-slate-400 text-xs">{new Date(item.publishedAt).toLocaleDateString("ar-YE")}</span>
+                    {item.sourceLabel && <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{item.sourceLabel}</span>}
+                    {item.youtubeUrl && <span className="text-xs bg-red-50 text-red-500 px-2 py-0.5 rounded-full">▶ يوتيوب</span>}
+                    {item.tweetUrl && <span className="text-xs bg-blue-50 text-blue-500 px-2 py-0.5 rounded-full">𝕏</span>}
+                  </div>
                 </div>
               </div>
-              <div className="flex gap-2 flex-shrink-0">
+              {/* صف ثاني: أزرار */}
+              <div className="flex gap-2 border-t border-slate-100 pt-2">
                 <button onClick={() => openEdit(item)}
-                  className="text-slate-600 text-xs px-3 py-1.5 border border-slate-200 rounded-lg hover:border-blue-300 hover:text-blue-600 transition-colors">
+                  className="flex-1 text-slate-600 text-xs py-1.5 border border-slate-200 rounded-lg hover:border-blue-300 hover:text-blue-600 transition-colors">
                   تعديل
                 </button>
                 <button onClick={() => handleDelete(item.id)}
-                  className="text-red-500 text-xs px-3 py-1.5 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">
+                  className="flex-1 text-red-500 text-xs py-1.5 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">
                   حذف
                 </button>
               </div>
