@@ -16,10 +16,10 @@ img, video, iframe, canvas, svg {
 }
 @keyframes marquee {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 .animate-marquee {
-  animation: marquee 30s linear infinite;
+  animation: marquee 40s linear infinite;
 }
 /* محاذاة النص تلقائياً */
 article p, .prose p, .text-justify-auto {
