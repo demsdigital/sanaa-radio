@@ -33,26 +33,123 @@ const colorBg: Record<string, string> = {
 };
 
 type Item = { id: number; label: string; day: string; timeStart: string; timeEnd: string; type: string; color: string };
+
+type Version = {
+  id: number;
+  name: string;
+  slug: string;
+  active: boolean;
+  isDefault: boolean;
+  startsAt?: string;
+  endsAt?: string;
+};
 const empty = { label:"", day:"daily", timeStart:"", timeEnd:"", type:"recorded", color:"blue" };
 
 export default function AdminSchedulePage() {
   const [items,     setItems]     = useState<Item[]>([]);
   const [loading,   setLoading]   = useState(true);
+  const [versions,  setVersions]  = useState<Version[]>([]);
+  const [versionId, setVersionId] = useState<string>("default");
   const [filterDay, setFilterDay] = useState("daily");
   const [modal,     setModal]     = useState(false);
   const [editing,   setEditing]   = useState<Item | null>(null);
   const [form,      setForm]      = useState(empty);
   const [saving,    setSaving]    = useState(false);
+  const [creatingVersion, setCreatingVersion] = useState(false);
   const [delId,     setDelId]     = useState<number|null>(null);
 
+  async function loadVersions() {
+    const res = await fetch("/api/schedule-versions");
+    setVersions(await res.json());
+  }
+
   async function load() {
-    const res = await fetch("/api/schedule");
+    const query = versionId === "default" ? "" : `?versionId=${versionId}`;
+    const res = await fetch(`/api/schedule${query}`);
     setItems(await res.json());
     setLoading(false);
   }
-  useEffect(() => { load(); }, []);
+  useEffect(() => { loadVersions(); }, []);
+  useEffect(() => { load(); }, [versionId]);
 
   const f = (k: string, v: string) => setForm(p => ({ ...p, [k]: v }));
+
+  async function createVersion() {
+    const name = prompt("اسم الخارطة الجديدة");
+    if (!name) return;
+
+    const startsAt = prompt("تاريخ البداية YYYY-MM-DD");
+    if (!startsAt) return;
+
+    const endsAt = prompt("تاريخ النهاية YYYY-MM-DD");
+    if (!endsAt) return;
+
+    const cloneFromDefault = confirm("هل تريد نسخ الخارطة الأساسية إلى هذه النسخة؟");
+
+    const slug = name
+      .toLowerCase()
+      .replace(/\s+/g, "-");
+
+    setCreatingVersion(true);
+
+    await fetch("/api/schedule-versions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        slug,
+        active: true,
+        isDefault: false,
+        startsAt: startsAt + "T00:00:00.000Z",
+        endsAt: endsAt + "T23:59:59.000Z",
+        cloneFromDefault,
+      }),
+    });
+
+    await loadVersions();
+
+    setCreatingVersion(false);
+  }
+
+
+  async function editVersionDates() {
+    if (versionId === "default") {
+      alert("الخارطة الأساسية لا تحتاج تواريخ");
+      return;
+    }
+
+    const current = versions.find(v => String(v.id) === versionId);
+    if (!current) return;
+
+    const startsAt = prompt(
+      "تاريخ البداية YYYY-MM-DD",
+      current.startsAt?.slice(0,10) || ""
+    );
+
+    if (!startsAt) return;
+
+    const endsAt = prompt(
+      "تاريخ النهاية YYYY-MM-DD",
+      current.endsAt?.slice(0,10) || ""
+    );
+
+    if (!endsAt) return;
+
+    await fetch("/api/schedule-versions", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: current.id,
+        startsAt: startsAt + "T00:00:00.000Z",
+        endsAt: endsAt + "T23:59:59.000Z",
+      }),
+    });
+
+    await loadVersions();
+
+    alert("تم تحديث التواريخ");
+  }
+
 
   function openNew() { setEditing(null); setForm(empty); setModal(true); }
   function openEdit(item: Item) {
@@ -64,9 +161,24 @@ export default function AdminSchedulePage() {
   async function handleSave() {
     setSaving(true);
     if (editing) {
-      await fetch("/api/schedule", { method:"PUT", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ id: editing.id, ...form }) });
+      await fetch("/api/schedule", {
+        method:"PUT",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          id: editing.id,
+          ...form,
+          versionId: versionId === "default" ? null : Number(versionId),
+        })
+      });
     } else {
-      await fetch("/api/schedule", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(form) });
+      await fetch("/api/schedule", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          ...form,
+          versionId: versionId === "default" ? null : Number(versionId),
+        })
+      });
     }
     setSaving(false); setModal(false); load();
   }
@@ -90,10 +202,88 @@ export default function AdminSchedulePage() {
           <h1 className="text-slate-900 text-xl md:text-2xl font-bold">الخارطة البرامجية</h1>
           <p className="text-slate-500 text-sm mt-1">{items.length} برنامج إجمالاً</p>
         </div>
-        <button onClick={openNew}
+
+            <button onClick={openNew}
           className="flex items-center gap-2 bg-blue-600 text-white px-3 md:px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors">
           <span>+</span> إضافة
         </button>
+      </div>
+
+      {/* نسخ الخارطة */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-4 mb-6">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div>
+            <div className="font-bold text-slate-900">نسخة الخارطة</div>
+            <div className="text-xs text-slate-500 mt-1">
+              اختر الخارطة الأساسية أو الموسمية
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              onClick={createVersion}
+              disabled={creatingVersion}
+              className="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors"
+            >
+              + نسخة جديدة
+            </button>
+
+            <select
+              value={versionId}
+              onChange={(e) => setVersionId(e.target.value)}
+              className="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm"
+            >
+              <option value="default">الخارطة الأساسية</option>
+
+              {versions.map(v => (
+                <option key={v.id} value={String(v.id)}>
+                  {v.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {versionId !== "default" && (() => {
+          const current = versions.find(v => String(v.id) === versionId);
+          if (!current) return null;
+
+          return (
+            <div className="mt-4 rounded-xl border border-blue-100 bg-blue-50 p-4">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <div className="font-bold text-blue-950">{current.name}</div>
+                  <div className="text-xs text-blue-700 mt-1">
+                    نسخة موسمية — تظهر تلقائيًا داخل الفترة المحددة
+                  </div>
+                </div>
+
+                <button
+                  onClick={editVersionDates}
+                  className="bg-white border border-blue-200 text-blue-700 px-3 py-2 rounded-lg text-sm font-bold hover:bg-blue-100"
+                >
+                  تعديل تاريخ النسخة
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                <div className="bg-white rounded-lg border border-blue-100 p-3">
+                  <div className="text-xs text-slate-500 mb-1">تاريخ البداية</div>
+                  <div className="font-bold text-slate-900" dir="ltr">
+                    {current.startsAt ? current.startsAt.slice(0, 10) : "غير محدد"}
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg border border-blue-100 p-3">
+                  <div className="text-xs text-slate-500 mb-1">تاريخ النهاية</div>
+                  <div className="font-bold text-slate-900" dir="ltr">
+                    {current.endsAt ? current.endsAt.slice(0, 10) : "غير محدد"}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {/* فلتر الأيام — scroll أفقي على الموبايل */}
@@ -120,7 +310,7 @@ export default function AdminSchedulePage() {
         <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-300">
           <div className="text-4xl mb-3">📅</div>
           <div className="text-slate-400 mb-4">لا توجد برامج</div>
-          <button onClick={openNew} className="text-blue-600 text-sm font-bold hover:underline">+ أضف برنامجاً</button>
+            <button onClick={openNew} className="text-blue-600 text-sm font-bold hover:underline">+ أضف برنامجاً</button>
         </div>
       ) : (
         <div className="space-y-2">
@@ -152,11 +342,11 @@ export default function AdminSchedulePage() {
                 </div>
                 {/* صف الأزرار */}
                 <div className="flex gap-2 justify-end">
-                  <button onClick={() => openEdit(item)}
+            <button onClick={() => openEdit(item)}
                     className="px-3 py-1 text-xs font-bold bg-white border border-slate-200 text-slate-600 rounded-lg hover:border-blue-300 hover:text-blue-600 transition-colors">
                     تعديل
                   </button>
-                  <button onClick={() => setDelId(item.id)}
+            <button onClick={() => setDelId(item.id)}
                     className="px-3 py-1 text-xs font-bold bg-white border border-slate-200 text-red-500 rounded-lg hover:border-red-300 hover:bg-red-50 transition-colors">
                     حذف
                   </button>
@@ -182,10 +372,19 @@ export default function AdminSchedulePage() {
               </div>
               <div>
                 <label className="block text-slate-700 text-sm font-medium mb-1.5">اليوم</label>
-                <select value={form.day} onChange={e => f("day", e.target.value)}
+                <div className="flex items-center gap-2">
+            <button
+              onClick={createVersion}
+              disabled={creatingVersion}
+              className="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors"
+            >
+              + نسخة جديدة
+            </button>
+
+            <select value={form.day} onChange={e => f("day", e.target.value)}
                   className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400">
                   {DAYS.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
-                </select>
+                </select></div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -203,7 +402,7 @@ export default function AdminSchedulePage() {
                 <label className="block text-slate-700 text-sm font-medium mb-2">النوع</label>
                 <div className="flex gap-3">
                   {[{v:"recorded",l:"تسجيل"},{v:"live",l:"مباشر"}].map(t => (
-                    <button key={t.v} type="button" onClick={() => f("type", t.v)}
+            <button key={t.v} type="button" onClick={() => f("type", t.v)}
                       className={"flex-1 py-2 rounded-lg text-sm font-medium border-2 transition-all " + (form.type === t.v ? "border-blue-500 bg-blue-50 text-blue-700" : "border-slate-200 text-slate-600")}>
                       {t.v === "live" && <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse ml-1.5" />}
                       {t.l}
@@ -215,7 +414,7 @@ export default function AdminSchedulePage() {
                 <label className="block text-slate-700 text-sm font-medium mb-2">اللون</label>
                 <div className="flex gap-2 flex-wrap">
                   {COLORS.map(c => (
-                    <button key={c.value} type="button" onClick={() => f("color", c.value)}
+            <button key={c.value} type="button" onClick={() => f("color", c.value)}
                       className={"flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-2 text-xs font-medium transition-all " + (form.color === c.value ? "border-blue-500 bg-blue-50" : "border-slate-200")}>
                       <span className={"w-3 h-3 rounded-full " + c.dot} />
                       {c.label}
@@ -225,11 +424,11 @@ export default function AdminSchedulePage() {
               </div>
             </div>
             <div className="flex gap-3 mt-6">
-              <button onClick={() => setModal(false)}
+            <button onClick={() => setModal(false)}
                 className="flex-1 py-2.5 rounded-lg border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50">
                 إلغاء
               </button>
-              <button onClick={handleSave} disabled={saving || !form.label || !form.timeStart || !form.timeEnd}
+            <button onClick={handleSave} disabled={saving || !form.label || !form.timeStart || !form.timeEnd}
                 className="flex-1 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 disabled:opacity-50">
                 {saving ? "جاري الحفظ..." : editing ? "حفظ التعديلات" : "إضافة"}
               </button>
@@ -246,8 +445,8 @@ export default function AdminSchedulePage() {
             <h3 className="text-slate-900 font-bold mb-2">حذف البرنامج؟</h3>
             <p className="text-slate-500 text-sm mb-5">هذا الإجراء لا يمكن التراجع عنه</p>
             <div className="flex gap-3">
-              <button onClick={() => setDelId(null)} className="flex-1 py-2.5 rounded-lg border border-slate-200 text-slate-600 text-sm">إلغاء</button>
-              <button onClick={() => handleDelete(delId)} className="flex-1 py-2.5 rounded-lg bg-red-600 text-white text-sm font-bold">حذف</button>
+            <button onClick={() => setDelId(null)} className="flex-1 py-2.5 rounded-lg border border-slate-200 text-slate-600 text-sm">إلغاء</button>
+            <button onClick={() => handleDelete(delId)} className="flex-1 py-2.5 rounded-lg bg-red-600 text-white text-sm font-bold">حذف</button>
             </div>
           </div>
         </div>

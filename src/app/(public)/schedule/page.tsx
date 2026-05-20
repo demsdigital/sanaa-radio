@@ -1,6 +1,7 @@
 import { db } from "@/db";
-import { schedule } from "@/db/schema";
+import { schedule, scheduleVersions } from "@/db/schema";
 import { Suspense } from "react";
+import { and, eq, isNull, lte, gte, desc } from "drizzle-orm";
 import DayTabs from "./DayTabs";
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
@@ -26,7 +27,25 @@ type Props = { searchParams: Promise<{day?:string}> };
 
 export default async function SchedulePage({ searchParams }: Props) {
   const { day } = await searchParams;
-  const allItems = await db.select().from(schedule);
+  const now = new Date();
+
+  const [activeVersion] = await db
+    .select()
+    .from(scheduleVersions)
+    .where(
+      and(
+        eq(scheduleVersions.active, true),
+        eq(scheduleVersions.isDefault, false),
+        lte(scheduleVersions.startsAt, now),
+        gte(scheduleVersions.endsAt, now)
+      )
+    )
+    .orderBy(desc(scheduleVersions.createdAt))
+    .limit(1);
+
+  const allItems = activeVersion
+    ? await db.select().from(schedule).where(eq(schedule.versionId, activeVersion.id))
+    : await db.select().from(schedule).where(isNull(schedule.versionId));
   const todayMap: Record<number,string> = {0:"sun",1:"mon",2:"tue",3:"wed",4:"thu",5:"fri",6:"sat"};
   const yemenTime = new Date(Date.now() + 3 * 60 * 60 * 1000);
   const todayKey = todayMap[yemenTime.getUTCDay()];

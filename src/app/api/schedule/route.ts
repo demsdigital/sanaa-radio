@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { schedule } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, isNull } from "drizzle-orm";
 import { getTokenFromRequest, verifyToken } from "@/lib/auth";
 
-export async function GET() {
-  const all = await db.select().from(schedule).orderBy(schedule.timeStart);
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const versionId = searchParams.get("versionId");
+
+  const all = versionId
+    ? await db.select().from(schedule).where(eq(schedule.versionId, Number(versionId))).orderBy(schedule.timeStart)
+    : await db.select().from(schedule).where(isNull(schedule.versionId)).orderBy(schedule.timeStart);
+
   return NextResponse.json(all);
 }
 
