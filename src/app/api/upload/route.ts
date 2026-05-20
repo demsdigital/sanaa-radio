@@ -18,8 +18,10 @@ const S3 = new S3Client({
 
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const ALLOWED_AUDIO_TYPES = ["audio/mpeg", "audio/mp3", "audio/wav", "audio/ogg", "audio/aac"];
+const ALLOWED_DOCUMENT_TYPES = ["application/pdf"];
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;   // 5MB
 const MAX_AUDIO_SIZE = 100 * 1024 * 1024; // 100MB
+const MAX_DOCUMENT_SIZE = 25 * 1024 * 1024; // 25MB
 
 export async function POST(request: NextRequest) {
   const token = getTokenFromRequest(request);
@@ -34,20 +36,25 @@ export async function POST(request: NextRequest) {
 
   const isImage = file.type.startsWith("image/");
   const isAudio = file.type.startsWith("audio/");
+  const isDocument = ALLOWED_DOCUMENT_TYPES.includes(file.type);
 
   // التحقق من نوع الملف
   if (isImage && !ALLOWED_IMAGE_TYPES.includes(file.type))
     return NextResponse.json({ error: "نوع الصورة غير مسموح به" }, { status: 400 });
   if (isAudio && !ALLOWED_AUDIO_TYPES.includes(file.type))
     return NextResponse.json({ error: "نوع الملف الصوتي غير مسموح به" }, { status: 400 });
-  if (!isImage && !isAudio)
-    return NextResponse.json({ error: "يُسمح فقط بالصور والملفات الصوتية" }, { status: 400 });
+  if (isDocument && !ALLOWED_DOCUMENT_TYPES.includes(file.type))
+    return NextResponse.json({ error: "نوع الملف غير مسموح به" }, { status: 400 });
+  if (!isImage && !isAudio && !isDocument)
+    return NextResponse.json({ error: "يُسمح فقط بالصور والملفات الصوتية وملفات PDF" }, { status: 400 });
 
   // التحقق من الحجم
   if (isImage && file.size > MAX_IMAGE_SIZE)
     return NextResponse.json({ error: "حجم الصورة يتجاوز 5MB" }, { status: 400 });
   if (isAudio && file.size > MAX_AUDIO_SIZE)
     return NextResponse.json({ error: "حجم الملف الصوتي يتجاوز 100MB" }, { status: 400 });
+  if (isDocument && file.size > MAX_DOCUMENT_SIZE)
+    return NextResponse.json({ error: "حجم ملف PDF يتجاوز 25MB" }, { status: 400 });
 
   const originalBuffer = Buffer.from(await file.arrayBuffer());
 
@@ -73,7 +80,7 @@ export async function POST(request: NextRequest) {
   }
 
   const filename = `${Date.now()}-${safeFilename}`;
-  const folder = isAudio ? "audio" : "images";
+  const folder = isAudio ? "audio" : isDocument ? "documents" : "images";
   const key = `${folder}/${filename}`;
 
   await S3.send(new PutObjectCommand({

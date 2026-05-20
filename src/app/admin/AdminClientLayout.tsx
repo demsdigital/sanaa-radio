@@ -14,6 +14,7 @@ const allNavItems = [
   { href: "/admin/team",      label: "الفريق",       icon: "👥", perm: "admin" },
   { href: "/admin/media",     label: "مكتبة الصور",  icon: "🖼️", perm: null },
   { href: "/admin/articles",  label: "الكتابات",     icon: "✍️", perm: "articles" },
+  { href: "/admin/exchange",  label: "التبادل البرامجي",      icon: "🌍", perm: "admin" },
   { href: "/admin/users",     label: "المستخدمون",   icon: "👥", perm: "admin" },
   { href: "/admin/settings",  label: "الإعدادات",    icon: "⚙️", perm: "admin" },
   { href: "/admin/security",  label: "الأمان",        icon: "🔐", perm: null },

@@ -24,6 +24,7 @@ export default async function Navbar() {
     { href: "/schedule",   label: "الخارطة البرامجية", condition: s.section_schedule !== "false" },
     { href: "/news",       label: "الأخبار",           condition: s.section_news !== "false" },
     { href: "/#satellite", label: "عبر القمر",         condition: s.section_satellite !== "false" },
+    { href: "/program-exchange", label: "التبادل البرامجي", condition: true },
     { href: "/articles",   label: "الكتابات",          condition: true },
     { href: "/team",       label: "الفريق",            condition: true },
     { href: "/about",      label: "عن الإذاعة",        condition: true },

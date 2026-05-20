@@ -103,3 +103,71 @@ export const mediaLibrary = pgTable("media_library", {
   uploadedBy: integer("uploaded_by").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const exchangeAchievements = pgTable("exchange_achievements", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  year: integer("year"),
+  organization: text("organization"),
+  description: text("description"),
+  imageUrl: text("image_url"),
+  featured: boolean("featured").notNull().default(false),
+  sortOrder: integer("sort_order").notNull().default(0),
+  active: boolean("active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const exchangeStats = pgTable("exchange_stats", {
+  id: serial("id").primaryKey(),
+  label: text("label").notNull(),
+  value: text("value").notNull(),
+  suffix: text("suffix"),
+  year: integer("year"),
+  description: text("description"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  active: boolean("active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const exchangeReports = pgTable("exchange_reports", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  year: integer("year"),
+  description: text("description"),
+  imageUrl: text("image_url"),
+  fileUrl: text("file_url"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  active: boolean("active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const exchangePartners = pgTable("exchange_partners", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  country: text("country"),
+  logoUrl: text("logo_url"),
+  websiteUrl: text("website_url"),
+  description: text("description"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  active: boolean("active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const exchangeItems = pgTable("exchange_items", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  slug: text("slug").notNull().unique(),
+  description: text("description"),
+  imageUrl: text("image_url"),
+  audioUrl: text("audio_url"),
+  fileUrl: text("file_url"),
+  category: text("category").notNull().default("program"),
+  producer: text("producer"),
+  duration: integer("duration"),
+  downloadable: boolean("downloadable").notNull().default(false),
+  featured: boolean("featured").notNull().default(false),
+  published: boolean("published").notNull().default(true),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+

@@ -1,0 +1,394 @@
+"use client";
+
+import MediaPicker from "@/components/MediaPicker";
+import { useEffect, useState } from "react";
+
+type Achievement = {
+  id: number;
+  title: string;
+  year: number | null;
+  organization: string | null;
+  description: string | null;
+  imageUrl: string | null;
+  featured: boolean;
+  sortOrder: number;
+  active: boolean;
+};
+
+const emptyForm = {
+  title: "",
+  year: "",
+  organization: "",
+  description: "",
+  imageUrl: "",
+  featured: false,
+  sortOrder: "0",
+  active: true,
+};
+
+export default function ExchangeAchievementsAdminPage() {
+  const [items, setItems] = useState<Achievement[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
+  const [editing, setEditing] = useState<Achievement | null>(null);
+  const [form, setForm] = useState(emptyForm);
+
+  async function load() {
+    const res = await fetch("/api/exchange/achievements");
+    setItems(await res.json());
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  function openAdd() {
+    setEditing(null);
+    setForm(emptyForm);
+    setShowForm(true);
+  }
+
+  function openEdit(item: Achievement) {
+    setEditing(item);
+    setForm({
+      title: item.title || "",
+      year: item.year ? String(item.year) : "",
+      organization: item.organization || "",
+      description: item.description || "",
+      imageUrl: item.imageUrl || "",
+      featured: item.featured,
+      sortOrder: String(item.sortOrder || 0),
+      active: item.active,
+    });
+    setShowForm(true);
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    const method = editing ? "PUT" : "POST";
+    const payload = editing ? { ...form, id: editing.id } : form;
+
+    await fetch("/api/exchange/achievements", {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    setShowForm(false);
+    await load();
+  }
+
+  async function handleDelete(id: number) {
+    if (!confirm("هل أنت متأكد من حذف هذا الإنجاز؟")) return;
+
+    await fetch("/api/exchange/achievements", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+
+    await load();
+  }
+
+  async function toggleActive(item: Achievement) {
+    await fetch("/api/exchange/achievements", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...item, active: !item.active }),
+    });
+
+    await load();
+  }
+
+  function f(key: keyof typeof emptyForm, value: string | boolean) {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  return (
+    <div dir="rtl">
+      <div className="flex items-center justify-between mb-8 flex-wrap gap-3">
+        <div>
+          <h1 className="text-slate-900 text-2xl font-bold">
+            إنجازات وتكريمات التبادل البرامجي
+          </h1>
+          <p className="text-slate-500 text-sm mt-1">
+            {items.length} إنجاز أو تكريم
+          </p>
+        </div>
+
+        <button
+          onClick={openAdd}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors"
+        >
+          + إضافة إنجاز
+        </button>
+      </div>
+
+      {loading ? (
+        <div className="text-slate-400 text-center py-20">جاري التحميل...</div>
+      ) : items.length === 0 ? (
+        <div className="text-slate-400 text-center py-20">
+          لا توجد إنجازات بعد
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {items.map((item) => (
+            <div
+              key={item.id}
+              className={`bg-white border rounded-2xl overflow-hidden shadow-sm ${
+                item.active ? "border-slate-200" : "border-slate-200 opacity-60"
+              }`}
+            >
+              {item.imageUrl ? (
+                <img
+                  src={item.imageUrl}
+                  alt={item.title}
+                  className="w-full h-40 object-cover bg-slate-100"
+                />
+              ) : (
+                <div className="w-full h-40 bg-slate-100 flex items-center justify-center text-4xl">
+                  🏆
+                </div>
+              )}
+
+              <div className="p-5">
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full ${
+                      item.active
+                        ? "bg-green-50 text-green-600"
+                        : "bg-slate-100 text-slate-500"
+                    }`}
+                  >
+                    {item.active ? "ظاهر" : "مخفي"}
+                  </span>
+
+                  {item.featured && (
+                    <span className="text-xs px-2 py-1 rounded-full bg-amber-50 text-amber-600">
+                      مميز
+                    </span>
+                  )}
+                </div>
+
+                {item.year && (
+                  <div className="text-blue-700 font-black text-xl mb-1">
+                    {item.year}
+                  </div>
+                )}
+
+                <h2 className="font-black text-slate-900">
+                  {item.title}
+                </h2>
+
+                {item.organization && (
+                  <div className="mt-1 text-xs text-slate-500">
+                    {item.organization}
+                  </div>
+                )}
+
+                {item.description && (
+                  <p className="mt-3 text-sm text-slate-600 leading-7 line-clamp-3">
+                    {item.description}
+                  </p>
+                )}
+
+                <div className="flex gap-2 border-t border-slate-100 pt-4 mt-4">
+                  <button
+                    onClick={() => openEdit(item)}
+                    className="flex-1 text-slate-600 text-xs py-2 border border-slate-200 rounded-lg hover:border-blue-300 hover:text-blue-600 transition-colors"
+                  >
+                    تعديل
+                  </button>
+
+                  <button
+                    onClick={() => toggleActive(item)}
+                    className="flex-1 text-amber-600 text-xs py-2 border border-amber-200 rounded-lg hover:bg-amber-50 transition-colors"
+                  >
+                    {item.active ? "إخفاء" : "إظهار"}
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="flex-1 text-red-500 text-xs py-2 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
+                  >
+                    حذف
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {showForm && (
+        <div className="fixed inset-0 bg-black/60 flex items-start justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white border border-slate-200 rounded-xl w-full max-w-2xl p-6 my-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-slate-900 font-bold text-lg">
+                {editing ? "تعديل إنجاز" : "إضافة إنجاز"}
+              </h2>
+
+              <button
+                onClick={() => setShowForm(false)}
+                className="text-slate-400 hover:text-slate-600 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100"
+              >
+                ×
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className="block text-slate-700 text-sm font-medium mb-1.5">
+                  العنوان <span className="text-red-500">*</span>
+                </label>
+                <input
+                  value={form.title}
+                  onChange={(e) => f("title", e.target.value)}
+                  required
+                  placeholder="مثال: المركز الأول عربيًا"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white"
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-700 text-sm font-medium mb-1.5">
+                    السنة
+                  </label>
+                  <input
+                    value={form.year}
+                    onChange={(e) => f("year", e.target.value)}
+                    type="number"
+                    placeholder="2020"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 text-sm font-medium mb-1.5">
+                    الجهة
+                  </label>
+                  <input
+                    value={form.organization}
+                    onChange={(e) => f("organization", e.target.value)}
+                    placeholder="اتحاد إذاعات الدول العربية"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-slate-700 text-sm font-medium mb-1.5">
+                  الوصف
+                </label>
+                <textarea
+                  value={form.description}
+                  onChange={(e) => f("description", e.target.value)}
+                  rows={4}
+                  placeholder="تفاصيل الإنجاز أو التكريم"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white resize-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-700 text-sm font-medium mb-1.5">
+                  صورة الإنجاز / التكريم
+                </label>
+
+                <div className="flex gap-3">
+                  <input
+                    value={form.imageUrl}
+                    onChange={(e) => f("imageUrl", e.target.value)}
+                    placeholder="رابط الصورة"
+                    dir="ltr"
+                    className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPicker(true)}
+                    className="px-4 rounded-lg bg-slate-900 text-white text-sm font-bold"
+                  >
+                    اختيار
+                  </button>
+                </div>
+
+                {form.imageUrl && (
+                  <img
+                    src={form.imageUrl}
+                    alt=""
+                    className="mt-3 w-full h-44 object-cover rounded-xl border border-slate-200"
+                  />
+                )}
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-700 text-sm font-medium mb-1.5">
+                    الترتيب
+                  </label>
+                  <input
+                    value={form.sortOrder}
+                    onChange={(e) => f("sortOrder", e.target.value)}
+                    type="number"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-3 justify-end">
+                  <label className="flex items-center gap-2 text-sm text-slate-700">
+                    <input
+                      type="checkbox"
+                      checked={form.featured}
+                      onChange={(e) => f("featured", e.target.checked)}
+                    />
+                    إنجاز مميز
+                  </label>
+
+                  <label className="flex items-center gap-2 text-sm text-slate-700">
+                    <input
+                      type="checkbox"
+                      checked={form.active}
+                      onChange={(e) => f("active", e.target.checked)}
+                    />
+                    إظهار في الصفحة العامة
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-4 border-t border-slate-100">
+                <button
+                  type="submit"
+                  className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors"
+                >
+                  حفظ
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="flex-1 bg-slate-100 text-slate-600 py-3 rounded-lg font-bold hover:bg-slate-200 transition-colors"
+                >
+                  إلغاء
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showPicker && (
+        <MediaPicker
+          onSelect={(url) => {
+            f("imageUrl", url);
+            setShowPicker(false);
+          }}
+          onClose={() => setShowPicker(false)}
+        />
+      )}
+    </div>
+  );
+}
