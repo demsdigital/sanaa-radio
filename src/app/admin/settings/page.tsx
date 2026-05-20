@@ -46,6 +46,7 @@ export default function SettingsPage() {
     section_articles: "true", section_satellite: "true", section_contact: "true", show_listen_btn: "true",
     on_air_label: "نشرة الأخبار الرئيسية",
     show_player: "false", stream_url: "", player_opacity: "82",
+    youtube_api_key: "",
     hero_title: "إذاعة الجمهورية اليمنية", hero_subtitle: "البرنامج العام",
     hero_tagline: "الصوت الحقيقي منذ عقود", hero_badge: "على الهواء الآن",
     hero_bg: "blue", hero_media_type: "none", hero_media_url: "", hero_overlay_opacity: "55", hero_card_opacity: "12",
@@ -281,6 +282,26 @@ export default function SettingsPage() {
                   <input type="range" min="0" max="90" step="5" value={form.programs_hero_overlay_opacity} onChange={e=>f("programs_hero_overlay_opacity",e.target.value)} className="w-full accent-blue-600"/>
                 </div>
               </div>)}
+            </div>
+          </div>
+        </Section>
+
+        <Section open={open} setOpen={setOpen} id="integrations" icon="🔗" title="التكاملات الخارجية" desc="مفاتيح الخدمات التي سيستخدمها الموقع">
+          <div className="space-y-4 mt-1">
+            <div>
+              <label className="block text-slate-700 text-sm font-medium mb-1.5">مفتاح YouTube API</label>
+              <input
+                type="password"
+                value={form.youtube_api_key}
+                onChange={e => f("youtube_api_key", e.target.value)}
+                placeholder="AIza..."
+                dir="ltr"
+                autoComplete="off"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400 font-mono"
+              />
+              <p className="text-slate-400 text-xs mt-1.5">
+                يُستخدم لاحقًا لمزامنة حلقات البرامج تلقائيًا من قوائم تشغيل يوتيوب.
+              </p>
             </div>
           </div>
         </Section>
