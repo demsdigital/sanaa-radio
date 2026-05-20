@@ -15,19 +15,28 @@ export async function POST(request: NextRequest) {
     db.select({ url: articles.imageUrl, title: articles.title }).from(articles),
   ]);
 
-  const toInsert = [
+  const rawItems = [
     ...progs.filter(p => p.url).map(p => ({ filename: "برنامج: " + p.name, url: p.url!, uploadedBy: payload.id })),
     ...newsItems.filter(n => n.url).map(n => ({ filename: "خبر: " + n.title, url: n.url!, uploadedBy: payload.id })),
     ...teamItems.filter(t => t.url).map(t => ({ filename: "فريق: " + t.name, url: t.url!, uploadedBy: payload.id })),
     ...articleItems.filter(a => a.url).map(a => ({ filename: "مقال: " + a.title, url: a.url!, uploadedBy: payload.id })),
   ];
 
+  // إزالة التكرار داخل نفس دفعة الاستيراد
+  const uniqueItems = Array.from(
+    new Map(rawItems.map(item => [item.url, item])).values()
+  );
+
+  // جلب الروابط الموجودة مسبقًا في المكتبة لمنع تكرارها
+  const existingMedia = await db.select({ url: mediaLibrary.url }).from(mediaLibrary);
+  const existingUrls = new Set(existingMedia.map(item => item.url));
+
+  const toInsert = uniqueItems.filter(item => !existingUrls.has(item.url));
+
   let imported = 0;
   for (const item of toInsert) {
-    try {
-      await db.insert(mediaLibrary).values(item);
-      imported++;
-    } catch {}
+    await db.insert(mediaLibrary).values(item);
+    imported++;
   }
 
   return NextResponse.json({ success: true, imported });

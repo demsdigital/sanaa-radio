@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getTokenFromRequest, verifyToken } from "@/lib/auth";
+import { db } from "@/db";
+import { mediaLibrary } from "@/db/schema";
 import sharp from "sharp";
 
 export const runtime = "nodejs";
@@ -21,7 +23,8 @@ const MAX_AUDIO_SIZE = 100 * 1024 * 1024; // 100MB
 
 export async function POST(request: NextRequest) {
   const token = getTokenFromRequest(request);
-  if (!token || !verifyToken(token))
+  const payload = token ? verifyToken(token) : null;
+  if (!payload)
     return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
 
   const formData = await request.formData();
@@ -81,5 +84,15 @@ export async function POST(request: NextRequest) {
   }));
 
   const url = `${process.env.R2_PUBLIC_URL}/${key}`;
+
+  // أي صورة تُرفع من أي مكان في لوحة التحكم تُسجَّل تلقائيًا في مكتبة الصور
+  if (isImage) {
+    await db.insert(mediaLibrary).values({
+      filename,
+      url,
+      uploadedBy: payload.id,
+    });
+  }
+
   return NextResponse.json({ url, key });
 }
