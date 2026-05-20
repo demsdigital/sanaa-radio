@@ -1,0 +1,30 @@
+{
+  "name": "إذاعة الجمهورية اليمنية",
+  "short_name": "إذاعة اليمن",
+  "description": "الموقع الرسمي لإذاعة الجمهورية اليمنية — البرنامج العام",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "ar-YE",
+  "background_color": "#0a1628",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/favicon-180x180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-48x48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    }
+  ]
+}
