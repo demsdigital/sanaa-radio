@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getTokenFromRequest, verifyToken } from "@/lib/auth";
+import sharp from "sharp";
+
+export const runtime = "nodejs";
 
 const S3 = new S3Client({
   region: "auto",
@@ -43,16 +46,38 @@ export async function POST(request: NextRequest) {
   if (isAudio && file.size > MAX_AUDIO_SIZE)
     return NextResponse.json({ error: "حجم الملف الصوتي يتجاوز 100MB" }, { status: 400 });
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g, "-")}`;
+  const originalBuffer = Buffer.from(await file.arrayBuffer());
+
+  let uploadBuffer: Buffer = originalBuffer;
+  let uploadContentType = file.type;
+  let safeFilename = file.name.replace(/[^a-zA-Z0-9.\-_]/g, "-");
+
+  // ضغط الصور وتحويلها إلى WebP باستثناء GIF للحفاظ على الحركة إن وجدت
+  if (isImage && file.type !== "image/gif") {
+    uploadBuffer = await sharp(originalBuffer)
+      .rotate()
+      .resize({
+        width: 3840,
+        height: 3840,
+        fit: "inside",
+        withoutEnlargement: true,
+      })
+      .webp({ quality: 82 })
+      .toBuffer();
+
+    uploadContentType = "image/webp";
+    safeFilename = safeFilename.replace(/\.[^.]+$/, "") + ".webp";
+  }
+
+  const filename = `${Date.now()}-${safeFilename}`;
   const folder = isAudio ? "audio" : "images";
   const key = `${folder}/${filename}`;
 
   await S3.send(new PutObjectCommand({
     Bucket: process.env.R2_BUCKET_NAME!,
     Key: key,
-    Body: buffer,
-    ContentType: file.type,
+    Body: uploadBuffer,
+    ContentType: uploadContentType,
   }));
 
   const url = `${process.env.R2_PUBLIC_URL}/${key}`;

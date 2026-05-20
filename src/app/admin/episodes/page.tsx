@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 
 type Program = { id: number; name: string };
-type Episode = { id: number; programId: number; title: string; description: string; audioUrl: string; duration: number; publishedAt: string };
+type Episode = { id: number; programId: number; title: string; description: string; audioUrl: string; youtubeUrl: string; duration: number; publishedAt: string };
 
 export default function EpisodesPage() {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
@@ -11,7 +11,7 @@ export default function EpisodesPage() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing]   = useState<Episode | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [form, setForm] = useState({ programId: "", title: "", description: "", audioUrl: "", duration: "" });
+  const [form, setForm] = useState({ programId: "", title: "", description: "", audioUrl: "", youtubeUrl: "", duration: "" });
 
   async function load() {
     const [ep, pr] = await Promise.all([fetch("/api/episodes").then(r => r.json()), fetch("/api/programs").then(r => r.json())]);
@@ -21,12 +21,12 @@ export default function EpisodesPage() {
 
   function openAdd() {
     setEditing(null);
-    setForm({ programId: programs[0]?.id.toString() || "", title: "", description: "", audioUrl: "", duration: "" });
+    setForm({ programId: programs[0]?.id.toString() || "", title: "", description: "", audioUrl: "", youtubeUrl: "", duration: "" });
     setShowForm(true);
   }
   function openEdit(e: Episode) {
     setEditing(e);
-    setForm({ programId: e.programId.toString(), title: e.title, description: e.description || "", audioUrl: e.audioUrl || "", duration: e.duration?.toString() || "" });
+    setForm({ programId: e.programId.toString(), title: e.title, description: e.description || "", audioUrl: e.audioUrl || "", youtubeUrl: e.youtubeUrl || "", duration: e.duration?.toString() || "" });
     setShowForm(true);
   }
   async function handleUpload(file: File) {
@@ -132,6 +132,18 @@ export default function EpisodesPage() {
                   className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-700 text-sm" />
                 {uploading && <p className="text-blue-600 text-xs mt-1">جاري الرفع...</p>}
                 {form.audioUrl && <p className="text-green-600 text-xs mt-1">✓ تم الرفع</p>}
+              </div>
+              <div>
+                <label className="block text-slate-700 text-sm font-medium mb-1.5">رابط يوتيوب للحلقة</label>
+                <input
+                  type="url"
+                  value={form.youtubeUrl}
+                  onChange={e => setForm({ ...form, youtubeUrl: e.target.value })}
+                  dir="ltr"
+                  placeholder="https://www.youtube.com/watch?v=..."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400"
+                />
+                <p className="text-slate-400 text-xs mt-1">سنستخدمه لاحقًا لجلب صورة غلاف الحلقة تلقائيًا.</p>
               </div>
               <div>
                 <label className="block text-slate-700 text-sm font-medium mb-1.5">المدة (بالثواني)</label>

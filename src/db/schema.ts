@@ -28,6 +28,7 @@ export const episodes = pgTable("episodes", {
   title: text("title").notNull(),
   description: text("description"),
   audioUrl: text("audio_url"),
+  youtubeUrl: text("youtube_url"),
   duration: integer("duration"),
   publishedAt: timestamp("published_at").notNull().defaultNow(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
