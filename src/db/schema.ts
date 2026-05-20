@@ -34,6 +34,18 @@ export const episodes = pgTable("episodes", {
   publishedAt: timestamp("published_at").notNull().defaultNow(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const scheduleVersions = pgTable("schedule_versions", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  active: boolean("active").notNull().default(true),
+  isDefault: boolean("is_default").notNull().default(false),
+  startsAt: timestamp("starts_at"),
+  endsAt: timestamp("ends_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 export const schedule = pgTable("schedule", {
   id: serial("id").primaryKey(),
   programId: integer("program_id").references(() => programs.id, { onDelete: "set null" }),
@@ -43,6 +55,7 @@ export const schedule = pgTable("schedule", {
   timeEnd: text("time_end").notNull(),
   type: text("type").notNull().default("recorded"),
   color: text("color").default("blue"),
+  versionId: integer("version_id").references(() => scheduleVersions.id, { onDelete: "set null" }),
 });
 export const news = pgTable("news", {
   id: serial("id").primaryKey(),
