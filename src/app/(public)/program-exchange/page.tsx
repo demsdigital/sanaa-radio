@@ -50,12 +50,31 @@ export default async function ProgramExchangePage() {
     settingRows.map((row) => [row.key, row.value])
   );
 
+  const exchangeEnabled = settingMap.exchange_enabled !== "false";
   const showStats = settingMap.exchange_show_stats !== "false";
   const showAchievements = settingMap.exchange_show_achievements !== "false";
   const showReports = settingMap.exchange_show_reports !== "false";
   const showCloud = settingMap.exchange_show_cloud !== "false";
   const showPartners = settingMap.exchange_show_partners !== "false";
   const showFuture = settingMap.exchange_show_future !== "false";
+
+  if (!exchangeEnabled) {
+    return (
+      <main className="bg-slate-50 text-slate-900" dir="rtl">
+        <section className="max-w-4xl mx-auto px-4 py-24 text-center">
+          <div className="bg-white border border-slate-100 rounded-[2rem] p-10 shadow-sm">
+            <div className="text-5xl mb-5">📡</div>
+            <h1 className="text-3xl font-black text-slate-900">
+              صفحة التبادل البرامجي غير متاحة حاليًا
+            </h1>
+            <p className="text-slate-500 mt-4 leading-8">
+              سيتم إتاحة الصفحة بعد اعتماد المحتوى من إدارة الموقع.
+            </p>
+          </div>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="bg-slate-50 text-slate-900" dir="rtl">
@@ -64,23 +83,23 @@ export default async function ProgramExchangePage() {
 
         <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,transparent,rgba(255,255,255,0.08),transparent)]" />
 
-        <div className="relative max-w-7xl mx-auto px-4 py-20 md:py-28">
+        <div className="relative max-w-7xl mx-auto px-4 py-10 md:py-28">
           <div className="grid lg:grid-cols-5 gap-10 items-center">
             <div className="lg:col-span-3">
               <span className="inline-flex mb-5 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-bold backdrop-blur">
                 🏆 المركز الأول عربيًا في التبادلات البرامجية
               </span>
 
-              <h1 className="text-4xl md:text-6xl font-black leading-tight">
+              <h1 className="text-3xl md:text-6xl font-black leading-tight mt-6 md:mt-0">
                 التبادل البرامجي والإخباري العربي
               </h1>
 
-              <p className="mt-6 text-lg md:text-xl text-blue-100 leading-9">
+              <p className="mt-5 text-base md:text-xl text-blue-100 leading-8 md:leading-9">
                 منصة إذاعة الجمهورية اليمنية للتبادل البرامجي والإخباري مع الهيئات
                 والإذاعات العربية، وتوثيق حضورها الفاعل ضمن اتحاد إذاعات الدول العربية.
               </p>
 
-              <div className="flex gap-3 mt-8 flex-wrap">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-8">
                 <a
                   href="/program-exchange/items"
                   className="px-6 py-3 rounded-2xl bg-white text-blue-900 font-black hover:bg-blue-50 transition-colors"
@@ -108,7 +127,7 @@ export default async function ProgramExchangePage() {
               <div className="relative">
                 <div className="absolute inset-0 blur-3xl bg-blue-400/20 rounded-full" />
 
-                <div className="relative rounded-[2rem] border border-white/10 bg-white/10 backdrop-blur-xl p-8 overflow-hidden">
+                <div className="relative rounded-[2rem] border border-white/10 bg-white/10 backdrop-blur-xl p-5 md:p-8 overflow-hidden">
                   <div className="absolute top-0 left-0 w-40 h-40 bg-blue-400/10 rounded-full blur-3xl" />
 
                   <div className="relative">
@@ -128,16 +147,16 @@ export default async function ProgramExchangePage() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 mt-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                       <div className="rounded-2xl bg-white/10 p-4 border border-white/10">
-                        <div className="text-3xl font-black">720</div>
+                        <div className="text-2xl md:text-3xl font-black">720</div>
                         <div className="text-blue-100 text-sm mt-2">
                           مادة برامجية
                         </div>
                       </div>
 
                       <div className="rounded-2xl bg-white/10 p-4 border border-white/10">
-                        <div className="text-3xl font-black">45</div>
+                        <div className="text-2xl md:text-3xl font-black">45</div>
                         <div className="text-blue-100 text-sm mt-2">
                           مادة إخبارية
                         </div>
@@ -218,13 +237,13 @@ export default async function ProgramExchangePage() {
 
       {showAchievements && achievements.length > 0 && (
         <section id="achievements" className="bg-white border-y border-slate-100">
-          <div className="max-w-7xl mx-auto px-4 py-16">
+          <div className="max-w-7xl mx-auto px-4 py-10 md:py-16">
             <h2 className="text-3xl font-black mb-8">محطات بارزة</h2>
 
             <div className="relative">
               <div className="absolute right-6 top-0 bottom-0 w-px bg-gradient-to-b from-blue-200 via-blue-400 to-transparent hidden md:block" />
 
-              <div className="space-y-8">
+              <div className="space-y-5 md:space-y-8">
                 {achievements.map((item, index) => (
                   <article
                     key={item.id}
@@ -234,7 +253,7 @@ export default async function ProgramExchangePage() {
                       {item.year || index + 1}
                     </div>
 
-                    <div className="rounded-[2rem] border border-slate-100 bg-slate-50 overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
+                    <div className="rounded-[1.5rem] md:rounded-[2rem] border border-slate-100 bg-slate-50 overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
                       <div className="grid md:grid-cols-5">
                         {item.imageUrl && (
                           <div className="md:col-span-2">
@@ -246,14 +265,14 @@ export default async function ProgramExchangePage() {
                           </div>
                         )}
 
-                        <div className={`${item.imageUrl ? "md:col-span-3" : "md:col-span-5"} p-8`}>
+                        <div className={`${item.imageUrl ? "md:col-span-3" : "md:col-span-5"} p-4 md:p-8`}>
                           {item.year && (
-                            <div className="inline-flex px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-black text-sm">
+                            <div className="inline-flex px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-blue-100 text-blue-700 font-black text-xs md:text-sm">
                               {item.year}
                             </div>
                           )}
 
-                          <h3 className="mt-5 text-2xl md:text-3xl font-black leading-tight">
+                          <h3 className="mt-3 text-lg md:text-3xl font-black leading-snug">
                             {item.title}
                           </h3>
 
@@ -280,7 +299,7 @@ export default async function ProgramExchangePage() {
       )}
 
       {showCloud && (
-        <section className="max-w-7xl mx-auto px-4 py-16">
+        <section className="max-w-7xl mx-auto px-4 py-10 md:py-16">
         <div className="rounded-[2rem] bg-white border border-slate-100 shadow-sm overflow-hidden">
           <div className="grid lg:grid-cols-2">
             <div className="p-8 md:p-12">
@@ -288,11 +307,11 @@ export default async function ProgramExchangePage() {
                 التبادل الرقمي السحابي
               </span>
 
-              <h2 className="text-3xl md:text-4xl font-black leading-tight">
+              <h2 className="text-2xl md:text-4xl font-black leading-tight">
                 حضور يمني فاعل عبر الشبكة السحابية العربية
               </h2>
 
-              <p className="mt-6 text-slate-600 leading-9 text-lg">
+              <p className="mt-5 text-slate-600 leading-8 text-base md:text-lg">
                 ساهمت إذاعة الجمهورية اليمنية في التبادل البرامجي والإخباري عبر
                 الشبكة السحابية للمركز العربي للتبادل البرامجي والإخباري، بمواد
                 مكتملة الشروط الفنية ومستخدمة من قبل عدد من الهيئات الإذاعية العربية.
@@ -311,32 +330,32 @@ export default async function ProgramExchangePage() {
               </div>
             </div>
 
-            <div className="relative min-h-[320px] bg-gradient-to-br from-blue-950 via-blue-900 to-slate-950 text-white p-8 md:p-12 flex items-center">
+            <div className="relative min-h-[220px] md:min-h-[320px] bg-gradient-to-br from-blue-950 via-blue-900 to-slate-950 text-white p-5 md:p-12 flex items-center">
               <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top,#60a5fa,transparent_35%),radial-gradient(circle_at_bottom_left,#facc15,transparent_25%)]" />
 
               <div className="relative w-full">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="rounded-3xl bg-white/10 border border-white/10 p-5 backdrop-blur">
-                    <div className="text-4xl mb-3">☁️</div>
-                    <div className="font-black">Cloud Exchange</div>
+                <div className="grid grid-cols-2 gap-3 md:gap-4">
+                  <div className="rounded-2xl md:rounded-3xl bg-white/10 border border-white/10 p-4 md:p-5 backdrop-blur">
+                    <div className="text-3xl md:text-4xl mb-2 md:mb-3">☁️</div>
+                    <div className="font-black text-sm md:text-base">Cloud Exchange</div>
                     <div className="text-blue-100 text-sm mt-2">شبكة تبادل سحابية</div>
                   </div>
 
                   <div className="rounded-3xl bg-white/10 border border-white/10 p-5 backdrop-blur mt-8">
-                    <div className="text-4xl mb-3">📡</div>
-                    <div className="font-black">Arab Broadcast</div>
+                    <div className="text-3xl md:text-4xl mb-2 md:mb-3">📡</div>
+                    <div className="font-black text-sm md:text-base">Arab Broadcast</div>
                     <div className="text-blue-100 text-sm mt-2">حضور عربي مشترك</div>
                   </div>
 
-                  <div className="rounded-3xl bg-white/10 border border-white/10 p-5 backdrop-blur">
-                    <div className="text-4xl mb-3">🎙️</div>
-                    <div className="font-black">Radio Content</div>
+                  <div className="rounded-2xl md:rounded-3xl bg-white/10 border border-white/10 p-4 md:p-5 backdrop-blur">
+                    <div className="text-3xl md:text-4xl mb-2 md:mb-3">🎙️</div>
+                    <div className="font-black text-sm md:text-base">Radio Content</div>
                     <div className="text-blue-100 text-sm mt-2">برامج ومواد إذاعية</div>
                   </div>
 
                   <div className="rounded-3xl bg-white/10 border border-white/10 p-5 backdrop-blur mt-8">
-                    <div className="text-4xl mb-3">📰</div>
-                    <div className="font-black">News Exchange</div>
+                    <div className="text-3xl md:text-4xl mb-2 md:mb-3">📰</div>
+                    <div className="font-black text-sm md:text-base">News Exchange</div>
                     <div className="text-blue-100 text-sm mt-2">تبادل إخباري منظم</div>
                   </div>
                 </div>
@@ -351,7 +370,7 @@ export default async function ProgramExchangePage() {
         <section className="bg-white border-y border-slate-100">
           <div className="max-w-7xl mx-auto px-4 py-14">
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-black">
+              <h2 className="text-2xl md:text-3xl font-black">
                 الهيئات والجهات المشاركة
               </h2>
 
@@ -399,10 +418,10 @@ export default async function ProgramExchangePage() {
       )}
 
       {showReports && reports.length > 0 && (
-        <section id="reports" className="max-w-7xl mx-auto px-4 py-16">
+        <section id="reports" className="max-w-7xl mx-auto px-4 py-10 md:py-16">
           <div className="flex items-end justify-between gap-4 mb-8 flex-wrap">
             <div>
-              <h2 className="text-3xl font-black">التقارير والصور الرسمية</h2>
+              <h2 className="text-2xl md:text-3xl font-black">التقارير والصور الرسمية</h2>
               <p className="text-slate-500 mt-2">
                 أحدث التقارير والتكريمات والاجتماعات الرسمية.
               </p>

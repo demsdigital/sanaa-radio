@@ -46,45 +46,53 @@ export default function ReportsGallery({
                 </div>
               )}
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-90" />
-
-              <div className="absolute bottom-0 right-0 left-0 p-6 text-white">
-                {item.year && (
-                  <div className="inline-flex px-3 py-1 rounded-full bg-white/15 backdrop-blur text-sm font-black mb-3">
-                    {item.year}
-                  </div>
-                )}
-
-                <h3 className="text-2xl font-black leading-tight">
-                  {item.title}
-                </h3>
-
-                {item.description && (
-                  <p className="mt-3 text-white/90 leading-8 text-sm">
-                    {item.description}
-                  </p>
-                )}
-
-                <div className="flex gap-3 mt-5 flex-wrap">
-                  {item.fileUrl && (
-                    <a
-                      href={item.fileUrl}
-                      target="_blank"
-                      className="inline-flex px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition-colors"
-                    >
-                      عرض الملف
-                    </a>
-                  )}
-
-                  {item.imageUrl && (
-                    <button
-                      onClick={() => setActiveImage(item.imageUrl)}
-                      className="inline-flex px-4 py-2 rounded-xl bg-white/15 backdrop-blur text-white text-sm font-bold hover:bg-white/25 transition-colors"
-                    >
-                      تكبير الصورة
-                    </button>
-                  )}
+              {item.year && (
+                <div className="absolute bottom-4 left-4 inline-flex px-3 py-1 rounded-full bg-slate-900/70 backdrop-blur text-white text-sm font-black">
+                  {item.year}
                 </div>
+              )}
+            </div>
+
+            <div className="p-5">
+              <h3 className="text-xl font-black leading-snug text-slate-900">
+                {item.title}
+              </h3>
+
+              {item.description && (
+                <p className="mt-3 text-slate-600 leading-7 text-sm">
+                  {item.description}
+                </p>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
+                {item.imageUrl && (
+                  <button
+                    onClick={() => setActiveImage(item.imageUrl)}
+                    className="w-full px-4 py-3 rounded-2xl bg-slate-100 text-slate-800 text-sm font-black hover:bg-slate-200 transition-colors"
+                  >
+                    🔍 تكبير الصورة
+                  </button>
+                )}
+
+                {item.fileUrl && (
+                  <a
+                    href={item.fileUrl}
+                    target="_blank"
+                    className="w-full text-center px-4 py-3 rounded-2xl bg-blue-600 text-white text-sm font-black hover:bg-blue-700 transition-colors"
+                  >
+                    📄 عرض PDF
+                  </a>
+                )}
+
+                {item.fileUrl && (
+                  <a
+                    href={`/api/download/file?url=${encodeURIComponent(item.fileUrl)}`}
+                    download
+                    className="w-full text-center px-4 py-3 rounded-2xl bg-slate-900 text-white text-sm font-black hover:bg-slate-800 transition-colors sm:col-span-2"
+                  >
+                    ⬇ تحميل PDF
+                  </a>
+                )}
               </div>
             </div>
           </article>

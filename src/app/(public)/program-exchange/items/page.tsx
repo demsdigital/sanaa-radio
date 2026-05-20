@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { asc, desc, eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { exchangeItems } from "@/db/schema";
+import { exchangeItems, settings } from "@/db/schema";
 
 export const metadata: Metadata = {
   title: "مواد التبادل البرامجي",
@@ -11,6 +11,14 @@ export const metadata: Metadata = {
 };
 
 export default async function ExchangeItemsPage() {
+  const settingRows = await db.select().from(settings);
+
+  const settingMap = Object.fromEntries(
+    settingRows.map((row) => [row.key, row.value])
+  );
+
+  const exchangeEnabled = settingMap.exchange_enabled !== "false";
+
   const items = await db
     .select()
     .from(exchangeItems)
@@ -20,6 +28,21 @@ export default async function ExchangeItemsPage() {
       asc(exchangeItems.sortOrder),
       desc(exchangeItems.createdAt)
     );
+
+  if (!exchangeEnabled) {
+    return (
+      <main className="bg-slate-50 text-slate-900" dir="rtl">
+        <section className="max-w-4xl mx-auto px-4 py-24 text-center">
+          <div className="bg-white border border-slate-100 rounded-[2rem] p-10 shadow-sm">
+            <div className="text-5xl mb-5">📡</div>
+            <h1 className="text-3xl font-black text-slate-900">
+              صفحة مواد التبادل غير متاحة حاليًا
+            </h1>
+          </div>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="bg-slate-50 text-slate-900" dir="rtl">
@@ -56,15 +79,15 @@ export default async function ExchangeItemsPage() {
                   <img
                     src={item.imageUrl}
                     alt={item.title}
-                    className="w-full h-56 object-cover bg-slate-100"
+                    className="w-full h-40 md:h-56 object-cover bg-slate-100"
                   />
                 ) : (
-                  <div className="w-full h-56 bg-slate-100 flex items-center justify-center text-6xl">
+                  <div className="w-full h-40 md:h-56 bg-slate-100 flex items-center justify-center text-5xl md:text-6xl">
                     🎙️
                   </div>
                 )}
 
-                <div className="p-6">
+                <div className="p-6 flex flex-col">
                   <div className="flex flex-wrap gap-2 mb-4">
                     <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-black">
                       {item.category}
@@ -83,7 +106,7 @@ export default async function ExchangeItemsPage() {
                     )}
                   </div>
 
-                  <h2 className="text-2xl font-black leading-tight">
+                  <h2 className="text-lg md:text-2xl font-black leading-snug break-words">
                     {item.title}
                   </h2>
 
@@ -94,37 +117,45 @@ export default async function ExchangeItemsPage() {
                   )}
 
                   {item.description && (
-                    <p className="mt-4 text-slate-600 leading-8">
+                    <p className="mt-3 text-slate-600 leading-7 text-sm md:text-base">
                       {item.description}
                     </p>
                   )}
 
                   {item.audioUrl && (
-                    <audio
-                      controls
-                      src={item.audioUrl}
-                      className="w-full mt-5"
-                    />
+                    <div className="mt-6">
+                      <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                        <div className="flex items-center gap-2 mb-3 text-sm font-bold text-slate-700">
+                          <span>🎧</span>
+                          <span>الاستماع للمادة</span>
+                        </div>
+
+                        <audio
+                          controls
+                          src={item.audioUrl}
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
                   )}
 
-                  <div className="flex gap-3 flex-wrap mt-5">
+                  <div className="grid grid-cols-1 gap-3 mt-6">                    {item.downloadable && item.audioUrl && (
+                      <a
+                        href={`/api/download/audio?url=${encodeURIComponent(item.audioUrl)}`}
+                        download
+                        className="w-full text-center px-4 py-3 rounded-2xl bg-slate-900 text-white text-sm font-black hover:bg-slate-800 transition-colors"
+                      >
+                        ⬇ تحميل MP3
+                      </a>
+                    )}
+
                     {item.fileUrl && (
                       <a
                         href={item.fileUrl}
                         target="_blank"
-                        className="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition-colors"
+                        className="w-full text-center px-4 py-3 rounded-2xl border border-slate-200 bg-white text-slate-700 text-sm font-bold hover:bg-slate-50 transition-colors"
                       >
-                        عرض الملف
-                      </a>
-                    )}
-
-                    {item.downloadable && item.audioUrl && (
-                      <a
-                        href={item.audioUrl}
-                        download
-                        className="px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-bold hover:bg-slate-800 transition-colors"
-                      >
-                        تحميل الصوت
+                        📄 عرض الملف المرفق
                       </a>
                     )}
                   </div>

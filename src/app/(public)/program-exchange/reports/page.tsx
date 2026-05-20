@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { asc, eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { exchangeReports } from "@/db/schema";
+import { exchangeReports, settings } from "@/db/schema";
 import ReportsGallery from "@/components/exchange/ReportsGallery";
 
 export const metadata: Metadata = {
@@ -12,11 +12,34 @@ export const metadata: Metadata = {
 };
 
 export default async function ExchangeReportsPage() {
+  const settingRows = await db.select().from(settings);
+
+  const settingMap = Object.fromEntries(
+    settingRows.map((row) => [row.key, row.value])
+  );
+
+  const exchangeEnabled = settingMap.exchange_enabled !== "false";
+
   const reports = await db
     .select()
     .from(exchangeReports)
     .where(eq(exchangeReports.active, true))
     .orderBy(asc(exchangeReports.sortOrder));
+
+  if (!exchangeEnabled) {
+    return (
+      <main className="bg-slate-50 text-slate-900" dir="rtl">
+        <section className="max-w-4xl mx-auto px-4 py-24 text-center">
+          <div className="bg-white border border-slate-100 rounded-[2rem] p-10 shadow-sm">
+            <div className="text-5xl mb-5">📑</div>
+            <h1 className="text-3xl font-black text-slate-900">
+              صفحة تقارير التبادل غير متاحة حاليًا
+            </h1>
+          </div>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="bg-slate-50 text-slate-900" dir="rtl">
