@@ -9,6 +9,7 @@ type Program = {
   slug: string;
   description: string;
   imageUrl: string;
+  youtubePlaylistUrl: string;
   category: string;
   active: boolean;
 };
@@ -21,12 +22,13 @@ export default function ProgramsPage() {
   const [loading, setLoading]               = useState(true);
   const [showForm, setShowForm]             = useState(false);
   const [editing, setEditing]               = useState<Program | null>(null);
-  const [form, setForm]                     = useState({ name: "", slug: "", description: "", imageUrl: "", category: "عام", active: true });
+  const [form, setForm]                     = useState({ name: "", slug: "", description: "", imageUrl: "", youtubePlaylistUrl: "", category: "عام", active: true });
   const [uploading, setUploading]           = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [savingOrder, setSavingOrder]       = useState(false);
   const [showPicker, setShowPicker]         = useState(false);
   const [orderSaved, setOrderSaved]         = useState(false);
+  const [syncingProgramId, setSyncingProgramId] = useState<number | null>(null);
   const fileInputRef                        = useRef<HTMLInputElement>(null);
   const dragItem                            = useRef<number | null>(null);
   const dragOverItem                        = useRef<number | null>(null);
@@ -65,12 +67,12 @@ export default function ProgramsPage() {
 
   function openAdd() {
     setEditing(null);
-    setForm({ name: "", slug: "", description: "", imageUrl: "", category: "عام", active: true });
+    setForm({ name: "", slug: "", description: "", imageUrl: "", youtubePlaylistUrl: "", category: "عام", active: true });
     setShowForm(true);
   }
   function openEdit(p: Program) {
     setEditing(p);
-    setForm({ name: p.name, slug: p.slug, description: p.description || "", imageUrl: p.imageUrl || "", category: p.category, active: p.active });
+    setForm({ name: p.name, slug: p.slug, description: p.description || "", imageUrl: p.imageUrl || "", youtubePlaylistUrl: p.youtubePlaylistUrl || "", category: p.category, active: p.active });
     setShowForm(true);
   }
 
@@ -99,6 +101,31 @@ export default function ProgramsPage() {
     const body   = editing ? { ...form, id: editing.id } : form;
     await fetch("/api/programs", { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     setShowForm(false); load();
+  }
+
+  async function handleYouTubeSync(programId: number) {
+    setSyncingProgramId(programId);
+
+    try {
+      const res = await fetch("/api/programs/youtube-sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ programId }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || "تعذرت مزامنة حلقات يوتيوب");
+        return;
+      }
+
+      alert(data.message || "اكتملت المزامنة");
+    } catch {
+      alert("حدث خطأ أثناء مزامنة يوتيوب");
+    } finally {
+      setSyncingProgramId(null);
+    }
   }
 
   async function handleDelete(id: number) {
@@ -172,9 +199,21 @@ export default function ProgramsPage() {
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${p.active ? "bg-green-50 text-green-600" : "bg-red-50 text-red-500"}`}>
                     {p.active ? "نشط" : "موقوف"}
                   </span>
+                  {p.youtubePlaylistUrl && (
+                    <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-red-50 text-red-600">
+                      Playlist يوتيوب
+                    </span>
+                  )}
                 </div>
               </div>
-              <div className="flex gap-2 flex-shrink-0">
+              <div className="flex gap-2 flex-shrink-0 flex-wrap justify-end">
+                <button
+                  onClick={() => handleYouTubeSync(p.id)}
+                  disabled={syncingProgramId === p.id}
+                  className="text-red-600 text-xs px-2 md:px-3 py-1.5 border border-red-200 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50"
+                >
+                  {syncingProgramId === p.id ? "يُزامَن..." : "مزامنة يوتيوب"}
+                </button>
                 <button onClick={() => openEdit(p)}
                   className="text-slate-600 text-xs px-2 md:px-3 py-1.5 border border-slate-200 rounded-lg hover:border-blue-300 hover:text-blue-600 transition-colors">
                   تعديل
@@ -254,6 +293,20 @@ export default function ProgramsPage() {
                       className="text-red-500 text-xs hover:text-red-700">× حذف الصورة</button>
                   )}
                 </div>
+              </div>
+              <div>
+                <label className="block text-slate-700 text-sm font-medium mb-1.5">قائمة تشغيل يوتيوب الخاصة بالبرنامج</label>
+                <input
+                  type="url"
+                  value={form.youtubePlaylistUrl}
+                  onChange={e => setForm({ ...form, youtubePlaylistUrl: e.target.value })}
+                  dir="ltr"
+                  placeholder="https://www.youtube.com/playlist?list=..."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+                />
+                <p className="text-slate-400 text-xs mt-1.5">
+                  عند تشغيل المزامنة لاحقًا، سيجلب الموقع الحلقات الجديدة من هذه القائمة تلقائيًا.
+                </p>
               </div>
               <div>
                 <label className="block text-slate-700 text-sm font-medium mb-1.5">التصنيف</label>

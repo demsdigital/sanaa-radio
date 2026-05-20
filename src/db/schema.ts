@@ -18,6 +18,7 @@ export const programs = pgTable("programs", {
   slug: text("slug").notNull().unique(),
   description: text("description"),
   imageUrl: text("image_url"),
+  youtubePlaylistUrl: text("youtube_playlist_url"),
   category: text("category").notNull().default("general"),
   active: boolean("active").notNull().default(true),
   createdAt: timestamp("created_at").notNull().defaultNow(),
