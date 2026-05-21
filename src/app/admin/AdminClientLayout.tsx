@@ -55,12 +55,12 @@ export default function AdminClientLayout({ children }: { children: React.ReactN
   const SidebarContent = () => (
     <>
       {/* Logo */}
-      <div className="p-5 border-b border-slate-200 flex-shrink-0">
+      <div className="p-6 border-b border-slate-200 flex-shrink-0">
         <div className="flex items-center gap-3">
           <img src="/logo.png" alt="شعار" className="w-10 h-10 object-contain flex-shrink-0" />
           <div>
-            <div className="text-slate-900 text-sm font-bold leading-tight">إذاعة الجمهورية اليمنية</div>
-            <div className="text-blue-600 text-xs font-medium">لوحة التحكم</div>
+            <div className="text-slate-900 text-[15px] font-bold leading-tight">إذاعة الجمهورية اليمنية</div>
+            <div className="text-blue-600 text-sm font-medium mt-0.5">لوحة التحكم</div>
           </div>
         </div>
       </div>
@@ -69,7 +69,7 @@ export default function AdminClientLayout({ children }: { children: React.ReactN
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
         {navItems.map((item) => (
           <Link key={item.href} href={item.href}
-            className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-colors ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-[19px] font-semibold transition-all duration-200 ${
               pathname === item.href
                 ? "bg-blue-600 text-white font-bold"
                 : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
@@ -83,13 +83,13 @@ export default function AdminClientLayout({ children }: { children: React.ReactN
       {/* User + Logout */}
       <div className="p-3 border-t border-slate-200 flex-shrink-0">
         {me && (
-          <div className="px-4 py-2 mb-1">
-            <div className="text-slate-800 text-sm font-medium truncate">{me.name}</div>
+          <div className="px-4 py-3 mb-2">
+            <div className="text-slate-800 text-[15px] font-semibold truncate">{me.name}</div>
             <div className="text-slate-400 text-xs">{me.role === "admin" ? "👑 مدير" : "👤 فريق"}</div>
           </div>
         )}
         <button onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-red-500 hover:bg-red-50 transition-colors">
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[15px] text-red-500 hover:bg-red-50 transition-all">
           <span>🚪</span>
           <span>تسجيل الخروج</span>
         </button>
@@ -98,7 +98,7 @@ export default function AdminClientLayout({ children }: { children: React.ReactN
   );
 
   return (
-    <div className="min-h-screen bg-slate-50" dir="rtl">
+    <div className="min-h-screen bg-slate-50 text-[16px] leading-relaxed" dir="rtl">
 
       {/* ── موبايل: شريط علوي ── */}
       <header className="md:hidden fixed top-0 right-0 left-0 z-40 bg-white border-b border-slate-200 flex items-center justify-between px-4 h-14 shadow-sm">
@@ -137,12 +137,12 @@ export default function AdminClientLayout({ children }: { children: React.ReactN
       )}
 
       {/* ── ديسكتوب: Sidebar ── */}
-      <aside className="hidden md:flex w-64 bg-white border-l border-slate-200 flex-col fixed inset-y-0 right-0 shadow-sm">
+      <aside className="hidden md:flex w-80 bg-white border-l border-slate-200 flex-col fixed inset-y-0 right-0 shadow-sm">
         <SidebarContent />
       </aside>
 
       {/* ── Main ── */}
-      <main className="md:mr-64 p-4 md:p-8 pt-16 md:pt-8 min-h-screen">
+      <main className="md:mr-80 w-[calc(100vw-20rem)] max-w-none p-5 md:p-10 pt-16 md:pt-10 min-h-screen [&_input]:text-[15px] [&_textarea]:text-[15px] [&_select]:text-[15px] [&_button]:text-[15px] [&_label]:text-[15px] [&_p]:text-[15px]">
         {children}
       </main>
 

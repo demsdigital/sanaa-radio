@@ -10,11 +10,11 @@ function Section({ id, icon, title, desc, children, open, setOpen }: SectionProp
   return (
     <div className={`bg-white rounded-xl border transition-all ${isOpen ? "border-blue-300 shadow-sm" : "border-slate-200"}`}>
       <button type="button" onClick={() => setOpen(isOpen ? "" : id)}
-        className="w-full flex items-center justify-between px-6 py-4 text-right">
+        className="w-full flex items-center justify-between px-6 py-4.5 text-right">
         <div className="flex items-center gap-3">
           <span className="text-xl">{icon}</span>
           <div>
-            <div className="text-slate-900 font-bold text-sm">{title}</div>
+            <div className="text-slate-900 font-bold text-[19px]">{title}</div>
             {desc && <div className="text-slate-400 text-xs mt-0.5">{desc}</div>}
           </div>
         </div>
@@ -98,7 +98,7 @@ export default function SettingsPage() {
     return (
       <div className="flex items-center justify-between py-3 border-b border-slate-100 last:border-0">
         <div>
-          <div className="text-slate-800 text-sm font-medium">{label}</div>
+          <div className="text-slate-800 text-[19px] font-medium">{label}</div>
           {desc && <div className="text-slate-400 text-xs mt-0.5">{desc}</div>}
         </div>
         <button type="button" onClick={() => f(field, isOn ? "false" : "true")}
@@ -115,39 +115,39 @@ export default function SettingsPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-slate-900 text-2xl font-bold">الإعدادات</h1>
-          <p className="text-slate-500 text-sm mt-1">تحكم كامل في كل عناصر الموقع</p>
+          <h1 className="text-slate-900 text-4xl font-bold">الإعدادات</h1>
+          <p className="text-slate-500 text-[19px] mt-1">تحكم كامل في كل عناصر الموقع</p>
         </div>
-        {saved && <span className="text-green-600 text-sm font-medium bg-green-50 border border-green-200 px-3 py-1.5 rounded-lg">✓ تم الحفظ</span>}
+        {saved && <span className="text-green-600 text-[19px] font-medium bg-green-50 border border-green-200 px-3 py-1.5 rounded-xl">✓ تم الحفظ</span>}
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-3 max-w-2xl">
+      <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-6xl">
 
         <Section open={open} setOpen={setOpen} id="player" icon="🎙️" title="المشغّل الصوتي المباشر" desc="شريط ثابت أسفل الموقع">
           <div className="space-y-4 mt-1">
             <Toggle label="إظهار المشغّل" field="show_player" />
             <div>
-              <label className="block text-slate-700 text-sm font-medium mb-1.5">رابط البث المباشر</label>
+              <label className="block text-slate-700 text-[19px] font-medium mb-2">رابط البث المباشر</label>
               <input type="url" value={form.stream_url} onChange={e => f("stream_url", e.target.value)}
                 placeholder="https://stream.example.com/live.mp3" dir="ltr"
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400 font-mono" />
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-slate-900 text-[19px] focus:outline-none focus:border-blue-400 font-mono" />
               <p className="text-slate-400 text-xs mt-1">MP3 • AAC • Icecast • HLS (.m3u8)</p>
             </div>
             <div>
-              <label className="block text-slate-700 text-sm font-medium mb-1.5">البرنامج الحالي على الهواء</label>
+              <label className="block text-slate-700 text-[19px] font-medium mb-2">البرنامج الحالي على الهواء</label>
               <input value={form.on_air_label} onChange={e => f("on_air_label", e.target.value)} placeholder="نشرة الأخبار الرئيسية"
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-slate-900 text-[19px] focus:outline-none focus:border-blue-400" />
             </div>
             <div>
-              <div className="flex justify-between mb-1.5">
-                <label className="text-slate-700 text-sm font-medium">شفافية المشغّل</label>
-                <span className="text-blue-600 text-sm font-bold">{form.player_opacity}%</span>
+              <div className="flex justify-between mb-2">
+                <label className="text-slate-700 text-[19px] font-medium">شفافية المشغّل</label>
+                <span className="text-blue-600 text-[19px] font-bold">{form.player_opacity}%</span>
               </div>
               <input type="range" min="40" max="100" step="5" value={form.player_opacity}
                 onChange={e => f("player_opacity", e.target.value)} className="w-full accent-blue-600" />
             </div>
             {form.show_player === "true" && !form.stream_url && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-2.5 text-amber-700 text-sm">⚠️ رابط البث فارغ — المشغّل لن يظهر للزوار</div>
+              <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-4.5 text-amber-700 text-[19px]">⚠️ رابط البث فارغ — المشغّل لن يظهر للزوار</div>
             )}
           </div>
         </Section>
@@ -161,70 +161,70 @@ export default function SettingsPage() {
               { label: "نص شارة الهواء", field: "hero_badge"    as const, ph: "على الهواء الآن" },
             ]).map(({ label, field, ph }) => (
               <div key={field}>
-                <label className="block text-slate-700 text-sm font-medium mb-1.5">{label}</label>
+                <label className="block text-slate-700 text-[19px] font-medium mb-2">{label}</label>
                 <input value={form[field]} onChange={e => f(field, e.target.value)} placeholder={ph}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400" />
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-slate-900 text-[19px] focus:outline-none focus:border-blue-400" />
               </div>
             ))}
             <div>
-              <label className="block text-slate-700 text-sm font-medium mb-2">لون الخلفية</label>
-              <div className="flex gap-2 flex-wrap">
+              <label className="block text-slate-700 text-[19px] font-medium mb-2">لون الخلفية</label>
+              <div className="flex gap-3 flex-wrap">
                 {[{val:"blue",label:"أزرق",bg:"linear-gradient(135deg,#0a1628,#2563eb)"},{val:"dark",label:"داكن",bg:"linear-gradient(135deg,#0f172a,#334155)"},{val:"green",label:"أخضر",bg:"linear-gradient(135deg,#064e3b,#047857)"},{val:"red",label:"أحمر",bg:"linear-gradient(135deg,#7f1d1d,#b91c1c)"}].map(c=>(
                   <button key={c.val} type="button" onClick={()=>f("hero_bg",c.val)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 text-sm transition-all ${form.hero_bg===c.val?"border-blue-500 shadow-md":"border-slate-200"}`}>
+                    className={`flex items-center gap-3 px-3 py-2 rounded-xl border-2 text-[19px] transition-all ${form.hero_bg===c.val?"border-blue-500 shadow-md":"border-slate-200"}`}>
                     <span className="w-5 h-5 rounded-full" style={{background:c.bg}}/>{c.label}
                   </button>
                 ))}
               </div>
             </div>
             <div className="pt-3 border-t border-slate-100">
-              <label className="block text-slate-700 text-sm font-medium mb-2">🎬 وسائط الخلفية</label>
-              <div className="flex gap-2 mb-3 flex-wrap">
+              <label className="block text-slate-700 text-[19px] font-medium mb-2">🎬 وسائط الخلفية</label>
+              <div className="flex gap-3 mb-3 flex-wrap">
                 {[{val:"none",label:"بدون",icon:"🎨"},{val:"image",label:"صورة",icon:"🖼"},{val:"gif",label:"GIF",icon:"✨"},{val:"video",label:"فيديو",icon:"🎥"}].map(t=>(
                   <button key={t.val} type="button" onClick={()=>f("hero_media_type",t.val)}
-                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border-2 text-sm font-medium transition-all ${form.hero_media_type===t.val?"border-blue-500 bg-blue-50 text-blue-700":"border-slate-200 text-slate-600"}`}>
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border-2 text-[19px] font-medium transition-all ${form.hero_media_type===t.val?"border-blue-500 bg-blue-50 text-blue-700":"border-slate-200 text-slate-600"}`}>
                     {t.icon} {t.label}
                   </button>
                 ))}
               </div>
               {form.hero_media_type!=="none"&&(<div className="space-y-3">
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-3">
                   <input type="url" value={form.hero_media_url} onChange={e=>f("hero_media_url",e.target.value)}
                     placeholder={form.hero_media_type==="video"?"https://.../video.mp4":"https://.../image.jpg"} dir="ltr"
-                    className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 font-mono"/>
+                    className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-[19px] focus:outline-none focus:border-blue-400 font-mono"/>
                   {form.hero_media_type!=="video"&&(<button type="button" onClick={()=>uploadFile(form.hero_media_type==="gif"?"image/gif":"image/*","hero_media_url")}
-                    className="px-4 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700">رفع ↑</button>)}
+                    className="px-5 py-4.5 bg-blue-600 text-white text-[19px] font-bold rounded-xl hover:bg-blue-700">رفع ↑</button>)}
                   {form.hero_media_type!=="video"&&(<button type="button" onClick={()=>{setPickerTarget("hero_media_url");setShowPicker(true);}}
-                    className="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-bold rounded-lg hover:bg-slate-200">🖼 مكتبة</button>)}
+                    className="px-5 py-4.5 bg-slate-100 text-slate-700 text-[19px] font-bold rounded-xl hover:bg-slate-200">🖼 مكتبة</button>)}
                 </div>
                 {form.hero_media_url&&form.hero_media_type!=="video"&&(<div className="h-28 rounded-xl overflow-hidden border border-slate-200"><img src={form.hero_media_url} alt="معاينة" className="w-full h-full object-cover"/></div>)}
                 <div>
-                  <div className="flex justify-between mb-1"><span className="text-slate-700 text-sm font-medium">درجة التعتيم</span><span className="text-blue-600 text-sm font-bold">{form.hero_overlay_opacity}%</span></div>
+                  <div className="flex justify-between mb-1"><span className="text-slate-700 text-[19px] font-medium">درجة التعتيم</span><span className="text-blue-600 text-[19px] font-bold">{form.hero_overlay_opacity}%</span></div>
                   <input type="range" min="0" max="90" step="5" value={form.hero_overlay_opacity} onChange={e=>f("hero_overlay_opacity",e.target.value)} className="w-full accent-blue-600"/>
                 </div>
               </div>)}
             </div>
           </div>
             <div className="pt-3 border-t border-slate-100">
-              <label className="block text-slate-700 text-sm font-medium mb-2">📱 صورة الهيرو على الموبايل</label>
-              <div className="flex gap-2 mb-3 flex-wrap">
+              <label className="block text-slate-700 text-[19px] font-medium mb-2">📱 صورة الهيرو على الموبايل</label>
+              <div className="flex gap-3 mb-3 flex-wrap">
                 {[{val:"same",label:"نفس الديسكتوب",icon:"🖥️"},{val:"none",label:"بدون صورة",icon:"🎨"},{val:"image",label:"صورة مختلفة",icon:"🖼️"}].map(t=>(
                   <button key={t.val} type="button" onClick={()=>f("hero_mobile_media_type",t.val)}
-                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border-2 text-sm font-medium transition-all ${form.hero_mobile_media_type===t.val?"border-blue-500 bg-blue-50 text-blue-700":"border-slate-200 text-slate-600"}`}>
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border-2 text-[19px] font-medium transition-all ${form.hero_mobile_media_type===t.val?"border-blue-500 bg-blue-50 text-blue-700":"border-slate-200 text-slate-600"}`}>
                     {t.icon} {t.label}
                   </button>
                 ))}
               </div>
               {form.hero_mobile_media_type==="image"&&(
                 <div className="space-y-3">
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-3">
                     <input type="url" value={form.hero_mobile_media_url} onChange={e=>f("hero_mobile_media_url",e.target.value)}
                       placeholder="https://..." dir="ltr"
-                      className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 font-mono"/>
+                      className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-[19px] focus:outline-none focus:border-blue-400 font-mono"/>
                     <button type="button" onClick={()=>uploadFile("image/*","hero_mobile_media_url")}
-                      className="px-4 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700">رفع ↑</button>
+                      className="px-5 py-4.5 bg-blue-600 text-white text-[19px] font-bold rounded-xl hover:bg-blue-700">رفع ↑</button>
                     <button type="button" onClick={()=>{setPickerTarget("hero_mobile_media_url");setShowPicker(true);}}
-                      className="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-bold rounded-lg hover:bg-slate-200">🖼 مكتبة</button>
+                      className="px-5 py-4.5 bg-slate-100 text-slate-700 text-[19px] font-bold rounded-xl hover:bg-slate-200">🖼 مكتبة</button>
                   </div>
                   {form.hero_mobile_media_url&&(
                     <div className="h-28 rounded-xl overflow-hidden border border-slate-200">
@@ -233,8 +233,8 @@ export default function SettingsPage() {
                   )}
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="text-slate-700 text-sm font-medium">درجة التعتيم</span>
-                      <span className="text-blue-600 text-sm font-bold">{form.hero_mobile_overlay_opacity}%</span>
+                      <span className="text-slate-700 text-[19px] font-medium">درجة التعتيم</span>
+                      <span className="text-blue-600 text-[19px] font-bold">{form.hero_mobile_overlay_opacity}%</span>
                     </div>
                     <input type="range" min="0" max="90" step="5" value={form.hero_mobile_overlay_opacity}
                       onChange={e=>f("hero_mobile_overlay_opacity",e.target.value)} className="w-full accent-blue-600"/>
@@ -246,39 +246,39 @@ export default function SettingsPage() {
 
         <Section open={open} setOpen={setOpen} id="programs_hero" icon="📻" title="هيرو صفحة البرامج" desc="تخصيص الجزء العلوي من صفحة البرامج">
           <div className="space-y-3 mt-1">
-            <div><label className="block text-slate-700 text-sm font-medium mb-1.5">العنوان</label><input value={form.programs_hero_title} onChange={e=>f("programs_hero_title",e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400"/></div>
-            <div><label className="block text-slate-700 text-sm font-medium mb-1.5">العنوان الفرعي</label><input value={form.programs_hero_subtitle} onChange={e=>f("programs_hero_subtitle",e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400"/></div>
+            <div><label className="block text-slate-700 text-[19px] font-medium mb-2">العنوان</label><input value={form.programs_hero_title} onChange={e=>f("programs_hero_title",e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-slate-900 text-[19px] focus:outline-none focus:border-blue-400"/></div>
+            <div><label className="block text-slate-700 text-[19px] font-medium mb-2">العنوان الفرعي</label><input value={form.programs_hero_subtitle} onChange={e=>f("programs_hero_subtitle",e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-slate-900 text-[19px] focus:outline-none focus:border-blue-400"/></div>
             <div>
-              <label className="block text-slate-700 text-sm font-medium mb-2">لون الخلفية</label>
-              <div className="flex gap-2 flex-wrap">
+              <label className="block text-slate-700 text-[19px] font-medium mb-2">لون الخلفية</label>
+              <div className="flex gap-3 flex-wrap">
                 {[{val:"blue",label:"أزرق",bg:"linear-gradient(135deg,#0a1628,#2563eb)"},{val:"dark",label:"داكن",bg:"linear-gradient(135deg,#0f172a,#334155)"},{val:"green",label:"أخضر",bg:"linear-gradient(135deg,#064e3b,#047857)"},{val:"red",label:"أحمر",bg:"linear-gradient(135deg,#7f1d1d,#b91c1c)"}].map(c=>(
                   <button key={c.val} type="button" onClick={()=>f("programs_hero_bg",c.val)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 text-sm transition-all ${form.programs_hero_bg===c.val?"border-blue-500 shadow-md":"border-slate-200"}`}>
+                    className={`flex items-center gap-3 px-3 py-2 rounded-xl border-2 text-[19px] transition-all ${form.programs_hero_bg===c.val?"border-blue-500 shadow-md":"border-slate-200"}`}>
                     <span className="w-5 h-5 rounded-full" style={{background:c.bg}}/>{c.label}
                   </button>
                 ))}
               </div>
             </div>
             <div className="pt-3 border-t border-slate-100">
-              <label className="block text-slate-700 text-sm font-medium mb-2">🎬 وسائط الخلفية</label>
-              <div className="flex gap-2 mb-3 flex-wrap">
+              <label className="block text-slate-700 text-[19px] font-medium mb-2">🎬 وسائط الخلفية</label>
+              <div className="flex gap-3 mb-3 flex-wrap">
                 {[{val:"none",label:"بدون",icon:"🎨"},{val:"image",label:"صورة",icon:"🖼"},{val:"gif",label:"GIF",icon:"✨"},{val:"video",label:"فيديو",icon:"🎥"}].map(t=>(
                   <button key={t.val} type="button" onClick={()=>f("programs_hero_media_type",t.val)}
-                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border-2 text-sm font-medium transition-all ${form.programs_hero_media_type===t.val?"border-blue-500 bg-blue-50 text-blue-700":"border-slate-200 text-slate-600"}`}>
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border-2 text-[19px] font-medium transition-all ${form.programs_hero_media_type===t.val?"border-blue-500 bg-blue-50 text-blue-700":"border-slate-200 text-slate-600"}`}>
                     {t.icon} {t.label}
                   </button>
                 ))}
               </div>
               {form.programs_hero_media_type!=="none"&&(<div className="space-y-3">
-                <div className="flex flex-col gap-2">
-                  <input type="url" value={form.programs_hero_media_url} onChange={e=>f("programs_hero_media_url",e.target.value)} placeholder="https://..." dir="ltr" className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 font-mono"/>
-                  {form.programs_hero_media_type!=="video"&&(<button type="button" onClick={()=>uploadFile(form.programs_hero_media_type==="gif"?"image/gif":"image/*","programs_hero_media_url")} className="px-4 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700">رفع ↑</button>)}
+                <div className="flex flex-col gap-3">
+                  <input type="url" value={form.programs_hero_media_url} onChange={e=>f("programs_hero_media_url",e.target.value)} placeholder="https://..." dir="ltr" className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-[19px] focus:outline-none focus:border-blue-400 font-mono"/>
+                  {form.programs_hero_media_type!=="video"&&(<button type="button" onClick={()=>uploadFile(form.programs_hero_media_type==="gif"?"image/gif":"image/*","programs_hero_media_url")} className="px-5 py-4.5 bg-blue-600 text-white text-[19px] font-bold rounded-xl hover:bg-blue-700">رفع ↑</button>)}
                   {form.programs_hero_media_type!=="video"&&(<button type="button" onClick={()=>{setPickerTarget("programs_hero_media_url");setShowPicker(true);}}
-                    className="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-bold rounded-lg hover:bg-slate-200">🖼 مكتبة</button>)}
+                    className="px-5 py-4.5 bg-slate-100 text-slate-700 text-[19px] font-bold rounded-xl hover:bg-slate-200">🖼 مكتبة</button>)}
                 </div>
                 {form.programs_hero_media_url&&form.programs_hero_media_type!=="video"&&(<div className="h-28 rounded-xl overflow-hidden border border-slate-200"><img src={form.programs_hero_media_url} alt="معاينة" className="w-full h-full object-cover"/></div>)}
                 <div>
-                  <div className="flex justify-between mb-1"><span className="text-slate-700 text-sm font-medium">درجة التعتيم</span><span className="text-blue-600 text-sm font-bold">{form.programs_hero_overlay_opacity}%</span></div>
+                  <div className="flex justify-between mb-1"><span className="text-slate-700 text-[19px] font-medium">درجة التعتيم</span><span className="text-blue-600 text-[19px] font-bold">{form.programs_hero_overlay_opacity}%</span></div>
                   <input type="range" min="0" max="90" step="5" value={form.programs_hero_overlay_opacity} onChange={e=>f("programs_hero_overlay_opacity",e.target.value)} className="w-full accent-blue-600"/>
                 </div>
               </div>)}
@@ -289,7 +289,7 @@ export default function SettingsPage() {
         <Section open={open} setOpen={setOpen} id="integrations" icon="🔗" title="التكاملات الخارجية" desc="مفاتيح الخدمات التي سيستخدمها الموقع">
           <div className="space-y-4 mt-1">
             <div>
-              <label className="block text-slate-700 text-sm font-medium mb-1.5">مفتاح YouTube API</label>
+              <label className="block text-slate-700 text-[19px] font-medium mb-2">مفتاح YouTube API</label>
               <input
                 type="password"
                 value={form.youtube_api_key}
@@ -297,7 +297,7 @@ export default function SettingsPage() {
                 placeholder="AIza..."
                 dir="ltr"
                 autoComplete="off"
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400 font-mono"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-slate-900 text-[19px] focus:outline-none focus:border-blue-400 font-mono"
               />
               <p className="text-slate-400 text-xs mt-1.5">
                 يُستخدم لاحقًا لمزامنة حلقات البرامج تلقائيًا من قوائم تشغيل يوتيوب.
@@ -317,9 +317,9 @@ export default function SettingsPage() {
               { field: "social_tiktok"    as const, label: "⬛ تيك توك",  ph: "https://tiktok.com/@..." },
             ]).map(soc=>(
               <div key={soc.field}>
-                <label className="block text-slate-700 text-sm font-medium mb-1.5">{soc.label}</label>
+                <label className="block text-slate-700 text-[19px] font-medium mb-2">{soc.label}</label>
                 <input type="url" value={form[soc.field]} onChange={e=>f(soc.field,e.target.value)} placeholder={soc.ph} dir="ltr"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400"/>
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-slate-900 text-[19px] focus:outline-none focus:border-blue-400"/>
               </div>
             ))}
           </div>
@@ -341,19 +341,19 @@ export default function SettingsPage() {
           <div className="mt-1">
             <Toggle label="إظهار الشريط" field="ticker_visible" />
             <div className="mt-4">
-              <label className="block text-slate-700 text-sm font-medium mb-1.5">نص الشريط</label>
+              <label className="block text-slate-700 text-[19px] font-medium mb-2">نص الشريط</label>
               <textarea value={form.ticker} onChange={e=>f("ticker",e.target.value)} rows={3}
                 placeholder="إذاعة الجمهورية اليمنية — البرنامج العام..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400 resize-none"/>
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-slate-900 text-[19px] focus:outline-none focus:border-blue-400 resize-none"/>
             </div>
           </div>
         </Section>
 
         <Section open={open} setOpen={setOpen} id="contact" icon="💬" title="التواصل" desc="رقم واتساب التواصل مع الإذاعة">
           <div className="mt-1">
-            <label className="block text-slate-700 text-sm font-medium mb-1.5">رقم واتساب</label>
+            <label className="block text-slate-700 text-[19px] font-medium mb-2">رقم واتساب</label>
             <input value={form.whatsapp} onChange={e=>f("whatsapp",e.target.value)} placeholder="9671234567" dir="ltr"
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400"/>
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-slate-900 text-[19px] focus:outline-none focus:border-blue-400"/>
           </div>
         </Section>
 
@@ -367,9 +367,9 @@ export default function SettingsPage() {
               { label: "موجة قصيرة (kHz)", field: "shortwave"              as const, dir: "ltr" as const },
             ]).map(item=>(
               <div key={item.field}>
-                <label className="block text-slate-700 text-sm font-medium mb-1.5">{item.label}</label>
+                <label className="block text-slate-700 text-[19px] font-medium mb-2">{item.label}</label>
                 <input value={form[item.field]} onChange={e=>f(item.field,e.target.value)} dir={item.dir}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400"/>
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-slate-900 text-[19px] focus:outline-none focus:border-blue-400"/>
               </div>
             ))}
           </div>
@@ -377,30 +377,30 @@ export default function SettingsPage() {
 
         <Section open={open} setOpen={setOpen} id="director" icon="👤" title="رئيس القطاع" desc="محتوى صفحة رئيس قطاع إذاعة صنعاء">
           <div className="space-y-3 mt-1">
-            <div><label className="block text-slate-700 text-sm font-medium mb-1.5">الاسم الكامل</label><input value={form.director_name} onChange={e=>f("director_name",e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400"/></div>
-            <div><label className="block text-slate-700 text-sm font-medium mb-1.5">المسمى الوظيفي</label><input value={form.director_title} onChange={e=>f("director_title",e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400"/></div>
+            <div><label className="block text-slate-700 text-[19px] font-medium mb-2">الاسم الكامل</label><input value={form.director_name} onChange={e=>f("director_name",e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-slate-900 text-[19px] focus:outline-none focus:border-blue-400"/></div>
+            <div><label className="block text-slate-700 text-[19px] font-medium mb-2">المسمى الوظيفي</label><input value={form.director_title} onChange={e=>f("director_title",e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-slate-900 text-[19px] focus:outline-none focus:border-blue-400"/></div>
             <div>
-              <label className="block text-slate-700 text-sm font-medium mb-1.5">الصورة الشخصية</label>
-              <div className="flex flex-col gap-2">
-                <input type="url" value={form.director_photo} onChange={e=>f("director_photo",e.target.value)} dir="ltr" placeholder="https://..." className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400"/>
-                <button type="button" onClick={()=>uploadFile("image/*","director_photo")} className="px-4 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700">رفع ↑</button>
+              <label className="block text-slate-700 text-[19px] font-medium mb-2">الصورة الشخصية</label>
+              <div className="flex flex-col gap-3">
+                <input type="url" value={form.director_photo} onChange={e=>f("director_photo",e.target.value)} dir="ltr" placeholder="https://..." className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-slate-900 text-[19px] focus:outline-none focus:border-blue-400"/>
+                <button type="button" onClick={()=>uploadFile("image/*","director_photo")} className="px-5 py-4.5 bg-blue-600 text-white text-[19px] font-bold rounded-xl hover:bg-blue-700">رفع ↑</button>
                 <button type="button" onClick={()=>{setPickerTarget("director_photo");setShowPicker(true);}}
-                  className="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-bold rounded-lg hover:bg-slate-200">🖼 مكتبة</button>
+                  className="px-5 py-4.5 bg-slate-100 text-slate-700 text-[19px] font-bold rounded-xl hover:bg-slate-200">🖼 مكتبة</button>
               </div>
               {form.director_photo&&(<div className="mt-2 h-24 w-24 rounded-full overflow-hidden border-2 border-blue-200"><img src={form.director_photo} alt="صورة" className="w-full h-full object-cover"/></div>)}
             </div>
             {["director_bio1","director_bio2","director_bio3","director_bio4"].map((k,i)=>(
               <div key={k}>
-                <label className="block text-slate-700 text-sm font-medium mb-1.5">الفقرة {i+1}</label>
+                <label className="block text-slate-700 text-[19px] font-medium mb-2">الفقرة {i+1}</label>
                 <textarea value={form[k as keyof typeof form]} onChange={e=>f(k as keyof typeof form,e.target.value)} rows={3}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-blue-400 resize-none"/>
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4.5 text-slate-900 text-[19px] focus:outline-none focus:border-blue-400 resize-none"/>
               </div>
             ))}
           </div>
         </Section>
 
         <button type="submit" disabled={saving}
-          className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold hover:bg-blue-700 transition-colors disabled:opacity-50">
+          className="w-full bg-blue-600 text-white py-4.5 rounded-xl font-bold hover:bg-blue-700 transition-colors disabled:opacity-50">
           {saving ? "جاري الحفظ..." : "💾 حفظ جميع الإعدادات"}
         </button>
 
