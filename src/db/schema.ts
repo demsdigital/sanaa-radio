@@ -104,6 +104,20 @@ export const mediaLibrary = pgTable("media_library", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+export const mediaAssets = pgTable("media_assets", {
+  id: serial("id").primaryKey(),
+  type: text("type").notNull(), // image | audio | document
+  folder: text("folder").notNull(),
+  filename: text("filename").notNull(),
+  originalName: text("original_name"),
+  url: text("url").notNull(),
+  r2Key: text("r2_key").notNull(),
+  mimeType: text("mime_type"),
+  size: integer("size"),
+  uploadedBy: integer("uploaded_by").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 export const exchangeAchievements = pgTable("exchange_achievements", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),

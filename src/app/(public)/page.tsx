@@ -42,7 +42,6 @@ export default async function HomePage() {
       {(()=>{
         const bg:Record<string,string>={
           blue:"linear-gradient(135deg,#0a1628 0%,#1a3a7c 50%,#2563eb 100%)",
-          dark:"linear-gradient(135deg,#0f172a 0%,#1e293b 60%,#334155 100%)",
           green:"linear-gradient(135deg,#064e3b 0%,#065f46 50%,#047857 100%)",
           red:"linear-gradient(135deg,#7f1d1d 0%,#991b1b 50%,#b91c1c 100%)",
         };
@@ -50,7 +49,7 @@ export default async function HomePage() {
         const mu=s.hero_media_url||"";
         const op=s.hero_overlay_opacity?Number(s.hero_overlay_opacity)/100:0.55;
         return(
-          <section className="relative text-white py-10 md:py-20 px-4 md:px-6 overflow-hidden" style={{background:bg[s.hero_bg||"blue"]||bg.blue}}>
+          <section className="relative text-white py-18 md:py-32 px-4 md:px-6 overflow-hidden" style={{background:bg[s.hero_bg||"blue"]||bg.blue}}>
             {(()=>{
               const mmt=s.hero_mobile_media_type||"same";
               const mmu=s.hero_mobile_media_url||"";

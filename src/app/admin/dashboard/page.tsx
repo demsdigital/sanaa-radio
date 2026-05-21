@@ -1,4 +1,6 @@
 "use client";
+import AdminSearch from "@/app/admin/_ui/AdminSearch";
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
@@ -60,14 +62,17 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-slate-900 text-2xl font-black">لوحة التحكم</h1>
+      <div className="mb-10">
+        <h1 className="text-slate-900 text-3xl font-black tracking-tight">لوحة التحكم</h1>
         <p className="text-slate-500 text-sm mt-1">
           مرحباً {me?.name} — {me?.role === "admin" ? "👑 مدير النظام" : "👤 عضو الفريق"}
         </p>
       </div>
+
+      <AdminSearch />
+
       {stats && (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5 mb-12">
           {visibleStats.map(s => (
             <div key={s.key} className={`bg-white border rounded-xl p-5 ${s.bg} ${s.color.split(" ")[0]}`}>
               <div className="text-3xl mb-2">{s.icon}</div>
@@ -80,8 +85,8 @@ export default function DashboardPage() {
         </div>
       )}
       {visibleLinks.length > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-5">
-          <h2 className="text-blue-800 font-bold mb-3 text-sm">روابط سريعة</h2>
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <h2 className="text-slate-900 font-black mb-4 text-base">روابط سريعة</h2>
           <div className="flex flex-wrap gap-2">
             {visibleLinks.map(link => (
               <Link key={link.href} href={link.href}

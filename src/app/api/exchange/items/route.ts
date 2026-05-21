@@ -1,9 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { asc, desc, eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { exchangeItems } from "@/db/schema";
+import { requireAdmin } from "@/lib/requireAdmin";
 
+// GET (عام بدون حماية)
 export async function GET() {
   try {
     const items = await db
@@ -26,7 +28,17 @@ export async function GET() {
   }
 }
 
-export async function POST(req: Request) {
+// POST (محمي)
+export async function POST(req: NextRequest) {
+  const auth = requireAdmin(req);
+
+  if (!auth.ok) {
+    return NextResponse.json(
+      { error: auth.error },
+      { status: 403 }
+    );
+  }
+
   try {
     const body = await req.json();
 
@@ -60,7 +72,17 @@ export async function POST(req: Request) {
   }
 }
 
-export async function PUT(req: Request) {
+// PUT (محمي)
+export async function PUT(req: NextRequest) {
+  const auth = requireAdmin(req);
+
+  if (!auth.ok) {
+    return NextResponse.json(
+      { error: auth.error },
+      { status: 403 }
+    );
+  }
+
   try {
     const body = await req.json();
 
@@ -95,7 +117,17 @@ export async function PUT(req: Request) {
   }
 }
 
-export async function DELETE(req: Request) {
+// DELETE (محمي)
+export async function DELETE(req: NextRequest) {
+  const auth = requireAdmin(req);
+
+  if (!auth.ok) {
+    return NextResponse.json(
+      { error: auth.error },
+      { status: 403 }
+    );
+  }
+
   try {
     const body = await req.json();
 

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getTokenFromRequest, verifyToken } from "@/lib/auth";
 import { db } from "@/db";
-import { mediaLibrary } from "@/db/schema";
+import { mediaLibrary, mediaAssets } from "@/db/schema";
 import sharp from "sharp";
 
 export const runtime = "nodejs";
@@ -92,7 +92,19 @@ export async function POST(request: NextRequest) {
 
   const url = `${process.env.R2_PUBLIC_URL}/${key}`;
 
-  // أي صورة تُرفع من أي مكان في لوحة التحكم تُسجَّل تلقائيًا في مكتبة الصور
+  await db.insert(mediaAssets).values({
+    type: isAudio ? "audio" : isDocument ? "document" : "image",
+    folder,
+    filename,
+    originalName: file.name,
+    url,
+    r2Key: key,
+    mimeType: uploadContentType,
+    size: uploadBuffer.length,
+    uploadedBy: payload.id,
+  });
+
+  // أي صورة تُرفع من أي مكان في لوحة التحكم تُسجَّل تلقائيًا في مكتبة الصور القديمة أيضًا
   if (isImage) {
     await db.insert(mediaLibrary).values({
       filename,

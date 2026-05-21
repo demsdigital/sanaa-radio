@@ -2,7 +2,7 @@
 import { usePermission } from "@/lib/usePermission";
 import { useState, useEffect } from "react";
 
-type Permission = "news" | "programs" | "schedule" | "episodes" | "articles";
+type Permission = "news" | "programs" | "schedule" | "episodes" | "articles" | "exchange";
 
 type User = {
   id: number;
@@ -19,6 +19,7 @@ const PERMISSIONS: { key: Permission; label: string; icon: string; desc: string 
   { key: "programs",  label: "البرامج",           icon: "📻", desc: "إدارة البرامج وترتيبها" },
   { key: "episodes",  label: "الحلقات",           icon: "🎙️", desc: "إضافة وتعديل الحلقات" },
   { key: "schedule",  label: "الخارطة البرامجية", icon: "📅", desc: "إدارة جدول البرامج" },
+  { key: "exchange", label: "التبادل البرامجي", icon: "🌍", desc: "إدارة التبادل البرامجي" },
   { key: "articles",  label: "الكتابات",          icon: "✍️", desc: "إدارة المقالات (قريباً)" },
 ];
 

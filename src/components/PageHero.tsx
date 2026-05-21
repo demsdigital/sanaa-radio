@@ -14,7 +14,6 @@ export default async function PageHero({ badge, title, subtitle }: Props) {
 
   const bgMap: Record<string, string> = {
     blue:  "linear-gradient(135deg,#0a1628 0%,#1a3a7c 50%,#2563eb 100%)",
-    dark:  "linear-gradient(135deg,#0f172a 0%,#1e293b 60%,#334155 100%)",
     green: "linear-gradient(135deg,#064e3b 0%,#065f46 50%,#047857 100%)",
     red:   "linear-gradient(135deg,#7f1d1d 0%,#991b1b 50%,#b91c1c 100%)",
   };

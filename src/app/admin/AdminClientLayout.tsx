@@ -11,12 +11,13 @@ const allNavItems = [
   { href: "/admin/episodes",  label: "الحلقات",      icon: "🎙️", perm: "episodes" },
   { href: "/admin/schedule",  label: "الجدول",       icon: "📅", perm: "schedule" },
   { href: "/admin/news",      label: "الأخبار",      icon: "📰", perm: "news" },
-  { href: "/admin/team",      label: "الفريق",       icon: "👥", perm: "admin" },
+  { href: "/admin/team",      label: "الفريق",       icon: "👥", perm: null },
   { href: "/admin/media",     label: "مكتبة الصور",  icon: "🖼️", perm: null },
+  { href: "/admin/media-assets", label: "مكتبة الملفات", icon: "🎧", perm: null },
   { href: "/admin/articles",  label: "الكتابات",     icon: "✍️", perm: "articles" },
-  { href: "/admin/exchange",  label: "التبادل البرامجي",      icon: "🌍", perm: "admin" },
-  { href: "/admin/users",     label: "المستخدمون",   icon: "👥", perm: "admin" },
-  { href: "/admin/settings",  label: "الإعدادات",    icon: "⚙️", perm: "admin" },
+  { href: "/admin/exchange",  label: "التبادل البرامجي",      icon: "🌍", perm: null },
+  { href: "/admin/users",     label: "المستخدمون",   icon: "👥", perm: null },
+  { href: "/admin/settings",  label: "الإعدادات",    icon: "⚙️", perm: null },
   { href: "/admin/security",  label: "الأمان",        icon: "🔐", perm: null },
 ];
 

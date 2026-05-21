@@ -3,6 +3,7 @@ import { asc, desc, eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { exchangeItems, settings } from "@/db/schema";
+import AudioPlayer from "@/components/player/AudioPlayer";
 
 export const metadata: Metadata = {
   title: "مواد التبادل البرامجي",
@@ -130,11 +131,7 @@ export default async function ExchangeItemsPage() {
                           <span>الاستماع للمادة</span>
                         </div>
 
-                        <audio
-                          controls
-                          src={item.audioUrl}
-                          className="w-full"
-                        />
+                        <AudioPlayer url={item.audioUrl} />
                       </div>
                     </div>
                   )}

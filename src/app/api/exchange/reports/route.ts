@@ -1,9 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { asc, eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { exchangeReports } from "@/db/schema";
+import { requireAdmin } from "@/lib/requireAdmin";
 
+// GET (عام)
 export async function GET() {
   try {
     const items = await db
@@ -13,8 +15,6 @@ export async function GET() {
 
     return NextResponse.json(items);
   } catch (error) {
-    console.error("GET /api/exchange/reports error:", error);
-
     return NextResponse.json(
       { error: "Failed to load exchange reports" },
       { status: 500 }
@@ -22,7 +22,17 @@ export async function GET() {
   }
 }
 
-export async function POST(req: Request) {
+// POST (محمي)
+export async function POST(req: NextRequest) {
+  const auth = requireAdmin(req);
+
+  if (!auth.ok) {
+    return NextResponse.json(
+      { error: auth.error },
+      { status: 403 }
+    );
+  }
+
   try {
     const body = await req.json();
 
@@ -41,8 +51,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json(item);
   } catch (error) {
-    console.error("POST /api/exchange/reports error:", error);
-
     return NextResponse.json(
       { error: "Failed to create exchange report" },
       { status: 500 }
@@ -50,7 +58,17 @@ export async function POST(req: Request) {
   }
 }
 
-export async function PUT(req: Request) {
+// PUT (محمي)
+export async function PUT(req: NextRequest) {
+  const auth = requireAdmin(req);
+
+  if (!auth.ok) {
+    return NextResponse.json(
+      { error: auth.error },
+      { status: 403 }
+    );
+  }
+
   try {
     const body = await req.json();
 
@@ -70,8 +88,6 @@ export async function PUT(req: Request) {
 
     return NextResponse.json(item);
   } catch (error) {
-    console.error("PUT /api/exchange/reports error:", error);
-
     return NextResponse.json(
       { error: "Failed to update exchange report" },
       { status: 500 }
@@ -79,7 +95,17 @@ export async function PUT(req: Request) {
   }
 }
 
-export async function DELETE(req: Request) {
+// DELETE (محمي)
+export async function DELETE(req: NextRequest) {
+  const auth = requireAdmin(req);
+
+  if (!auth.ok) {
+    return NextResponse.json(
+      { error: auth.error },
+      { status: 403 }
+    );
+  }
+
   try {
     const body = await req.json();
 
@@ -89,8 +115,6 @@ export async function DELETE(req: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("DELETE /api/exchange/reports error:", error);
-
     return NextResponse.json(
       { error: "Failed to delete exchange report" },
       { status: 500 }
