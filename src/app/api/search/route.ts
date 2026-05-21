@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { programs, news, articles, exchangeItems, mediaAssets } from "@/db/schema";
+import { programs, news, articles, exchangeItems, mediaAssets, mediaLibrary } from "@/db/schema";
 import { or, like } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
@@ -10,12 +10,13 @@ export async function GET(req: NextRequest) {
 
   const pattern = `%${q}%`;
 
-  const [programsRes, newsRes, articlesRes, exchangeRes, mediaRes] = await Promise.all([
+  const [programsRes, newsRes, articlesRes, exchangeRes, mediaRes, mediaLibraryRes] = await Promise.all([
     db.select().from(programs).where(like(programs.name, pattern)),
     db.select().from(news).where(like(news.title, pattern)),
     db.select().from(articles).where(like(articles.title, pattern)),
     db.select().from(exchangeItems).where(like(exchangeItems.title, pattern)),
     db.select().from(mediaAssets).where(like(mediaAssets.filename, pattern)),
+    db.select().from(mediaLibrary).where(like(mediaLibrary.filename, pattern)),
   ]);
 
   return NextResponse.json({
@@ -23,6 +24,6 @@ export async function GET(req: NextRequest) {
     news: newsRes,
     articles: articlesRes,
     exchange: exchangeRes,
-    media: mediaRes,
+    media: [...mediaRes, ...mediaLibraryRes],
   });
 }
