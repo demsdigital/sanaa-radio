@@ -69,12 +69,12 @@ export default async function ArticlesPage({ searchParams }: Props) {
               <div className="space-y-4">
                 {filtered.map((a, idx) => (
                   <article key={a.id}
-                    className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-slate-300 hover:shadow-md transition-all group flex gap-0">
+                    className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-slate-300 hover:shadow-md transition-all group flex flex-col md:flex-row gap-0">
                     {/* صورة */}
                     {a.imageUrl && (
-                      <div className="w-48 flex-shrink-0 overflow-hidden">
+                      <div className="w-full md:w-40 h-56 md:h-40 flex-shrink-0 bg-slate-50 flex items-center justify-center p-3 border-b md:border-b-0 md:border-l border-slate-200">
                         <img src={a.imageUrl} alt={a.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                          className="w-auto h-auto max-w-full max-h-full object-contain object-top bg-white group-hover:scale-105 transition-transform duration-300" />
                       </div>
                     )}
                     <div className="p-5 flex-1 min-w-0">
