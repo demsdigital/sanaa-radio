@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { getTokenFromRequest, verifyToken } from "@/lib/auth";
 
 const DEFAULTS = {
+  exchange_enabled: "true",
   exchange_show_stats: "true",
   exchange_show_achievements: "true",
   exchange_show_reports: "true",
@@ -24,6 +25,7 @@ export async function GET() {
     });
 
     return NextResponse.json({
+      exchange_enabled: map.exchange_enabled ?? DEFAULTS.exchange_enabled,
       exchange_show_stats: map.exchange_show_stats ?? DEFAULTS.exchange_show_stats,
       exchange_show_achievements: map.exchange_show_achievements ?? DEFAULTS.exchange_show_achievements,
       exchange_show_reports: map.exchange_show_reports ?? DEFAULTS.exchange_show_reports,
