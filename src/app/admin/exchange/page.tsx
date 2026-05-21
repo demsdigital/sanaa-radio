@@ -122,22 +122,22 @@ export default async function ExchangeAdminPage() {
         </div>
       </div>
 
-      <div className="grid sm:grid-cols-2 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 md:gap-4">
         {cards.map((card) => (
           <div
             key={card.title}
-            className="rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-sm"
+            className="rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-sm"
           >
-            <div className={`bg-gradient-to-l ${card.color} p-5 text-white`}>
-              <div className="text-3xl">{card.icon}</div>
+            <div className={`bg-gradient-to-l ${card.color} p-3 md:p-5 text-white min-h-[110px] md:min-h-[160px] flex flex-col justify-between`}>
+              <div className="text-2xl md:text-3xl">{card.icon}</div>
 
-              <div className="mt-5 text-3xl font-black">
+              <div className="text-3xl md:text-4xl font-black leading-none">
                 {card.count}
               </div>
             </div>
 
-            <div className="p-5">
-              <div className="font-bold text-slate-800">
+            <div className="p-3 md:p-5">
+              <div className="font-bold text-sm md:text-base text-slate-800">
                 {card.title}
               </div>
             </div>
@@ -145,37 +145,7 @@ export default async function ExchangeAdminPage() {
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-5">
-        <section className="bg-white rounded-3xl border border-slate-200 p-6">
-          <h2 className="text-xl font-black text-slate-900 mb-5">
-            الخطوات القادمة
-          </h2>
-
-          <div className="space-y-3 text-slate-600">
-            <Link
-              href="/admin/exchange/achievements"
-              className="block rounded-2xl bg-slate-50 p-4 hover:bg-amber-50 hover:text-amber-700 transition-colors"
-            >
-              إدارة الإنجازات والتكريمات
-            </Link>
-
-            <div className="rounded-2xl bg-slate-50 p-4">
-              رفع صور التقارير والاجتماعات
-            </div>
-
-            <Link
-              href="/admin/exchange/stats"
-              className="block rounded-2xl bg-slate-50 p-4 hover:bg-blue-50 hover:text-blue-700 transition-colors"
-            >
-              التحكم في الإحصائيات والأرقام
-            </Link>
-
-            <div className="rounded-2xl bg-slate-50 p-4">
-              إظهار وإخفاء الأقسام من لوحة التحكم
-            </div>
-          </div>
-        </section>
-
+      <div className="grid gap-5">
         <section className="bg-gradient-to-l from-blue-950 to-slate-900 rounded-3xl p-6 text-white">
           <h2 className="text-2xl font-black mb-4">
             منصة قابلة للتوسع

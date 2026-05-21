@@ -142,7 +142,7 @@ export default function AdminClientLayout({ children }: { children: React.ReactN
       </aside>
 
       {/* ── Main ── */}
-      <main className="md:mr-80 w-[calc(100vw-20rem)] max-w-none p-5 md:p-10 pt-16 md:pt-10 min-h-screen [&_input]:text-[15px] [&_textarea]:text-[15px] [&_select]:text-[15px] [&_button]:text-[15px] [&_label]:text-[15px] [&_p]:text-[15px]">
+      <main className="md:mr-80 md:w-[calc(100vw-20rem)] max-w-none p-5 md:p-10 pt-16 md:pt-10 min-h-screen [&_input]:text-[15px] [&_textarea]:text-[15px] [&_select]:text-[15px] [&_button]:text-[15px] [&_label]:text-[15px] [&_p]:text-[15px]">
         {children}
       </main>
 

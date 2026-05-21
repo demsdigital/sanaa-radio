@@ -174,7 +174,7 @@ export default function ProgramsPage() {
               onDragEnter={() => onDragEnter(index)}
               onDragEnd={onDragEnd}
               onDragOver={e => e.preventDefault()}
-              className="bg-white border border-slate-200 rounded-xl p-3 md:p-4 flex items-center gap-2 md:gap-4 cursor-grab active:cursor-grabbing active:shadow-lg active:border-blue-300 transition-all select-none">
+              className="bg-white border border-slate-200 rounded-xl p-3 md:p-4 flex items-start md:items-center gap-2 md:gap-4 flex-wrap md:flex-nowrap cursor-grab active:cursor-grabbing active:shadow-lg active:border-blue-300 transition-all select-none">
               <div className="text-slate-300 hover:text-slate-500 flex-shrink-0">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                   <circle cx="5" cy="4" r="1.5"/><circle cx="11" cy="4" r="1.5"/>
@@ -182,19 +182,21 @@ export default function ProgramsPage() {
                   <circle cx="5" cy="12" r="1.5"/><circle cx="11" cy="12" r="1.5"/>
                 </svg>
               </div>
-              <div className="w-6 h-6 rounded-full bg-slate-100 text-slate-500 text-xs font-bold flex items-center justify-center flex-shrink-0">
-                {index + 1}
+              <div className="flex flex-col items-center gap-1 flex-shrink-0">
+                {p.imageUrl ? (
+                  <img src={p.imageUrl} alt={p.name} className="w-12 h-12 md:w-16 md:h-16 rounded-lg object-cover border border-slate-100" />
+                ) : (
+                  <div className="w-12 h-12 md:w-16 md:h-16 rounded-lg bg-blue-50 flex items-center justify-center text-2xl">📻</div>
+                )}
+                <div className="w-6 h-6 rounded-full bg-slate-100 text-slate-500 text-xs font-bold flex items-center justify-center">
+                  {index + 1}
+                </div>
               </div>
-              {p.imageUrl ? (
-                <img src={p.imageUrl} alt={p.name} className="w-12 h-12 md:w-16 md:h-16 rounded-lg object-cover border border-slate-100 flex-shrink-0" />
-              ) : (
-                <div className="w-16 h-16 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0 text-2xl">📻</div>
-              )}
-              <div className="flex-1 min-w-0">
-                <div className="text-slate-900 font-semibold">{p.name}</div>
+              <div className="flex-1 min-w-0 text-right">
+                <div className="text-slate-900 font-semibold text-lg md:text-base leading-snug whitespace-normal md:whitespace-nowrap md:overflow-hidden md:text-ellipsis">{p.name}</div>
                 <div className="text-slate-400 text-xs mt-0.5 font-mono">{p.slug}</div>
                 {p.description && <div className="text-slate-500 text-xs mt-1 line-clamp-1">{p.description}</div>}
-                <div className="flex items-center gap-2 mt-1.5">
+                <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
                   <span className="bg-blue-50 text-blue-600 text-xs px-2 py-0.5 rounded-full font-medium">{p.category}</span>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${p.active ? "bg-green-50 text-green-600" : "bg-red-50 text-red-500"}`}>
                     {p.active ? "نشط" : "موقوف"}
@@ -206,7 +208,7 @@ export default function ProgramsPage() {
                   )}
                 </div>
               </div>
-              <div className="flex gap-2 flex-shrink-0 flex-wrap justify-end">
+              <div className="flex gap-1.5 md:gap-2 flex-shrink-0 flex-wrap justify-center md:justify-end w-full md:w-auto pt-2 md:pt-0">
                 <button
                   onClick={() => handleYouTubeSync(p.id)}
                   disabled={syncingProgramId === p.id}
