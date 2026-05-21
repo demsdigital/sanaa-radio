@@ -187,8 +187,10 @@ export default async function HomePage() {
                 <Link key={a.id} href={`/articles/${a.id}`}
                   className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-slate-300 hover:shadow-md transition-all group flex flex-col">
                   {a.imageUrl && (
-                    <div className="h-44 w-full overflow-hidden">
-                      <img src={a.imageUrl} alt={a.title} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"/>
+                    <div className="h-52 w-full bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 flex items-center justify-center p-6">
+                      <div className="bg-white rounded-[28px] border border-slate-200 shadow-sm p-2">
+                        <img src={a.imageUrl} alt={a.title} className="w-[220px] h-[220px] object-contain object-top rounded-2xl bg-white"/>
+                      </div>
                     </div>
                   )}
                   <div className="p-5 flex-1 flex flex-col">
