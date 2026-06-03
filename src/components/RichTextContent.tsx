@@ -17,6 +17,7 @@ const ALLOWED_TAGS = [
   "figure", "figcaption",
 ];
 
+// السماح بـ style على عناصر النص لأجل text-align: justify
 const ALLOWED_ATTRS: sanitizeHtml.IOptions["allowedAttributes"] = {
   a: ["href", "target", "rel"],
   img: ["src", "alt", "width", "height", "style", "class"],
@@ -25,13 +26,28 @@ const ALLOWED_ATTRS: sanitizeHtml.IOptions["allowedAttributes"] = {
   figure: ["class", "style"],
   figcaption: ["class"],
   span: ["class", "style"],
+  // عناصر النص تحتاج style لـ text-align
+  p: ["style"],
+  h2: ["style"],
+  h3: ["style"],
+  h4: ["style"],
+  li: ["style"],
+  blockquote: ["style"],
   "*": [],
+};
+
+// نسمح فقط بـ text-align كخاصية CSS آمنة
+const ALLOWED_STYLES: sanitizeHtml.IOptions["allowedStyles"] = {
+  "*": {
+    "text-align": [/^(left|right|center|justify)$/],
+  },
 };
 
 function sanitize(html: string): string {
   return sanitizeHtml(html, {
     allowedTags: ALLOWED_TAGS,
     allowedAttributes: ALLOWED_ATTRS,
+    allowedStyles: ALLOWED_STYLES,
     allowedIframeHostnames: ["www.youtube.com", "www.youtube-nocookie.com"],
     allowedSchemes: ["https", "http"],
     transformTags: {
@@ -47,22 +63,22 @@ function sanitize(html: string): string {
   });
 }
 
-// أنماط CSS مضمّنة لعرض المحتوى الغني بشكل جميل
-const RICH_CONTENT_STYLES = `
+const STYLES = `
   .rich-content {
     line-height: 2;
     color: #334155;
     direction: rtl;
     text-align: right;
+    font-size: 1rem;
   }
   .rich-content p {
-    margin-bottom: 1rem;
+    margin-bottom: 1.1rem;
   }
   .rich-content h2 {
     font-size: 1.35rem;
     font-weight: 700;
     color: #1e293b;
-    margin: 1.5rem 0 0.75rem;
+    margin: 1.75rem 0 0.75rem;
     padding-bottom: 0.4rem;
     border-bottom: 2px solid #e2e8f0;
   }
@@ -99,21 +115,20 @@ const RICH_CONTENT_STYLES = `
     text-decoration: underline;
     text-underline-offset: 2px;
   }
-  .rich-content a:hover {
-    color: #1d4ed8;
-  }
+  .rich-content a:hover { color: #1d4ed8; }
 
-  /* === صورة منفردة === */
+  /* صورة منفردة */
   .rich-content img {
     max-width: 100%;
+    width: 100%;
     height: auto;
-    border-radius: 10px;
-    margin: 1rem auto;
+    border-radius: 12px;
+    margin: 1.25rem 0;
     display: block;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.09);
   }
 
-  /* === معرض الصور === */
+  /* معرض صور */
   .rich-content .image-gallery {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -129,28 +144,17 @@ const RICH_CONTENT_STYLES = `
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transition: transform 0.2s ease;
   }
-  .rich-content .image-gallery img:hover {
-    transform: scale(1.02);
-  }
+  .rich-content .image-gallery img:hover { transform: scale(1.02); }
 
-  /* معرض 3 صور على الديسكتوب */
   @media (min-width: 640px) {
     .rich-content .image-gallery {
       grid-template-columns: repeat(3, 1fr);
     }
-    .rich-content .image-gallery img {
-      height: 180px;
-    }
+    .rich-content .image-gallery img { height: 180px; }
   }
-
-  /* صورة واحدة في المعرض تأخذ العرض الكامل */
-  .rich-content .image-gallery:has(img:only-child) {
-    grid-template-columns: 1fr;
-  }
-  .rich-content .image-gallery:has(img:only-child) img {
-    height: auto;
-    max-height: 480px;
-    object-fit: contain;
+  @media (max-width: 480px) {
+    .rich-content .image-gallery { gap: 6px; }
+    .rich-content .image-gallery img { height: 130px; }
   }
 
   /* iframe يوتيوب */
@@ -162,21 +166,9 @@ const RICH_CONTENT_STYLES = `
     aspect-ratio: 16/9;
     height: auto;
     margin: 1rem 0;
+    display: block;
   }
-  .rich-content [data-youtube-video] {
-    margin: 1rem 0;
-  }
-
-  /* الجوال: عمودان للمعرض */
-  @media (max-width: 480px) {
-    .rich-content .image-gallery {
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-    .rich-content .image-gallery img {
-      height: 130px;
-    }
-  }
+  .rich-content [data-youtube-video] { margin: 1rem 0; }
 `;
 
 export default function RichTextContent({ html, className = "" }: Props) {
@@ -184,7 +176,7 @@ export default function RichTextContent({ html, className = "" }: Props) {
   const clean = sanitize(html);
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: RICH_CONTENT_STYLES }} />
+      <style dangerouslySetInnerHTML={{ __html: STYLES }} />
       <div
         className={`rich-content ${className}`}
         dangerouslySetInnerHTML={{ __html: clean }}
