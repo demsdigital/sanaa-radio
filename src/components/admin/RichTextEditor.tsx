@@ -242,6 +242,30 @@ export default function RichTextEditor({
             ▶
           </ToolBtn>
 
+          <div className="w-px h-4 bg-slate-300 mx-1" />
+
+          {/* أزرار الصور */}
+          <ToolBtn
+            onClick={() => togglePanel("url")}
+            active={imgPanel === "url"}
+            title="إدراج صورة برابط URL"
+          >
+            🖼️
+          </ToolBtn>
+          <ToolBtn
+            onClick={() => togglePanel("upload")}
+            active={imgPanel === "upload"}
+            title="رفع صورة من جهازك"
+          >
+            📤
+          </ToolBtn>
+          <ToolBtn
+            onClick={() => { closeAll(); setShowPicker(true); }}
+            title="اختيار من مكتبة الصور"
+          >
+            🗂️
+          </ToolBtn>
+
           <div className="flex-1" />
 
           {/* تراجع / إعادة */}

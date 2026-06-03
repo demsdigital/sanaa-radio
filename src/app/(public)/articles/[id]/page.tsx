@@ -89,50 +89,59 @@ export default async function ArticlePage({ params }: Props) {
           <article className="flex-1 min-w-0">
             <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
 
-              {/* صورة الغلاف */}
-              {article.imageUrl && (
-                <div className="w-full overflow-hidden bg-slate-100" style={{ maxHeight: "420px" }}>
-                  <img
-                    src={article.imageUrl}
-                    alt={article.title}
-                    className="w-full h-full object-contain"
-                    style={{ maxHeight: "420px", display: "block", margin: "0 auto" }}
-                  />
-                </div>
-              )}
-
               <div className="p-6 md:p-10">
 
-                {/* تصنيف + تاريخ + وسوم */}
-                <div className="flex items-center gap-2 mb-5 flex-wrap">
-                  <span className="text-xs font-bold bg-blue-600 text-white px-3 py-1 rounded-full">
-                    {article.category}
-                  </span>
-                  <span className="text-slate-400 text-sm">{publishedDate}</span>
-                  {tags.map(tag => (
-                    <span key={tag} className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">
-                      #{tag}
-                    </span>
-                  ))}
+                {/* هيدر: تصنيف + تاريخ + عنوان + كاتب — مع صورة جانبية */}
+                <div className="flex items-start gap-5 mb-5">
+
+                  {/* المحتوى الرئيسي */}
+                  <div className="flex-1 min-w-0">
+                    {/* تصنيف + تاريخ + وسوم */}
+                    <div className="flex items-center gap-2 mb-4 flex-wrap">
+                      <span className="text-xs font-bold bg-blue-600 text-white px-3 py-1 rounded-full">
+                        {article.category}
+                      </span>
+                      <span className="text-slate-400 text-sm">{publishedDate}</span>
+                      {tags.map(tag => (
+                        <span key={tag} className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* العنوان */}
+                    <h1 className="text-slate-900 text-2xl md:text-3xl lg:text-4xl font-black leading-snug mb-4">
+                      {article.title}
+                    </h1>
+
+                    {/* الكاتب */}
+                    {article.authorName && (
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-base flex-shrink-0">
+                          ✍️
+                        </div>
+                        <div>
+                          <div className="text-slate-800 text-sm font-semibold">{article.authorName}</div>
+                          <div className="text-slate-400 text-xs">كاتب</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* صورة المقال — بطاقة صغيرة أنيقة */}
+                  {article.imageUrl && (
+                    <div className="hidden sm:block flex-shrink-0 w-36 h-36 md:w-40 md:h-40 rounded-2xl overflow-hidden shadow-sm border border-slate-100 bg-slate-50 mt-1">
+                      <img
+                        src={article.imageUrl}
+                        alt={article.authorName || article.title}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                  )}
                 </div>
 
-                {/* العنوان */}
-                <h1 className="text-slate-900 text-2xl md:text-3xl lg:text-4xl font-black leading-snug mb-5">
-                  {article.title}
-                </h1>
-
-                {/* الكاتب */}
-                {article.authorName && (
-                  <div className="flex items-center gap-3 mb-6 pb-6 border-b border-slate-100">
-                    <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-base flex-shrink-0">
-                      ✍️
-                    </div>
-                    <div>
-                      <div className="text-slate-800 text-sm font-semibold">{article.authorName}</div>
-                      <div className="text-slate-400 text-xs">كاتب</div>
-                    </div>
-                  </div>
-                )}
+                {/* فاصل */}
+                <div className="border-b border-slate-100 mb-6" />
 
                 {/* المقتطف */}
                 {article.excerpt && (
@@ -141,14 +150,16 @@ export default async function ArticlePage({ params }: Props) {
                   </p>
                 )}
 
-                {/* المحتوى */}
-                {bodyIsHtml ? (
-                  <RichTextContent html={article.body} />
-                ) : (
-                  <div className="text-slate-700 leading-loose text-base whitespace-pre-wrap text-justify">
-                    {article.body}
-                  </div>
-                )}
+                {/* المحتوى — منطقة نص مضيّقة للقراءة */}
+                <div className="max-w-[900px] mx-auto">
+                  {bodyIsHtml ? (
+                    <RichTextContent html={article.body} />
+                  ) : (
+                    <div className="text-slate-700 leading-loose text-base whitespace-pre-wrap text-justify">
+                      {article.body}
+                    </div>
+                  )}
+                </div>
 
               </div>
             </div>
@@ -199,9 +210,9 @@ export default async function ArticlePage({ params }: Props) {
                 {article.authorName && (
                   <div>
                     <div className="text-xs text-slate-400 mb-1">الكاتب</div>
-                    <div className="text-sm font-semibold text-slate-800 flex items-center gap-1.5">
-                      <span className="text-base">✍️</span>
-                      {article.authorName}
+                    <div className="text-sm font-semibold text-slate-800 flex items-start gap-1.5">
+                      <span className="text-base flex-shrink-0">✍️</span>
+                      <span className="break-words">{article.authorName}</span>
                     </div>
                   </div>
                 )}

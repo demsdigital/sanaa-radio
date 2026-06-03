@@ -72,7 +72,7 @@ const STYLES = `
     font-size: 1rem;
   }
   .rich-content p {
-    margin-bottom: 1.1rem;
+    margin-bottom: 1.5rem;
   }
   .rich-content h2 {
     font-size: 1.35rem;
