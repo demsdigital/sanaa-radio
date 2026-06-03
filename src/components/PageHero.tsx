@@ -29,13 +29,8 @@ export default async function PageHero({ badge, title, subtitle }: Props) {
       {(mt === "image" || mt === "gif") && mu && (
         <>
           <div
-            className="absolute inset-0 hidden md:block"
-            style={{
-              backgroundImage: `url(${mu})`,
-              backgroundSize: "contain",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-            }}
+            className="absolute inset-0 hidden md:block bg-cover bg-center"
+            style={{ backgroundImage: `url(${mu})` }}
           />
           <div className="absolute inset-0 hidden md:block" style={{ background: `rgba(0,0,0,${op})` }} />
         </>

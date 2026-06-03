@@ -18,6 +18,8 @@ export const metadata: Metadata = {
     "منصة إذاعة الجمهورية اليمنية للتبادل البرامجي والإخباري مع الهيئات والإذاعات العربية، وتوثيق الإنجازات والمشاركات ضمن اتحاد إذاعات الدول العربية.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function ProgramExchangePage() {
   const stats = await db
     .select()
