@@ -1,13 +1,22 @@
 import { db } from "@/db";
 import { articles } from "@/db/schema";
-import { eq, desc, ne } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import RichTextContent from "@/components/RichTextContent";
 
 export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ id: string }> };
+
+function plainText(html: string): string {
+  return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function isHtml(content: string): boolean {
+  return /<[a-z][\s\S]*>/i.test(content);
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
@@ -18,68 +27,40 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .where(eq(articles.id, Number(id)));
 
   if (!article) {
-    return {
-      title: "مقال غير موجود | إذاعة الجمهورية اليمنية",
-    };
+    return { title: "مقال غير موجود | إذاعة الجمهورية اليمنية" };
   }
+
+  const description =
+    article.metaDescription ||
+    article.excerpt ||
+    (isHtml(article.body) ? plainText(article.body).slice(0, 160) : article.body?.slice(0, 160));
 
   return {
     title: `${article.title} | إذاعة الجمهورية اليمنية`,
-
-    description:
-      article.excerpt ||
-      article.body?.slice(0, 160),
-
+    description,
     alternates: {
       canonical: `https://www.sanaaradio.org/articles/${id}`,
     },
-
-    authors: [
-      {
-        name: article.authorName || "إذاعة الجمهورية اليمنية",
-      },
-    ],
-
-    robots: {
-      index: true,
-      follow: true,
-    },
-
+    authors: [{ name: article.authorName || "إذاعة الجمهورية اليمنية" }],
+    keywords: article.tags ? article.tags.split(",").map(t => t.trim()) : undefined,
+    robots: { index: true, follow: true },
     openGraph: {
       type: "article",
       locale: "ar_YE",
       url: `https://www.sanaaradio.org/articles/${id}`,
       siteName: "إذاعة الجمهورية اليمنية",
       title: article.title,
-      description:
-        article.excerpt ||
-        article.body?.slice(0, 160),
-      ...(article.imageUrl
-        ? {
-            images: [
-              {
-                url: article.imageUrl,
-              },
-            ],
-          }
-        : {}),
+      description,
+      ...(article.imageUrl ? { images: [{ url: article.imageUrl }] } : {}),
     },
-
     twitter: {
       card: "summary_large_image",
       title: article.title,
-      description:
-        article.excerpt ||
-        article.body?.slice(0, 160),
-      ...(article.imageUrl
-        ? {
-            images: [article.imageUrl],
-          }
-        : {}),
+      description,
+      ...(article.imageUrl ? { images: [article.imageUrl] } : {}),
     },
   };
 }
-
 
 export default async function ArticlePage({ params }: Props) {
   const { id } = await params;
@@ -89,12 +70,14 @@ export default async function ArticlePage({ params }: Props) {
   const [article] = await db.select().from(articles).where(eq(articles.id, articleId));
   if (!article || !article.published) notFound();
 
-  // مقالات ذات صلة
   const related = await db.select().from(articles)
     .where(eq(articles.category, article.category))
     .orderBy(desc(articles.publishedAt))
     .limit(4);
   const filtered = related.filter(a => a.id !== article.id).slice(0, 3);
+
+  const tags = article.tags ? article.tags.split(",").map(t => t.trim()).filter(Boolean) : [];
+  const bodyIsHtml = isHtml(article.body);
 
   return (
     <div className="min-h-screen bg-slate-50" dir="rtl">
@@ -115,18 +98,21 @@ export default async function ArticlePage({ params }: Props) {
           <article className="flex-1 min-w-0">
             <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
               {article.imageUrl && (
-                  <div className="float-right ml-5 mb-4 w-36 md:w-44 bg-white rounded-2xl border border-slate-200 shadow-sm p-2">
-                    <img src={article.imageUrl} alt={article.title}
-                      className="w-full h-auto rounded-xl object-contain object-top bg-white" />
-                  </div>
-                )}
+                <div className="float-right ml-5 mb-4 w-36 md:w-44 bg-white rounded-2xl border border-slate-200 shadow-sm p-2">
+                  <img src={article.imageUrl} alt={article.title}
+                    className="w-full h-auto rounded-xl object-contain object-top bg-white" />
+                </div>
+              )}
               <div className="p-8">
                 {/* تصنيف + تاريخ */}
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-4 flex-wrap">
                   <span className="text-xs font-bold bg-slate-100 text-slate-600 px-3 py-1 rounded-full">{article.category}</span>
                   <span className="text-slate-400 text-sm">
                     {new Date(article.publishedAt).toLocaleDateString("ar-YE", { year: "numeric", month: "long", day: "numeric" })}
                   </span>
+                  {tags.length > 0 && tags.map(tag => (
+                    <span key={tag} className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">{tag}</span>
+                  ))}
                 </div>
 
                 {/* العنوان */}
@@ -148,9 +134,16 @@ export default async function ArticlePage({ params }: Props) {
                 )}
 
                 {/* المحتوى */}
-                <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed text-base whitespace-pre-wrap text-justify">
-                  {article.body}
-                </div>
+                {bodyIsHtml ? (
+                  <RichTextContent
+                    html={article.body}
+                    className="article-body"
+                  />
+                ) : (
+                  <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed text-base whitespace-pre-wrap text-justify">
+                    {article.body}
+                  </div>
+                )}
               </div>
             </div>
 

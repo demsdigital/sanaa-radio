@@ -8,6 +8,7 @@ import Script from "next/script";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import ShareButtons from "./ShareButtons";
+import RichTextContent from "@/components/RichTextContent";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -21,28 +22,35 @@ function hasTweet(url: string | null) {
   return !!url && /(twitter|x)\.com\/\w+\/status\/\d+/.test(url);
 }
 
+function isHtml(content: string): boolean {
+  return /<[a-z][\s\S]*>/i.test(content);
+}
+
+function plainText(html: string): string {
+  return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const [item] = await db.select().from(news).where(eq(news.id, Number(id)));
   if (!item) return { title: "خبر غير موجود | إذاعة الجمهورية اليمنية" };
+
+  const description =
+    item.metaDescription ||
+    (isHtml(item.body) ? plainText(item.body).slice(0, 160) : item.body?.slice(0, 160));
+
   return {
     title: `${item.title} | إذاعة الجمهورية اليمنية`,
-    description: item.body?.slice(0, 160),
-
+    description,
     alternates: {
       canonical: `https://www.sanaaradio.org/news/${id}`,
     },
-
-    authors: [{ name: "إذاعة الجمهورية اليمنية" }],
-
-    robots: {
-      index: true,
-      follow: true,
-    },
-
+    authors: [{ name: item.editorName || "إذاعة الجمهورية اليمنية" }],
+    keywords: item.tags ? item.tags.split(",").map(t => t.trim()) : undefined,
+    robots: { index: true, follow: true },
     openGraph: {
       title: item.title,
-      description: item.body?.slice(0, 160),
+      description,
       url: `https://www.sanaaradio.org/news/${id}`,
       siteName: "إذاعة الجمهورية اليمنية",
       locale: "ar_YE",
@@ -50,11 +58,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       publishedTime: item.publishedAt?.toISOString(),
       ...(item.imageUrl ? { images: [{ url: item.imageUrl }] } : {}),
     },
-
     twitter: {
       card: "summary_large_image",
       title: item.title,
-      description: item.body?.slice(0, 160),
+      description,
       ...(item.imageUrl ? { images: [item.imageUrl] } : {}),
     },
   };
@@ -77,6 +84,7 @@ export default async function NewsDetailPage({ params }: Props) {
   const youtubeId = getYouTubeId(item.youtubeUrl);
   const showTweet = hasTweet(item.tweetUrl);
   const shareUrl = `${process.env.NEXT_PUBLIC_URL}/news/${newsId}`;
+  const bodyIsHtml = isHtml(item.body);
 
   const publishedDate = item.publishedAt
     ? new Date(item.publishedAt).toLocaleDateString("ar-YE", {
@@ -84,22 +92,32 @@ export default async function NewsDetailPage({ params }: Props) {
       })
     : "";
 
+  const tags = item.tags ? item.tags.split(",").map(t => t.trim()).filter(Boolean) : [];
+
+  // معالجة صور المعرض
+  let galleryUrls: string[] = [];
+  if (item.galleryImages) {
+    try {
+      const parsed = JSON.parse(item.galleryImages);
+      if (Array.isArray(parsed)) galleryUrls = parsed.filter((u: unknown) => typeof u === "string");
+    } catch {
+      galleryUrls = item.galleryImages.split(",").map(u => u.trim()).filter(Boolean);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-slate-50" dir="rtl">
       {showTweet && (
         <Script src="https://platform.twitter.com/widgets.js" strategy="afterInteractive" />
       )}
 
-      {/* Nav */}
-
-      {/* Layout رئيسي: مقال + sidebar */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
 
-          {/* ===== عمود المقال ===== */}
+          {/* عمود المقال */}
           <article className="flex-1 min-w-0 bg-white rounded-2xl border border-slate-200 overflow-hidden">
 
-            {/* الصورة كاملة بلا قص */}
+            {/* الصورة */}
             {item.imageUrl && (
               <div className="relative w-full" style={{ background: "#f1f5f9", borderBottom: "3px solid #2563eb" }}>
                 <div style={{ paddingBottom: "56.25%", position: "relative" }}>
@@ -122,11 +140,19 @@ export default async function NewsDetailPage({ params }: Props) {
 
             <div className="p-6 md:p-8">
 
-              {/* تصنيف */}
-              <div className="mb-4">
+              {/* تصنيف + عاجل */}
+              <div className="mb-4 flex items-center gap-2 flex-wrap">
                 <span className="inline-flex items-center gap-1.5 bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-full">
-                  📰 أخبار
+                  📰 {item.category || "أخبار"}
                 </span>
+                {item.breaking && (
+                  <span className="inline-flex items-center bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full animate-pulse">
+                    عاجل
+                  </span>
+                )}
+                {tags.map(tag => (
+                  <span key={tag} className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-full">{tag}</span>
+                ))}
               </div>
 
               {/* العنوان */}
@@ -138,11 +164,9 @@ export default async function NewsDetailPage({ params }: Props) {
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pb-5 mb-6 border-b border-slate-100 text-sm text-slate-500">
                 <span className="flex items-center gap-1.5">
                   <span className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-700">ي</span>
-                  فريق التحرير
+                  {item.editorName || "فريق التحرير"}
                 </span>
-                {publishedDate && (
-                  <span>📅 {publishedDate}</span>
-                )}
+                {publishedDate && <span>📅 {publishedDate}</span>}
                 {item.sourceLabel && (
                   <span>
                     {item.sourceUrl ? (
@@ -158,12 +182,35 @@ export default async function NewsDetailPage({ params }: Props) {
               </div>
 
               {/* نص الخبر */}
-              <div className="text-slate-700 text-[17px] leading-[2.1] mb-8 text-justify"
-                >
-                {item.body.split("\n").filter(Boolean).map((para, i) => (
-                  <p key={i} className="mb-5">{para}</p>
-                ))}
-              </div>
+              {bodyIsHtml ? (
+                <RichTextContent
+                  html={item.body}
+                  className="news-body mb-8"
+                />
+              ) : (
+                <div className="text-slate-700 text-[17px] leading-[2.1] mb-8 text-justify">
+                  {item.body.split("\n").filter(Boolean).map((para, i) => (
+                    <p key={i} className="mb-5">{para}</p>
+                  ))}
+                </div>
+              )}
+
+              {/* معرض الصور */}
+              {galleryUrls.length > 0 && (
+                <div className="mb-8">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-1 h-5 bg-slate-400 rounded-full" />
+                    <span className="text-slate-900 font-bold">معرض الصور</span>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {galleryUrls.map((url, i) => (
+                      <div key={i} className="rounded-xl overflow-hidden border border-slate-200 aspect-video bg-slate-100">
+                        <img src={url} alt={`صورة ${i + 1}`} className="w-full h-full object-cover" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* فيديو يوتيوب */}
               {youtubeId && (
@@ -205,10 +252,9 @@ export default async function NewsDetailPage({ params }: Props) {
             </div>
           </article>
 
-          {/* ===== Sidebar ===== */}
+          {/* Sidebar */}
           <aside className="w-full lg:w-80 flex-shrink-0 space-y-4">
 
-            {/* عنوان الـ sidebar */}
             <div className="flex items-center gap-2">
               <div className="w-1 h-5 bg-blue-600 rounded-full" />
               <h2 className="text-slate-900 font-black text-base">أخبار أخرى</h2>
@@ -238,7 +284,6 @@ export default async function NewsDetailPage({ params }: Props) {
               </Link>
             ))}
 
-            {/* بطاقة الإذاعة */}
             <div className="bg-blue-600 rounded-xl p-5 text-white">
               <img src="/logo.png" alt="شعار" className="w-12 h-12 object-contain mb-3 opacity-90" />
               <div className="font-black mb-1">إذاعة الجمهورية اليمنية</div>
@@ -253,8 +298,6 @@ export default async function NewsDetailPage({ params }: Props) {
 
         </div>
       </div>
-
-      {/* Footer */}
     </div>
   );
 }
