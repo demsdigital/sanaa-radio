@@ -24,11 +24,19 @@ export default async function PageHero({ badge, title, subtitle }: Props) {
   const op = Number(s.programs_hero_overlay_opacity ?? s.hero_overlay_opacity ?? 55) / 100;
 
   return (
-    <div className="relative py-6 md:py-10 px-4 md:px-6 text-white text-center overflow-hidden"
-      style={{ background: heroBg, minHeight: "150px" }}>
+    <div className="relative py-10 md:py-16 px-4 md:px-6 text-white text-center overflow-hidden"
+      style={{ background: heroBg, minHeight: "240px" }}>
       {(mt === "image" || mt === "gif") && mu && (
         <>
-          <div className="absolute inset-0 hidden md:block bg-cover bg-center" style={{ backgroundImage: `url(${mu})` }} />
+          <div
+            className="absolute inset-0 hidden md:block"
+            style={{
+              backgroundImage: `url(${mu})`,
+              backgroundSize: "contain",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+            }}
+          />
           <div className="absolute inset-0 hidden md:block" style={{ background: `rgba(0,0,0,${op})` }} />
         </>
       )}

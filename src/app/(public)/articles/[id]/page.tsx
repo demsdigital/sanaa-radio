@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import RichTextContent from "@/components/RichTextContent";
+import ShareButtons from "@/components/ShareButtons";
 
 export const dynamic = "force-dynamic";
 
@@ -159,6 +160,10 @@ export default async function ArticlePage({ params }: Props) {
                       {article.body}
                     </div>
                   )}
+                  <ShareButtons
+                    url={`https://www.sanaaradio.org/articles/${article.id}`}
+                    title={article.title}
+                  />
                 </div>
 
               </div>
